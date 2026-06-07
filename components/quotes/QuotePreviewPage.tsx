@@ -98,8 +98,8 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
   const [showSendMenu, setShowSendMenu] = useState(false);
   const [showMarkSentAfterPdf, setShowMarkSentAfterPdf] = useState(false);
   const [showJobModal, setShowJobModal] = useState(false);
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
 
-  // Scheduling fields
   const [schedDate, setSchedDate] = useState("");
   const [schedStart, setSchedStart] = useState("09:00");
   const [schedEnd, setSchedEnd] = useState("");
@@ -325,7 +325,6 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
   const hasDate = quote?.jobDate != null;
   const isScheduled = hasDate && quote?.status === "accepted";
   const isAccepted = quote?.status === "accepted";
-  const canSchedule = !isAccepted;
 
   return (
     <section className="workspace-page">
@@ -400,7 +399,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
                     <button className="button button--primary" type="button" onClick={() => updateStatus("sent")}>Mark as sent</button>
                   ) : null}
                   {validTransitions.includes("accepted") ? (
-                    <button className="button button--primary" type="button" onClick={() => updateStatus("accepted")}>Mark accepted</button>
+                    <button className="button button--primary" type="button" onClick={() => setShowAcceptModal(true)}>Mark accepted</button>
                   ) : null}
                   {validTransitions.includes("rejected") ? (
                     <button className="button button--secondary" type="button" onClick={() => updateStatus("rejected")}>Mark rejected</button>
@@ -463,53 +462,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
             </div>
           ) : null}
 
-          {/* Schedule section */}
-          {canSchedule ? (
-            <div style={{
-              background: "#f8fafc", border: "1px solid var(--border)", borderRadius: 8,
-              padding: "16px 20px", marginBottom: 20, display: "flex", alignItems: "flex-end", gap: 12, flexWrap: "wrap",
-            }}>
-              <div>
-                <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
-                  Date
-                </label>
-                <input
-                  type="date"
-                  style={{ padding: "8px 12px", border: "1px solid var(--border)", borderRadius: 6, fontSize: 14 }}
-                  value={schedDate}
-                  onChange={(e) => setSchedDate(e.target.value)}
-                />
-              </div>
-              <div>
-                <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
-                  Start
-                </label>
-                <input
-                  type="time"
-                  style={{ padding: "8px 12px", border: "1px solid var(--border)", borderRadius: 6, fontSize: 14 }}
-                  value={schedStart}
-                  onChange={(e) => setSchedStart(e.target.value)}
-                />
-              </div>
-              <div>
-                <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#334155", marginBottom: 4 }}>
-                  End
-                </label>
-                <input
-                  type="time"
-                  style={{ padding: "8px 12px", border: "1px solid var(--border)", borderRadius: 6, fontSize: 14 }}
-                  value={schedEnd}
-                  onChange={(e) => setSchedEnd(e.target.value)}
-                />
-              </div>
-              {validTransitions.includes("accepted") ? (
-                <span style={{ fontSize: 12, color: "#64748b", padding: "4px 0" }}>
-                  Date applied when accepted
-                </span>
-              ) : null}
-            </div>
-          ) : null}
-
+          {/* Schedule status */}
           {hasDate && !isScheduled ? (
             <div style={{
               background: "#fef3c7", border: "1px solid #fcd34d", borderRadius: 8,
@@ -631,6 +584,93 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
               onClose={() => setShowJobModal(false)}
               onSaved={() => { setShowJobModal(false); setRefreshKey((k) => k + 1); }}
             />
+          ) : null}
+
+          {/* Accept + Schedule modal */}
+          {showAcceptModal ? (
+            <div
+              style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}
+              onClick={() => setShowAcceptModal(false)}
+            >
+              <div
+                style={{ background: "#fff", borderRadius: 12, width: "100%", maxWidth: 420, boxShadow: "0 20px 60px rgba(0,0,0,0.15)", maxHeight: "90vh", overflow: "auto" }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px 0" }}>
+                  <div>
+                    <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>Accept quote</h2>
+                    <p style={{ fontSize: 14, color: "#64748b", margin: "4px 0 0" }}>
+                      {quote?.quoteNumber} — {quote?.customer.name}
+                    </p>
+                  </div>
+                  <button style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#64748b", padding: "0 4px" }} onClick={() => setShowAcceptModal(false)}>&times;</button>
+                </div>
+
+                <div style={{ padding: "16px 24px 24px" }}>
+                  <p style={{ fontSize: 14, fontWeight: 600, color: "#0f172a", margin: "0 0 14px" }}>
+                    Schedule this job on your calendar
+                  </p>
+
+                  <div style={{ marginBottom: 14 }}>
+                    <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#334155", marginBottom: 4 }}>Date</label>
+                    <input
+                      type="date"
+                      style={{ width: "100%", padding: "8px 12px", border: "1px solid #e5e7eb", borderRadius: 6, fontSize: 14, outline: "none", boxSizing: "border-box" }}
+                      value={schedDate}
+                      onChange={(e) => setSchedDate(e.target.value)}
+                    />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#334155", marginBottom: 4 }}>Start time</label>
+                      <input
+                        type="time"
+                        style={{ width: "100%", padding: "8px 12px", border: "1px solid #e5e7eb", borderRadius: 6, fontSize: 14, outline: "none", boxSizing: "border-box" }}
+                        value={schedStart}
+                        onChange={(e) => setSchedStart(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#334155", marginBottom: 4 }}>End time</label>
+                      <input
+                        type="time"
+                        style={{ width: "100%", padding: "8px 12px", border: "1px solid #e5e7eb", borderRadius: 6, fontSize: 14, outline: "none", boxSizing: "border-box" }}
+                        value={schedEnd}
+                        onChange={(e) => setSchedEnd(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    <button
+                      style={{
+                        padding: "10px 0", borderRadius: 6, fontSize: 14, fontWeight: 600, cursor: "pointer", border: "none",
+                        background: "#1F6B4F", color: "#fff",
+                      }}
+                      onClick={() => { setShowAcceptModal(false); updateStatus("accepted"); }}
+                    >
+                      Accept & Schedule
+                    </button>
+                    <button
+                      style={{
+                        padding: "10px 0", borderRadius: 6, fontSize: 14, fontWeight: 500, cursor: "pointer",
+                        border: "none", background: "transparent", color: "#64748b",
+                      }}
+                      onClick={() => {
+                        setSchedDate("");
+                        setSchedStart("09:00");
+                        setSchedEnd("");
+                        setShowAcceptModal(false);
+                        updateStatus("accepted");
+                      }}
+                    >
+                      Accept without scheduling
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           ) : null}
         </>
       ) : null}

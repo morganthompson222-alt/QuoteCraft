@@ -59,6 +59,7 @@ export function ProfilePage() {
   const [logoLoading, setLogoLoading] = useState(false);
   const [logoError, setLogoError] = useState("");
   const [dragOver, setDragOver] = useState(false);
+  const [cleanupLoading, setCleanupLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -142,6 +143,27 @@ export function ProfilePage() {
       toast("Profile updated.", "success");
     } catch (error) { setSaveError(error instanceof Error ? error.message : "Failed to save."); }
     finally { setIsSaving(false); }
+  }
+
+  async function handleCleanup() {
+    if (!form.customAiInstructions.trim()) return;
+    setCleanupLoading(true);
+    try {
+      const tk = localStorage.getItem("quotecraft_token");
+      const r = await fetch("/api/ai/cleanup-instructions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
+        body: JSON.stringify({ instructions: form.customAiInstructions }),
+      });
+      if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error(j?.error?.message ?? "Failed"); }
+      const d = await r.json();
+      setForm((prev) => ({ ...prev, customAiInstructions: d.cleaned }));
+      toast("Instructions cleaned.", "success");
+    } catch (x) {
+      setSaveError(x instanceof Error ? x.message : "Failed to clean");
+    } finally {
+      setCleanupLoading(false);
+    }
   }
 
   function handleCancel() {
@@ -275,7 +297,21 @@ export function ProfilePage() {
                 </div>
               ))}
               <div className="field" style={{ gridColumn: "1 / -1" }}>
-                <label htmlFor="profile-customAiInstructions">AI pricing instructions</label>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                  <label htmlFor="profile-customAiInstructions">AI pricing instructions</label>
+                  <button
+                    type="button"
+                    onClick={handleCleanup}
+                    disabled={cleanupLoading || !form.customAiInstructions.trim()}
+                    style={{
+                      padding: "4px 10px", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: "pointer",
+                      border: "1px solid var(--border)", background: "#fff", color: "#1F6B4F",
+                      opacity: cleanupLoading ? 0.5 : 1,
+                    }}
+                  >
+                    {cleanupLoading ? "Cleaning..." : "AI Clean ✨"}
+                  </button>
+                </div>
                 <textarea
                   id="profile-customAiInstructions"
                   value={form.customAiInstructions}
@@ -286,7 +322,7 @@ export function ProfilePage() {
                   style={{ minHeight: 100 }}
                 />
                 <span style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4, display: "block" }}>
-                  These rates will be included in AI-generated quotes. Available on all plans.
+                  AI will use these rates exactly. Keep it specific: item + price + unit (per hour, per sqm, etc).
                 </span>
               </div>
             </div>
