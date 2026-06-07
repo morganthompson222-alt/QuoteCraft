@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { sanitizeString } from "@/lib/validation";
 import { ApiError, errorResponse } from "@/lib/api-error";
 import { enforcePlanLimit } from "@/lib/plan-enforcement";
+import { calculateQuote, calculateFromAITasks, getPricingPrompt } from "@/lib/pricing-engine";
 
 let _openai: OpenAI | null = null;
 async function getOpenAI(): Promise<OpenAI> {
@@ -33,68 +34,25 @@ function checkRateLimit(userId: string) {
     throw new ApiError(429, "Rate limit exceeded. Try again later.", "RATE_LIMITED");
   }
   entry.count++;
-  return {
-    limit: RATE_LIMIT,
-    remaining: RATE_LIMIT - entry.count,
-    reset: entry.windowStart + RATE_WINDOW_MS,
-  };
+  return { limit: RATE_LIMIT, remaining: RATE_LIMIT - entry.count, reset: entry.windowStart + RATE_WINDOW_MS };
 }
 
-async function parseNaturalLanguage(input: string, customInstructions?: string | null) {
-  let prompt = `You are a quote generation assistant for a contracting business.
-Parse the following natural language request and return a JSON object with:
-- description: a short summary of the job
-- materials: an array of { name: string, quantity: number, unitPrice: number }
-- labourCost: a number (total labour cost)
-
-Rules:
-- Add a 15% markup to all prices (materials and labour)
-- Be realistic about quantities and pricing
-- Return ONLY valid JSON, no markdown, no explanation
-- Use GBP pricing`;
-
-  if (customInstructions) {
-    prompt += `\n\nCRITICAL PRICING RULES - You MUST follow these exactly:
-${customInstructions}
-
-When calculating labourCost:
-- Find the per-unit rate in the pricing rules above (e.g. per hour, per square meter, per item)
-- Multiply by the quantity or area the customer mentioned
-- Add 15% markup AFTER multiplication
-- DO NOT guess or use generic prices — use ONLY the rates provided above
-
-Example: If rules say "£5 per square meter" and customer says "24 square meter patio", labour = 24 × 5 × 1.15 = £138`;
-  }
-
-  prompt += `\n\nInput: "${input}"`;
-
+async function parseJobWithAI(input: string, pricingPrompt: string): Promise<string | null> {
   const openai = await getOpenAI();
   const response = await openai.chat.completions.create({
     model: process.env.AI_MODEL ?? (process.env.GROQ_API_KEY ? "llama-3.3-70b-versatile" : "gpt-4o-mini"),
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.3,
-    max_tokens: 500,
+    messages: [
+      { role: "system", content: pricingPrompt },
+      { role: "user", content: `Parse this job: "${input}"` },
+    ],
+    temperature: 0.1,
+    max_tokens: 400,
   });
 
   const content = response.choices[0]?.message?.content;
-  if (!content) throw new ApiError(500, "AI failed to generate a response", "AI_GENERATION_FAILED");
-
+  if (!content) return null;
   const cleaned = content.replace(/```(?:json)?\n?/g, "").trim();
-  const parsed = JSON.parse(cleaned);
-
-  const materialsTotal = (parsed.materials || []).reduce(
-    (sum: number, m: { quantity: number; unitPrice: number }) =>
-      sum + m.quantity * m.unitPrice,
-    0,
-  );
-  const labourCost = parsed.labourCost ?? 0;
-
-  return {
-    description: parsed.description ?? "",
-    materials: parsed.materials ?? [],
-    labourCost,
-    total: materialsTotal + labourCost,
-  };
+  return cleaned;
 }
 
 export async function POST(request: NextRequest) {
@@ -109,7 +67,6 @@ export async function POST(request: NextRequest) {
     const supabase = createClient(supabaseUrl, anonKey, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
-
     const { data: userData, error: userErr } = await supabase.auth.getUser(token);
     if (userErr || !userData.user) throw new ApiError(401, "Unauthorized");
 
@@ -120,29 +77,68 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const input = sanitizeString(body.input);
-    if (input.length < 3) {
-      throw new ApiError(400, "Input must be at least 3 characters", "VALIDATION_ERROR");
-    }
+    if (input.length < 3) throw new ApiError(400, "Input must be at least 3 characters", "VALIDATION_ERROR");
 
-    // Fetch custom AI instructions
-    let customInstructions: string | null = null;
+    // Fetch user instructions
+    let customInstructions = "";
     try {
       const { data: profile } = await supabase
         .from("profiles")
         .select("custom_ai_instructions")
         .eq("id", user.id)
         .single();
-      customInstructions = (profile as { custom_ai_instructions?: string } | null)?.custom_ai_instructions ?? null;
-    } catch { /* skip if column doesn't exist */ }
+      customInstructions = (profile as { custom_ai_instructions?: string } | null)?.custom_ai_instructions ?? "";
+    } catch { /* skip */ }
 
-    const result = await parseNaturalLanguage(input, customInstructions);
+    // Try AI-powered parsing first
+    let result;
+    try {
+      const pricingPrompt = getPricingPrompt(customInstructions);
+      const parseResult = await parseJobWithAI(input, pricingPrompt);
+
+      if (parseResult) {
+        try {
+          const tasks = JSON.parse(parseResult);
+          if (Array.isArray(tasks) && tasks.length > 0) {
+            result = calculateFromAITasks(
+              tasks as Array<{ task: string; quantity?: number; unit?: string }>,
+              customInstructions,
+            );
+          }
+        } catch { /* AI parsing failed — fall through */ }
+      }
+    } catch (aiErr) {
+      // AI parsing failed — fall back to rule-based
+    }
+
+    // Fallback: rule-based parsing without AI
+    if (!result) {
+      result = calculateQuote(input, customInstructions);
+    }
+
+    if (result.status === "missing_data") {
+      return NextResponse.json(result, { status: 400 });
+    }
+
+    const total = result.status === "success" ? result.total : 0;
+    const materials = result.status === "success"
+      ? result.breakdown.map((b) => ({
+          name: b.item,
+          quantity: b.quantity,
+          unitPrice: b.unitPrice,
+          unit: b.calculation.split("×")[1]?.trim() ?? "",
+        }))
+      : [];
 
     return NextResponse.json(
       {
-        description: result.description,
-        materials: result.materials,
-        labourCost: result.labourCost,
-        total: result.total,
+        description: input.substring(0, 50),
+        materials,
+        labourCost: total,
+        total,
+        sourceMap: result.status === "success" ? result.sourceMap : {},
+        breakdown: result.status === "success" ? result.breakdown : [],
+        pricingSource: result.status === "success" ? "rules_engine" : "missing",
       },
       {
         headers: {
@@ -154,10 +150,7 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     if (error instanceof SyntaxError) {
-      return Response.json(
-        { error: "AI returned invalid response. Try rephrasing." },
-        { status: 500 },
-      );
+      return Response.json({ error: "AI returned invalid response. Try rephrasing." }, { status: 500 });
     }
     return errorResponse(error);
   }

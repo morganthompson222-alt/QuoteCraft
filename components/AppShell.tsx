@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { OnboardingTour } from "./onboarding/OnboardingTour";
+import { GuidedTour } from "./onboarding/GuidedTour";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard" },
@@ -229,7 +230,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main className="app-shell__main">{children}</main>
       </div>
 
-      {showTour ? <OnboardingTour onDone={handleTourDone} /> : null}
+      {showTour ? <GuidedTour onDone={handleTourDone} /> : null}
     </div>
   );
 }
