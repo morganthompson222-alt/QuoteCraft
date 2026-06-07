@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type OpenAI from "openai";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import { sanitizeString } from "@/lib/validation";
 import { ApiError, errorResponse } from "@/lib/api-error";
 import { enforcePlanLimit } from "@/lib/plan-enforcement";
@@ -25,16 +25,13 @@ const RATE_WINDOW_MS = parseInt(process.env.AI_RATE_WINDOW_MS ?? "60000", 10);
 function checkRateLimit(userId: string) {
   const now = Date.now();
   const entry = rateLimitMap.get(userId);
-
   if (!entry || now - entry.windowStart > RATE_WINDOW_MS) {
     rateLimitMap.set(userId, { count: 1, windowStart: now });
     return { limit: RATE_LIMIT, remaining: RATE_LIMIT - 1, reset: now + RATE_WINDOW_MS };
   }
-
   if (entry.count >= RATE_LIMIT) {
     throw new ApiError(429, "Rate limit exceeded. Try again later.", "RATE_LIMITED");
   }
-
   entry.count++;
   return {
     limit: RATE_LIMIT,
@@ -73,7 +70,6 @@ Rules:
   const content = response.choices[0]?.message?.content;
   if (!content) throw new ApiError(500, "AI failed to generate a response", "AI_GENERATION_FAILED");
 
-  // Strip markdown code fences if present
   const cleaned = content.replace(/```(?:json)?\n?/g, "").trim();
   const parsed = JSON.parse(cleaned);
 
@@ -93,48 +89,43 @@ Rules:
 }
 
 export async function POST(request: NextRequest) {
-  try {
-    let user = null;
+  const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim().replace(/^["']|["']$/g, "").replace(/\n|\r/g, "");
+  const anonKey = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "").trim().replace(/^["']|["']$/g, "").replace(/\n|\r/g, "");
 
+  try {
     const authHeader = request.headers.get("Authorization") ?? "";
     const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+    if (!token) throw new ApiError(401, "Unauthorized");
 
-    const supabase = await createServerSupabaseClient(request);
+    const supabase = createClient(supabaseUrl, anonKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
 
-    if (token) {
-      const { data } = await supabase.auth.getUser(token);
-      user = data.user;
-    }
+    const { data: userData, error: userErr } = await supabase.auth.getUser(token);
+    if (userErr || !userData.user) throw new ApiError(401, "Unauthorized");
 
-    if (!user) {
-      const { data } = await supabase.auth.getUser();
-      user = data.user;
-    }
-
-    if (!user) throw new ApiError(401, "Unauthorized");
-
+    const user = userData.user;
     await enforcePlanLimit(user.id, "ai_generate");
-
     const rateLimit = checkRateLimit(user.id);
 
     const body = await request.json();
     const input = sanitizeString(body.input);
-
     if (input.length < 3) {
       throw new ApiError(400, "Input must be at least 3 characters", "VALIDATION_ERROR");
     }
 
-    // Fetch custom AI instructions from profile
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("custom_ai_instructions")
-      .eq("id", user.id)
-      .single();
+    // Fetch custom AI instructions
+    let customInstructions: string | null = null;
+    try {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("custom_ai_instructions")
+        .eq("id", user.id)
+        .single();
+      customInstructions = (profile as { custom_ai_instructions?: string } | null)?.custom_ai_instructions ?? null;
+    } catch { /* skip if column doesn't exist */ }
 
-    const result = await parseNaturalLanguage(
-      input,
-      (profile as { custom_ai_instructions?: string })?.custom_ai_instructions,
-    );
+    const result = await parseNaturalLanguage(input, customInstructions);
 
     return NextResponse.json(
       {
