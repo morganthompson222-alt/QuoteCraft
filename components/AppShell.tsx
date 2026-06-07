@@ -115,6 +115,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   function handleLogout() {
     localStorage.removeItem("quotecraft_token");
+    document.cookie = "quotecraft_auth=; path=/; max-age=0";
     setLoggedIn(false);
     router.push("/");
   }

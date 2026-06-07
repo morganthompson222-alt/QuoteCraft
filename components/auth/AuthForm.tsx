@@ -114,6 +114,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       const data = (await response.json()) as AuthResponse;
       window.localStorage.setItem("quotecraft_token", data.token);
       window.localStorage.setItem("quotecraft_region", region);
+      document.cookie = "quotecraft_auth=true; path=/; max-age=604800; SameSite=Lax; Secure";
       window.location.assign("/dashboard");
     } catch (error) {
       setApiError(
