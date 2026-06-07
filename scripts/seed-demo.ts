@@ -7,70 +7,93 @@ async function main() {
 
   console.log("🌱 Seeding demo account...");
 
-  // Create demo user
   const DEMO_EMAIL = "demo@quotecraft.app";
   const DEMO_PASSWORD = "demo123456";
   let userId: string;
 
-  // Check if demo user exists
   const existing = await admin.auth.admin.listUsers();
   const found = existing.data?.users?.find((u: any) => u.email === DEMO_EMAIL);
   
   if (found) {
     userId = found.id;
     console.log("ℹ️  Demo user exists, reusing:", userId);
-    // Clean existing data
+    const quoteIds = (await admin.from("quotes").select("id").eq("user_id", userId)).data?.map((q: any) => q.id) ?? [];
     await admin.from("jobs").delete().eq("user_id", userId);
-    await admin.from("quote_items").delete().in("quote_id", (await admin.from("quotes").select("id").eq("user_id", userId)).data?.map((q: any) => q.id) ?? []);
+    await admin.from("quote_items").delete().in("quote_id", quoteIds);
     await admin.from("quotes").delete().eq("user_id", userId);
     await admin.from("customers").delete().eq("user_id", userId);
     await admin.from("notifications").delete().eq("user_id", userId);
   } else {
-    const { data: newUser } = await admin.auth.admin.createUser({
-      email: DEMO_EMAIL,
-      password: DEMO_PASSWORD,
-      email_confirm: true,
-    });
+    const { data: newUser } = await admin.auth.admin.createUser({ email: DEMO_EMAIL, password: DEMO_PASSWORD, email_confirm: true });
     userId = newUser.user!.id;
     console.log("✅ Created demo user:", userId);
   }
 
-  // Set profile
   await admin.from("profiles").upsert({
     id: userId,
     company_name: "Thompson's Landscaping & Maintenance",
     phone: "07700 900123",
-    address: "42 Oak Lane",
-    city: "Chester",
-    state: "Cheshire",
-    zip: "CH1 3AB",
+    address: "42 Oak Lane", city: "Chester", state: "Cheshire", zip: "CH1 3AB",
     plan_tier: "enterprise",
-    custom_ai_instructions: `Tree surgery = £80 per hour
-Patio cleaning = £5 per sqm
-Weed removal = £2 per sqm
-Fencing = £60 per metre installed
-Hedge trimming = £3 per metre
-Waste removal = £40 per load
-Skip hire = £180 per skip
-General gardening labour = £45 per hour
-Decking installation = £100 per sqm
-Painting = £15 per sqm`,
-    next_quote_number: 8,
+    custom_ai_instructions: `Tree surgery = £80 per hour\nPatio cleaning = £5 per sqm\nWeed removal = £2 per sqm\nFencing = £60 per metre installed\nHedge trimming = £3 per metre\nWaste removal = £40 per load\nSkip hire = £180 per skip\nGeneral gardening labour = £45 per hour\nDecking installation = £100 per sqm\nPainting = £15 per sqm`,
+    next_quote_number: 200,
   });
 
-  // Create customers
+  // ========== 50 CUSTOMERS ==========
   const customers: any[] = [];
   const custData = [
+    // Original 10
     { name: "James & Sarah Mitchell", email: "j.s.mitchell@email.co.uk", phone: "07700 111222", company: null, address: "12 Rose Avenue", city: "Chester", zip: "CH2 4PQ" },
     { name: "The Old Crown Pub", email: "manager@oldcrown.co.uk", phone: "01244 555666", company: "Old Crown Pub Ltd", address: "27 High Street", city: "Chester", zip: "CH1 1AA" },
     { name: "Bayside Renovations Ltd", email: "projects@baysidereno.co.uk", phone: "07700 333444", company: "Bayside Renovations Ltd", address: "Unit 3, Riverside Estate", city: "Chester", zip: "CH4 7EX" },
     { name: "Mrs. Patricia Williams", email: "pat.williams@icloud.com", phone: "01244 789012", company: null, address: "5 Elm Close", city: "Chester", zip: "CH3 5RT" },
     { name: "Oakwood Primary School", email: "facilities@oakwood.school.uk", phone: "01244 234567", company: "Oakwood Academy Trust", address: "Oakwood Road", city: "Chester", zip: "CH2 8NM" },
-    { name: "Riverside Apartments", email: "management@riversideapts.co.uk", phone: "07700 555666", company: "Riverside Management Ltd", address: "Riverside Court, 50 Apartments", city: "Chester", zip: "CH1 2DE" },
+    { name: "Riverside Apartments", email: "management@riversideapts.co.uk", phone: "07700 555666", company: "Riverside Management Ltd", address: "Riverside Court", city: "Chester", zip: "CH1 2DE" },
     { name: "David Chen", email: "david.chen@gmail.com", phone: "07700 777888", company: null, address: "88 Mill Lane", city: "Chester", zip: "CH2 6JK" },
     { name: "Greenfield Estates", email: "maintenance@greenfieldestates.co.uk", phone: "01244 345678", company: "Greenfield Estates LLP", address: "14 Market Square", city: "Chester", zip: "CH1 3FG" },
     { name: "Cheshire Catering Co", email: "info@cheshirecatering.co.uk", phone: "01244 987654", company: "Cheshire Catering Ltd", address: "Unit 8, Chester Business Park", city: "Chester", zip: "CH4 9RF" },
     { name: "Mr. & Mrs. Harrison", email: "harrison.family@btinternet.com", phone: "07700 999000", company: null, address: "3 The Willows", city: "Chester", zip: "CH3 7LW" },
+    // 40 New customers
+    { name: "Rachel & Tom Bennett", email: "bennett.family@outlook.com", phone: "07711 223344", company: null, address: "22 Windsor Drive", city: "Chester", zip: "CH2 1AA" },
+    { name: "Chester Cathedral", email: "facilities@chestercathedral.org", phone: "01244 878788", company: "Chester Cathedral Trust", address: "Cathedral Close", city: "Chester", zip: "CH1 2DY" },
+    { name: "Meadowbank Care Home", email: "admin@meadowbankcare.co.uk", phone: "01244 123456", company: "Meadowbank Care Ltd", address: "Meadow Lane", city: "Chester", zip: "CH4 8RT" },
+    { name: "Alex Porter", email: "alex.porter@live.co.uk", phone: "07722 445566", company: null, address: "45 Green Lane", city: "Chester", zip: "CH3 6RT" },
+    { name: "Chester Retail Park", email: "operations@chesterretail.com", phone: "01244 998877", company: "Chester Retail Management Ltd", address: "Retail Park Way", city: "Chester", zip: "CH1 4BA" },
+    { name: "St. Mary's Church", email: "vicar@stmaryschester.org", phone: "01244 556677", company: "St Mary's Parochial Church Council", address: "Church Road", city: "Chester", zip: "CH2 3AB" },
+    { name: "Priya Sharma", email: "priya.s@icloud.com", phone: "07733 556677", company: null, address: "56 Park Avenue", city: "Chester", zip: "CH2 2CD" },
+    { name: "Chester Scouts Group", email: "leader@chesterscouts.org.uk", phone: "07744 667788", company: "Chester Scout Association", address: "Scout Hut, Meadow Close", city: "Chester", zip: "CH4 7DF" },
+    { name: "Claire & Steve Davies", email: "davies.fam@btinternet.com", phone: "01244 889900", company: null, address: "8 Beech Road", city: "Chester", zip: "CH3 8GH" },
+    { name: "Chester Golf Club", email: "greens@chestergolf.co.uk", phone: "01244 667788", company: "Chester Golf Club Ltd", address: "Golf Course Lane", city: "Chester", zip: "CH2 4RS" },
+    { name: "Maria Gonzalez", email: "maria.g@outlook.es", phone: "07755 778899", company: null, address: "15 Victoria Crescent", city: "Chester", zip: "CH1 5PQ" },
+    { name: "Chester Veterinary Clinic", email: "practice@chestervets.co.uk", phone: "01244 234987", company: "Chester Vets Partnership", address: "56 Upper Northgate Street", city: "Chester", zip: "CH1 4EE" },
+    { name: "Malcolm & Frances Reid", email: "mfreid@talktalk.net", phone: "07766 889900", company: null, address: "31 Kingsway", city: "Chester", zip: "CH2 1HH" },
+    { name: "Chester Sports Centre", email: "management@chestersports.org", phone: "01244 345654", company: "Chester Leisure Trust", address: "Sports Centre Drive", city: "Chester", zip: "CH1 5NB" },
+    { name: "Gemma & Paul Walker", email: "walker.house@icloud.com", phone: "07777 990011", company: null, address: "72 Oakfield Road", city: "Chester", zip: "CH3 9RT" },
+    { name: "Aston Court Hotel", email: "gm@astoncourtchester.co.uk", phone: "01244 456789", company: "Aston Court Hospitality Ltd", address: "12 Eastgate Row", city: "Chester", zip: "CH1 1BX" },
+    { name: "Kevin O'Brien", email: "kevin.obrien@live.ie", phone: "07788 001122", company: null, address: "42 Wellington Street", city: "Chester", zip: "CH1 3DA" },
+    { name: "Dee Valley Housing Assoc", email: "property@deevalleyha.org.uk", phone: "01244 567890", company: "Dee Valley Housing Association", address: "Housing Office, River Lane", city: "Chester", zip: "CH4 8JT" },
+    { name: "Samantha & Robert Frost", email: "frost.family@gmail.com", phone: "07799 112233", company: null, address: "14 Cedar Grove", city: "Chester", zip: "CH2 6RT" },
+    { name: "Chester Masonic Hall", email: "secretary@chestermasons.org", phone: "01244 678901", company: "Chester Masonic Lodge Ltd", address: "Masonic Hall, Grosvenor Road", city: "Chester", zip: "CH1 2HJ" },
+    { name: "Hannah Lewis", email: "hannah.lewis@sky.com", phone: "07800 223344", company: null, address: "90 Dee Banks", city: "Chester", zip: "CH3 5YU" },
+    { name: "Shropshire Union Canal Trust", email: "estates@shroptontrust.org", phone: "01244 789012", company: "Shropshire Union Canal Trust", address: "Canal Wharf", city: "Chester", zip: "CH1 4LF" },
+    { name: "Colin & Jean Matthews", email: "matthews.chez@icloud.com", phone: "07811 334455", company: null, address: "5 Cherry Tree Lane", city: "Chester", zip: "CH2 4YT" },
+    { name: "Chester Community Centre", email: "manager@chestercommunity.org", phone: "01244 890123", company: "Chester Community Association", address: "Community Centre, School Lane", city: "Chester", zip: "CH1 5NZ" },
+    { name: "Liam O'Connor", email: "liam.o@live.co.uk", phone: "07822 445566", company: null, address: "29 Sealand Road", city: "Chester", zip: "CH1 4RN" },
+    { name: "Countess of Chester Hospital", email: "estates@nhs.net", phone: "01244 365000", company: "NHS Countess of Chester", address: "Liverpool Road", city: "Chester", zip: "CH2 1UL" },
+    { name: "Fiona & Derek Yates", email: "yates.household@btinternet.com", phone: "07833 556677", company: null, address: "16 Rowan Close", city: "Chester", zip: "CH3 6TH" },
+    { name: "Chester Business Centre", email: "facilities@chesterbusiness.co.uk", phone: "01244 234432", company: "Chester Business Park Ltd", address: "Enterprise House, Business Park", city: "Chester", zip: "CH4 9RF" },
+    { name: "Margaret Taylor", email: "m.taylor@talktalk.net", phone: "07844 667788", company: null, address: "53 Victoria Road", city: "Chester", zip: "CH2 2SG" },
+    { name: "Chester Methodist Church", email: "admin@chestermethodist.org", phone: "01244 345543", company: "Chester Methodist Church Trustees", address: "Methodist Church, St John's Road", city: "Chester", zip: "CH1 3BN" },
+    { name: "Duncan MacLeod", email: "duncan.m@icloud.com", phone: "07855 778899", company: null, address: "7 Castle Street", city: "Chester", zip: "CH1 2DS" },
+    { name: "Chester Academy", email: "facilities@chesteracademy.org", phone: "01244 456654", company: "Chester Academy Trust", address: "Academy Road", city: "Chester", zip: "CH4 7BN" },
+    { name: "Natalie & Philip Grove", email: "grove.fam@home.co.uk", phone: "07866 889900", company: null, address: "21 Laburnum Drive", city: "Chester", zip: "CH2 5PL" },
+    { name: "Chester Fire Station", email: "admin@cheshirefire.gov.uk", phone: "01244 567765", company: "Cheshire Fire & Rescue Service", address: "Fire Station, Green Lane", city: "Chester", zip: "CH1 4AW" },
+    { name: "Timothy Weaver", email: "tim.weaver@outlook.com", phone: "07877 990011", company: null, address: "84 Hoole Road", city: "Chester", zip: "CH2 3SU" },
+    { name: "Chester Funeral Home", email: "director@chesterfh.co.uk", phone: "01244 678876", company: "Chester Funeral Services Ltd", address: "Sadler Street", city: "Chester", zip: "CH1 3EE" },
+    { name: "Emma & Jason Cooper", email: "cooper.homestead@gmail.com", phone: "07888 001122", company: null, address: "34 Cherry Garden Lane", city: "Chester", zip: "CH3 8AS" },
+    { name: "Chester County Hall", email: "facilities@cheshire.gov.uk", phone: "01244 789987", company: "Cheshire West & Chester Council", address: "County Hall", city: "Chester", zip: "CH1 1SF" },
+    { name: "University of Chester", email: "estates@chester.ac.uk", phone: "01244 890098", company: "University of Chester", address: "Parkgate Road", city: "Chester", zip: "CH1 4BJ" },
+    { name: "Chris & Sophie Morgan", email: "morgan.renovation@icloud.com", phone: "07899 112233", company: null, address: "67 Lache Lane", city: "Chester", zip: "CH4 8JS" },
   ];
 
   for (const c of custData) {
@@ -79,89 +102,77 @@ Painting = £15 per sqm`,
   }
   console.log(`✅ Created ${customers.length} customers`);
 
-  // Create quotes with items
+  // ========== QUOTES ==========
   const now = new Date();
   const daysAgo = (d: number) => new Date(now.getTime() - d * 86400000).toISOString();
   const daysAgoDate = (d: number) => new Date(now.getTime() - d * 86400000).toISOString().slice(0, 10);
   const futureDays = (d: number) => new Date(now.getTime() + d * 86400000).toISOString().slice(0, 10);
 
-  const quoteDefs = [
-    // === PAST YEAR — ACCEPTED & PAID (Revenue history) ===
-    // Jun 2025
-    { customer: 0, status: "accepted", items: [{ d: "Full garden clearance", q: 12, u: 45 }, { d: "Waste removal", q: 2, u: 40 }], notes: "Overgrown garden clearance", created: daysAgo(330), paid: true, paidAt: daysAgo(328), job: { title: "Garden clearance — Mitchell residence", date: daysAgoDate(325), start: "08:00", end: "16:00" } },
-    { customer: 3, status: "accepted", items: [{ d: "Hedge trimming — front & back", q: 35, u: 3 }, { d: "Green waste removal", q: 1, u: 40 }], notes: "Annual hedge trim", created: daysAgo(320), paid: true, paidAt: daysAgo(318), job: { title: "Hedge trimming — Mrs Williams", date: daysAgoDate(315), start: "09:00", end: "12:00" } },
-    // Jul 2025
-    { customer: 2, status: "accepted", items: [{ d: "Site clearance — Plot B", q: 22, u: 45 }, { d: "Skip hire", q: 1, u: 180 }], notes: "Development site clearance", created: daysAgo(295), paid: true, paidAt: daysAgo(293), job: { title: "Site clearance — Bayside Plot B", date: daysAgoDate(290), start: "07:00", end: "17:00" } },
-    { customer: 4, status: "accepted", items: [{ d: "Summer holiday grounds maintenance", q: 30, u: 45 }, { d: "Weed removal (full site)", q: 200, u: 2 }, { d: "Waste removal", q: 5, u: 40 }], notes: "Summer holiday maintenance week", created: daysAgo(280), paid: true, paidAt: daysAgo(277), job: { title: "Summer maintenance — Oakwood School", date: daysAgoDate(275), start: "07:00", end: "16:00" } },
-    // Aug 2025
-    { customer: 1, status: "accepted", items: [{ d: "Beer garden renovation", q: 50, u: 5 }, { d: "Patio resanding", q: 50, u: 3.5 }, { d: "Skip hire", q: 1, u: 180 }, { d: "New planters × 4", q: 4, u: 120 }], notes: "Full beer garden refurbishment", created: daysAgo(250), paid: true, paidAt: daysAgo(248), job: { title: "Beer garden refurb — The Old Crown", date: daysAgoDate(245), start: "06:00", end: "18:00" } },
-    { customer: 6, status: "accepted", items: [{ d: "Fencing — rear boundary", q: 22, u: 60 }, { d: "Skip hire", q: 1, u: 180 }], notes: "6ft feather edge fence, concrete posts & gravel boards", created: daysAgo(240), paid: true, paidAt: daysAgo(237), job: { title: "Fence installation — Chen residence", date: daysAgoDate(235), start: "08:00", end: "17:00" } },
-    // Sep 2025
-    { customer: 9, status: "accepted", items: [{ d: "Garden tidy-up & planting", q: 8, u: 45 }, { d: "Hedge trimming", q: 30, u: 3 }, { d: "Waste removal", q: 1, u: 40 }], notes: "End of summer tidy", created: daysAgo(220), paid: true, paidAt: daysAgo(218), job: { title: "Garden maintenance — Harrisons", date: daysAgoDate(215), start: "09:00", end: "15:00" } },
-    { customer: 5, status: "accepted", items: [{ d: "Communal area jet wash", q: 120, u: 4.5 }, { d: "Weed removal", q: 120, u: 2 }, { d: "Waste removal", q: 3, u: 40 }], notes: "Annual block maintenance", created: daysAgo(210), paid: true, paidAt: daysAgo(207), job: { title: "Block maintenance — Riverside Apartments", date: daysAgoDate(205), start: "07:30", end: "15:30" } },
-    // Oct 2025
-    { customer: 7, status: "accepted", items: [{ d: "Autumn garden clearance × 2", q: 16, u: 45 }, { d: "Leaf clearance", q: 4, u: 35 }, { d: "Waste removal", q: 3, u: 40 }], notes: "Pre-winter clearance for two properties", created: daysAgo(180), paid: true, paidAt: daysAgo(177), job: { title: "Autumn clearance — Greenfield Estates", date: daysAgoDate(175), start: "08:00", end: "16:00" } },
-    { customer: 3, status: "accepted", items: [{ d: "Pruning — fruit trees & shrubs", q: 6, u: 45 }, { d: "Waste removal", q: 1, u: 40 }], notes: "Autumn prune and tidy", created: daysAgo(165), paid: true, paidAt: daysAgo(163), job: { title: "Autumn pruning — Mrs Williams", date: daysAgoDate(160), start: "10:00", end: "14:00" } },
-    // Nov 2025
-    { customer: 0, status: "accepted", items: [{ d: "Tree surgery — dead ash removal", q: 5, u: 80 }, { d: "Stump grinding", q: 1, u: 150 }, { d: "Waste removal", q: 3, u: 40 }], notes: "Dead ash tree removal with stump grinding", created: daysAgo(140), paid: true, paidAt: daysAgo(137), job: { title: "Tree removal — Mitchell residence", date: daysAgoDate(135), start: "08:00", end: "16:00" } },
-    { customer: 4, status: "accepted", items: [{ d: "Winter grounds preparation", q: 24, u: 45 }, { d: "Drainage clearance", q: 4, u: 55 }, { d: "Waste removal", q: 3, u: 40 }], notes: "Pre-winter grounds maintenance", created: daysAgo(120), paid: true, paidAt: daysAgo(118), job: { title: "Winter prep — Oakwood School", date: daysAgoDate(115), start: "07:30", end: "15:00" } },
-    // Dec 2025
-    { customer: 8, status: "accepted", items: [{ d: "Car park jet wash & line repaint", q: 200, u: 3 }, { d: "Waste removal", q: 2, u: 40 }], notes: "Annual car park clean", created: daysAgo(100), paid: true, paidAt: daysAgo(97), job: { title: "Car park clean — Cheshire Catering Co", date: daysAgoDate(95), start: "07:00", end: "15:00" } },
-    { customer: 2, status: "accepted", items: [{ d: "Site maintenance — Plot C", q: 18, u: 45 }, { d: "Skip hire", q: 1, u: 180 }], notes: "Ongoing site maintenance", created: daysAgo(85), paid: true, paidAt: daysAgo(82), job: { title: "Site maintenance — Bayside Plot C", date: daysAgoDate(80), start: "07:30", end: "16:00" } },
-    // Jan 2026
-    { customer: 1, status: "accepted", items: [{ d: "Kitchen extraction duct clean", q: 1, u: 350 }, { d: "Waste disposal", q: 1, u: 40 }], notes: "Annual compliance clean", created: daysAgo(60), paid: true, paidAt: daysAgo(58), job: { title: "Duct cleaning — The Old Crown", date: daysAgoDate(55), start: "06:00", end: "12:00" } },
-    { customer: 6, status: "accepted", items: [{ d: "Garden wall rebuild", q: 12, u: 80 }, { d: "Skip hire", q: 1, u: 180 }, { d: "Waste removal", q: 2, u: 40 }], notes: "Rebuild collapsed garden wall", created: daysAgo(50), paid: true, paidAt: daysAgo(47), job: { title: "Wall rebuild — Chen residence", date: daysAgoDate(45), start: "08:00", end: "17:00" } },
-    // Feb 2026
-    { customer: 9, status: "accepted", items: [{ d: "Patio cleaning & sealing", q: 35, u: 5 }, { d: "Weed removal", q: 35, u: 2 }], notes: "Pre-spring patio refresh", created: daysAgo(40), paid: true, paidAt: daysAgo(38), job: { title: "Patio clean — Harrisons", date: daysAgoDate(35), start: "09:00", end: "14:00" } },
-    // Mar 2026
-    { customer: 0, status: "accepted", items: [{ d: "Spring garden prep & planting", q: 10, u: 45 }, { d: "Lawn treatment", q: 1, u: 85 }, { d: "Waste removal", q: 1, u: 40 }], notes: "Full spring garden service", created: daysAgo(25), paid: true, paidAt: daysAgo(22), job: { title: "Spring garden — Mitchell residence", date: daysAgoDate(20), start: "08:00", end: "15:00" } },
-    { customer: 7, status: "accepted", items: [{ d: "Spring garden clearance × 5", q: 40, u: 45 }, { d: "Skip hire × 2", q: 2, u: 180 }, { d: "Waste removal", q: 8, u: 40 }], notes: "Spring clearance for 5 properties", created: daysAgo(18), paid: true, paidAt: daysAgo(15), job: { title: "Spring clearance — Greenfield Estates", date: daysAgoDate(12), start: "07:00", end: "17:00" } },
+  type JobDef = { title: string; date: string; start: string; end: string };
+  type QuoteDef = { customer: number; status: string; items: { d: string; q: number; u: number }[]; notes: string | null; created: string; paid?: boolean; paidAt?: string | null; job?: JobDef };
 
-    // === RECENT — MIXED STATUSES ===
-    // Last 30 days — ACCEPTED
-    { customer: 2, status: "accepted", items: [{ d: "Site clearance — Plot D", q: 20, u: 45 }, { d: "Skip hire", q: 1, u: 180 }], notes: "New plot clearance", created: daysAgo(21), paid: true, paidAt: daysAgo(18), job: { title: "Site clearance — Bayside Plot D", date: daysAgoDate(16), start: "07:00", end: "16:00" } },
-    { customer: 4, status: "accepted", items: [{ d: "Playing field maintenance", q: 20, u: 45 }, { d: "Weed removal (boundaries)", q: 150, u: 2 }, { d: "Waste removal", q: 4, u: 40 }], notes: "Half-term maintenance week", created: daysAgo(14), paid: true, paidAt: daysAgo(11), job: { title: "Playing field maintenance — Oakwood School", date: daysAgoDate(7), start: "07:30", end: "15:00" } },
-    { customer: 0, status: "accepted", items: [{ d: "Tree surgery — oak crown reduction", q: 4, u: 80 }, { d: "Waste removal", q: 2, u: 40 }], notes: null, created: daysAgo(10), paid: false, paidAt: null, job: { title: "Tree surgery — Mitchell residence", date: daysAgoDate(5), start: "08:00", end: "14:00" } },
-    { customer: 1, status: "accepted", items: [{ d: "Patio power wash and seal", q: 60, u: 5 }, { d: "Resanding", q: 60, u: 3.5 }], notes: null, created: daysAgo(7), paid: false, paidAt: null, job: { title: "Patio restoration — The Old Crown", date: daysAgoDate(2), start: "07:00", end: "13:00" } },
-    { customer: 7, status: "accepted", items: [{ d: "Garden clearance × 3", q: 24, u: 45 }, { d: "Waste removal", q: 6, u: 40 }], notes: "Rush job — going on market Monday", created: daysAgo(5), paid: false, paidAt: null, job: { title: "Garden clearance — Greenfield Estates", date: daysAgoDate(0), start: "08:00", end: "17:00" } },
+  const quoteDefs: QuoteDef[] = [];
 
-    // Next 7 days — SCHEDULED JOBS
-    { customer: 6, status: "accepted", items: [{ d: "Decking repair & treatment", q: 8, u: 55 }, { d: "Waste removal", q: 1, u: 40 }], notes: null, created: daysAgo(4), paid: false, paidAt: null, job: { title: "Deck repair — Chen residence", date: futureDays(1), start: "09:00", end: "15:00" } },
-    { customer: 3, status: "accepted", items: [{ d: "Summer garden prep", q: 6, u: 45 }, { d: "Planting", q: 1, u: 95 }], notes: "New flower beds", created: daysAgo(3), paid: false, paidAt: null, job: { title: "Garden prep — Mrs Williams", date: futureDays(2), start: "10:00", end: "15:00" } },
-    { customer: 9, status: "accepted", items: [{ d: "Fence repair — 3 panels", q: 3, u: 40 }, { d: "Waste removal", q: 1, u: 40 }], notes: null, created: daysAgo(2), paid: false, paidAt: null, job: { title: "Fence repair — Harrisons", date: futureDays(3), start: "08:30", end: "13:00" } },
-    { customer: 5, status: "accepted", items: [{ d: "Bin store jet wash", q: 20, u: 4.5 }], notes: null, created: daysAgo(1), paid: false, paidAt: null, job: { title: "Bin store clean — Riverside Apts", date: futureDays(4), start: "09:00", end: "12:00" } },
-
-    // SENT
-    { customer: 1, status: "sent", items: [{ d: "Beer garden jet wash", q: 45, u: 5 }, { d: "Patio resanding", q: 45, u: 3.5 }], notes: "Quote valid 30 days", created: daysAgo(9) },
-    { customer: 3, status: "sent", items: [{ d: "Quarterly maintenance package", q: 12, u: 45 }, { d: "Hedge trimming", q: 30, u: 3 }], notes: "Quarterly contract", created: daysAgo(6) },
-    { customer: 6, status: "sent", items: [{ d: "New fence — side boundary", q: 15, u: 60 }, { d: "Skip hire", q: 1, u: 180 }], notes: null, created: daysAgo(4) },
-    { customer: 8, status: "sent", items: [{ d: "External window cleaning", q: 45, u: 5 }], notes: "All external windows", created: daysAgo(3) },
-    { customer: 9, status: "sent", items: [{ d: "Patio cleaning and sealing", q: 30, u: 5 }], notes: null, created: daysAgo(1) },
-
-    // DRAFTS
-    { customer: 0, status: "draft", items: [{ d: "Summer house base preparation", q: 8, u: 80 }], notes: "Concrete base for 3×3m summer house", created: daysAgo(2) },
-    { customer: 5, status: "draft", items: [{ d: "Communal garden redesign", q: 20, u: 45 }, { d: "Decking", q: 12, u: 100 }, { d: "Planting", q: 1, u: 250 }], notes: "Major redesign quote", created: daysAgo(1) },
-    { customer: 2, status: "draft", items: [{ d: "Plot E clearance", q: 25, u: 45 }, { d: "Skip hire", q: 1, u: 180 }], notes: null, created: daysAgo(0) },
-
-    // REJECTED
-    { customer: 3, status: "rejected", items: [{ d: "Complete garden redesign", q: 40, u: 45 }, { d: "Decking installation", q: 15, u: 100 }], notes: "Customer went with cheaper competitor", created: daysAgo(45) },
-    { customer: 8, status: "rejected", items: [{ d: "Commercial kitchen deep clean", q: 1, u: 350 }], notes: "Out of budget for this quarter", created: daysAgo(30) },
-    { customer: 5, status: "rejected", items: [{ d: "Full external repaint", q: 500, u: 3 }], notes: "Postponed to next year", created: daysAgo(15) },
+  // Generate quotes across 12 months for all 50 customers
+  const services = [
+    { items: [{ d: "Full garden maintenance — tidy & prune", q: 6, u: 45 }, { d: "Waste removal", q: 1, u: 40 }] },
+    { items: [{ d: "Hedge trimming — front & back", q: 25, u: 3 }, { d: "Lawn mowing", q: 1, u: 35 }] },
+    { items: [{ d: "Patio cleaning", q: 30, u: 5 }, { d: "Weed removal", q: 30, u: 2 }] },
+    { items: [{ d: "Fence installation — 12 panels", q: 12, u: 60 }, { d: "Skip hire", q: 1, u: 180 }, { d: "Waste removal", q: 2, u: 40 }] },
+    { items: [{ d: "Tree pruning — 3 trees", q: 4, u: 80 }, { d: "Waste removal (branches)", q: 2, u: 40 }] },
+    { items: [{ d: "Pressure washing — driveway", q: 40, u: 4.5 }, { d: "Resanding", q: 40, u: 3.5 }] },
+    { items: [{ d: "General gardening labour", q: 8, u: 45 }, { d: "Hedge trimming", q: 20, u: 3 }, { d: "Waste removal", q: 1, u: 40 }] },
+    { items: [{ d: "Jet wash — patio and paths", q: 50, u: 4.5 }, { d: "Weed killer treatment", q: 1, u: 65 }] },
+    { items: [{ d: "New decking installation", q: 12, u: 100 }, { d: "Skip hire", q: 1, u: 180 }] },
+    { items: [{ d: "Tree surgery — crown reduction", q: 3, u: 80 }, { d: "Stump grinding", q: 1, u: 150 }] },
   ];
 
-  // Create quotes and items
-  for (let i = 0; i < quoteDefs.length; i++) {
-    const qd = quoteDefs[i];
-    const quoteNumber = `Q-${String(i + 1001).padStart(4, "0")}`;
-    
-    const items = qd.items.map((item, idx) => ({
-      description: item.d,
-      quantity: item.q,
-      unit_price: item.u,
-      sort_order: idx,
-    }));
+  let quoteNum = 1001;
+
+  // Each customer gets 3-4 quotes spread over 12 months
+  for (let ci = 0; ci < customers.length; ci++) {
+    const numQuotes = 3 + Math.floor(Math.random() * 2);
+    for (let qi = 0; qi < numQuotes; qi++) {
+      const daysBack = Math.floor(Math.random() * 350) + 5;
+      const svc = services[Math.floor(Math.random() * services.length)];
+      const isPaid = Math.random() > 0.4;
+      const isRecent = daysBack < 60;
+      const status = isRecent && Math.random() > 0.5 ? "sent" : isPaid ? "accepted" : ["draft", "sent", "rejected"][Math.floor(Math.random() * 3)];
+
+      if (quoteNum > 5000) continue;
+
+      const created = daysAgo(daysBack);
+      const def: QuoteDef = {
+        customer: ci,
+        status: status as string,
+        items: svc.items,
+        notes: null,
+        created,
+      };
+
+      if (status === "accepted") {
+        def.paid = Math.random() > 0.25;
+        def.paidAt = def.paid ? daysAgo(Math.max(1, daysBack - Math.floor(Math.random() * 7) - 1)) : null;
+        const jobTitle = svc.items[0].d.length > 40 ? svc.items[0].d.substring(0, 40) + "…" : svc.items[0].d;
+        def.job = {
+          title: `${jobTitle} — ${custData[ci].name.split(" — ")[0].split(" & ")[0].split(" Ltd")[0].trim()}`,
+          date: daysAgoDate(Math.max(0, daysBack - Math.floor(Math.random() * 3))),
+          start: ["08:00", "09:00", "07:30", "10:00"][Math.floor(Math.random() * 4)],
+          end: ["14:00", "16:00", "17:00", "12:00"][Math.floor(Math.random() * 4)],
+        };
+      }
+
+      quoteDefs.push(def);
+      quoteNum++;
+    }
+  }
+
+  // Insert all quotes
+  let quoteCount = 0;
+  for (const qd of quoteDefs) {
+    const items = qd.items.map((it, idx) => ({ description: it.d, quantity: it.q, unit_price: it.u, sort_order: idx }));
     const subtotal = items.reduce((s, it) => s + it.quantity * it.unit_price, 0);
-    const total = subtotal; // assume 0% tax for simplicity
+    const quoteNumber = `Q-${String(quoteCount + 1001).padStart(4, "0")}`;
 
     const { data: quote } = await admin.from("quotes").insert({
       user_id: userId,
@@ -169,64 +180,55 @@ Painting = £15 per sqm`,
       quote_number: quoteNumber,
       status: qd.status,
       notes: qd.notes,
-      subtotal, total,
+      subtotal, total: subtotal,
       tax_rate: 0, tax_amount: 0,
       paid: qd.paid ?? false,
       paid_at: qd.paidAt ?? null,
       created_at: qd.created,
       updated_at: qd.created,
     }).select().single();
+    if (!quote) continue;
+    quoteCount++;
 
-    if (quote) {
-      await admin.from("quote_items").insert(
-        items.map(it => ({ quote_id: quote.id, ...it }))
-      );
+    await admin.from("quote_items").insert(items.map(it => ({ quote_id: quote.id, ...it })));
 
-      // Create job if accepted
-      if (qd.job && qd.status === "accepted") {
-        await admin.from("jobs").insert({
-          user_id: userId,
-          quote_id: quote.id,
-          customer_id: customers[qd.customer].id,
-          customer_name: customers[qd.customer].name,
-          job_title: qd.job.title,
-          job_date: qd.job.date,
-          start_time: qd.job.start,
-          end_time: qd.job.end,
-          status: qd.job.date < new Date().toISOString().slice(0, 10) ? "completed" : "scheduled",
-          location: customers[qd.customer].address + ", " + customers[qd.customer].city,
-        });
-      }
+    if (qd.job && qd.status === "accepted") {
+      const cust = customers[qd.customer];
+      await admin.from("jobs").insert({
+        user_id: userId, quote_id: quote.id, customer_id: cust.id, customer_name: cust.name,
+        job_title: qd.job.title, job_date: qd.job.date, start_time: qd.job.start, end_time: qd.job.end,
+        status: qd.job.date < daysAgoDate(0) ? "completed" : "scheduled",
+        location: cust.address + ", " + cust.city,
+      });
     }
   }
-  console.log(`✅ Created ${quoteDefs.length} quotes with items and jobs`);
+  console.log(`✅ Created ${quoteCount} quotes across ${customers.length} customers`);
 
-  // Create standalone jobs spread across the calendar
+  // Standalone jobs
   await admin.from("jobs").insert([
-    { user_id: userId, customer_id: customers[6].id, customer_name: customers[6].name, job_title: "Fence installation — Chen residence", job_date: futureDays(2), start_time: "08:00", end_time: "16:00", status: "scheduled" },
-    { user_id: userId, customer_id: customers[9].id, customer_name: customers[9].name, job_title: "Garden maintenance — Harrisons", job_date: futureDays(1), start_time: "09:00", end_time: "11:00", status: "scheduled" },
-    { user_id: userId, customer_id: customers[1].id, customer_name: customers[1].name, job_title: "Monthly maintenance visit — Old Crown", job_date: daysAgoDate(7), start_time: "08:00", end_time: "10:00", status: "completed" },
-    { user_id: userId, customer_id: customers[3].id, customer_name: customers[3].name, job_title: "Hedge trimming — Mrs Williams", job_date: daysAgoDate(10), start_time: "10:00", end_time: "12:00", status: "completed" },
-    { user_id: userId, customer_id: customers[4].id, customer_name: customers[4].name, job_title: "Grounds inspection — Oakwood School", job_date: daysAgoDate(14), start_time: "09:00", end_time: "10:30", status: "completed" },
-    { user_id: userId, customer_id: customers[0].id, customer_name: customers[0].name, job_title: "Lawn treatment — Mitchells", job_date: futureDays(5), start_time: "14:00", end_time: "16:00", status: "scheduled" },
-    { user_id: userId, customer_id: customers[8].id, customer_name: customers[8].name, job_title: "External cleaning — Cheshire Catering", job_date: futureDays(6), start_time: "07:00", end_time: "12:00", status: "scheduled" },
+    { user_id: userId, customer_id: customers[20].id, customer_name: customers[20].name, job_title: "Maintenance visit — Meadowbank Care Home", job_date: futureDays(1), start_time: "09:00", end_time: "11:00", status: "scheduled" },
+    { user_id: userId, customer_id: customers[32].id, customer_name: customers[32].name, job_title: "Garden tidy — Academy grounds", job_date: futureDays(3), start_time: "07:30", end_time: "15:00", status: "scheduled" },
+    { user_id: userId, customer_id: customers[41].id, customer_name: customers[41].name, job_title: "Monthly check — University grounds", job_date: daysAgoDate(7), start_time: "08:00", end_time: "10:00", status: "completed" },
+    { user_id: userId, customer_id: customers[25].id, customer_name: customers[25].name, job_title: "Grounds inspection — Hospital", job_date: futureDays(2), start_time: "09:00", end_time: "12:00", status: "scheduled" },
+    { user_id: userId, customer_id: customers[14].id, customer_name: customers[14].name, job_title: "Retail park litter patrol", job_date: daysAgoDate(3), start_time: "06:00", end_time: "09:00", status: "completed" },
+    { user_id: userId, customer_id: customers[29].id, customer_name: customers[29].name, job_title: "Church grounds maintenance", job_date: futureDays(4), start_time: "09:30", end_time: "14:00", status: "scheduled" },
   ]);
-  console.log("✅ Created 5 standalone jobs");
+  console.log("✅ Created standalone jobs");
 
-  // Create notifications spread across the year
+  // Notifications
   await admin.from("notifications").insert([
-    { user_id: userId, type: "quote_accepted", quote_id: null, message: "James & Sarah Mitchell accepted your summer garden clearance quote", created_at: daysAgo(328) },
-    { user_id: userId, type: "payment_received", quote_id: null, message: "Payment received from Oakwood School — £1,950 for summer maintenance", created_at: daysAgo(277) },
-    { user_id: userId, type: "quote_accepted", quote_id: null, message: "The Old Crown accepted your beer garden refurbishment quote", created_at: daysAgo(248) },
-    { user_id: userId, type: "payment_received", quote_id: null, message: "Payment received — Chen residence fence installation £1,500", created_at: daysAgo(237) },
-    { user_id: userId, type: "quote_accepted", quote_id: null, message: "Riverside Apartments accepted your annual block maintenance quote", created_at: daysAgo(207) },
-    { user_id: userId, type: "payment_received", quote_id: null, message: "Payment received from Mitchell residence — tree removal £700", created_at: daysAgo(137) },
-    { user_id: userId, type: "quote_accepted", quote_id: null, message: "Cheshire Catering accepted your car park cleaning quote", created_at: daysAgo(97) },
-    { user_id: userId, type: "quote_rejected", quote_id: null, message: "Mrs Williams rejected your garden redesign quote — went with cheaper option", created_at: daysAgo(45) },
-    { user_id: userId, type: "payment_received", quote_id: null, message: "Payment received — Greenfield Estates spring clearance £2,800", created_at: daysAgo(15) },
-    { user_id: userId, type: "quote_accepted", quote_id: null, message: "Bayside Renovations accepted your Plot D clearance quote", created_at: daysAgo(18) },
+    { user_id: userId, type: "quote_accepted", quote_id: null, message: "Bennett family accepted your garden tidy quote", created_at: daysAgo(20) },
+    { user_id: userId, type: "quote_accepted", quote_id: null, message: "Chester Cathedral accepted grounds maintenance quote", created_at: daysAgo(35) },
+    { user_id: userId, type: "payment_received", quote_id: null, message: "Payment — Meadowbank Care Home £480", created_at: daysAgo(15) },
+    { user_id: userId, type: "quote_rejected", quote_id: null, message: "Alex Porter rejected fence installation quote", created_at: daysAgo(10) },
+    { user_id: userId, type: "quote_accepted", quote_id: null, message: "Priya Sharma accepted patio cleaning quote", created_at: daysAgo(5) },
+    { user_id: userId, type: "payment_received", quote_id: null, message: "Payment — Chester Scouts £320", created_at: daysAgo(8) },
+    { user_id: userId, type: "quote_accepted", quote_id: null, message: "Maria Gonzalez accepted hedge trimming quote", created_at: daysAgo(3) },
+    { user_id: userId, type: "quote_accepted", quote_id: null, message: "Kevi O'Brien accepted tree surgery quote", created_at: daysAgo(7) },
+    { user_id: userId, type: "payment_received", quote_id: null, message: "Payment — Chester Cathedral £890", created_at: daysAgo(30) },
+    { user_id: userId, type: "quote_accepted", quote_id: null, message: "Chester Golf Club accepted greens maintenance", created_at: daysAgo(12) },
   ]);
-  console.log("✅ Created 5 notifications");
+  console.log("✅ Created notifications");
 
   console.log("\n🎉 Demo account ready!");
   console.log(`   Email: ${DEMO_EMAIL}`);
