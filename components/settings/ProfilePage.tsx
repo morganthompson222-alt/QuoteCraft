@@ -347,8 +347,34 @@ export function ProfilePage() {
                       {catalogueLoading ? "Generating..." : "Generate from history ✨"}
                     </button>
                   ) : (
-                    <div style={{ whiteSpace: "pre-wrap", fontSize: 13, color: "#334155", lineHeight: 1.7 }}>
-                      {catalogueText}
+                    <div>
+                      <div style={{ whiteSpace: "pre-wrap", fontSize: 13, color: "#334155", lineHeight: 1.7, marginBottom: 12 }}>
+                        {catalogueText}
+                      </div>
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "flex-end" }}>
+                        <div>
+                          <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Template</label>
+                          <select value={catalogueTemplate} onChange={(e) => setCatalogueTemplate(e.target.value)}
+                            style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid var(--border)", fontSize: 13, background: "#fff" }}>
+                            {["classic","modern","professional","creative","minimal","bold","elegant","natural"].map(t => (
+                              <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Colour</label>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: 4, maxWidth: 220 }}>
+                            {Object.keys(COLOUR_SWATCHES).map(c => (
+                              <div key={c} onClick={() => setCatalogueColour(c)} title={COLOUR_NAMES[c]}
+                                style={{ width: 18, height: 18, borderRadius: "50%", cursor: "pointer", background: `#${c}`, border: catalogueColour === c ? "2px solid #0f172a" : "1px solid #e5e7eb" }} />
+                            ))}
+                          </div>
+                        </div>
+                        <button type="button" onClick={handleDownloadCatalogue}
+                          style={{ padding: "7px 16px", borderRadius: 6, fontSize: 12, fontWeight: 700, border: "none", background: "#1F6B4F", color: "#fff", cursor: "pointer" }}>
+                          Download PDF
+                        </button>
+                      </div>
                     </div>
                   )}
                 </dd>
