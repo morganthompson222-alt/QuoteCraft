@@ -93,7 +93,7 @@ export function ProfilePage() {
   }, []);
 
   async function handleFile(f: File) {
-    if (f.size > 1024 * 1024) { setLogoError("Logo must be under 1 MB."); return; }
+    if (f.size > 3.5 * 1024 * 1024) { setLogoError("Logo must be under 3.5 MB."); return; }
     if (!f.type.startsWith("image/")) { setLogoError("Only image files are accepted."); return; }
     setLogoError("");
     setLogoLoading(true);
@@ -246,7 +246,7 @@ export function ProfilePage() {
                     Drag &amp; drop your logo here, or click to browse
                   </p>
                   <p style={{ fontSize: 12, color: "var(--text-soft)", margin: "4px 0 0" }}>
-                    PNG or JPG, max 1 MB
+                    PNG or JPG, max 3.5 MB
                   </p>
                 </div>
               )}

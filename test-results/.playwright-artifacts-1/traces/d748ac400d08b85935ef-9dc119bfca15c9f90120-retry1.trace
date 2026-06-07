@@ -1,0 +1,340 @@
+{"version":8,"type":"context-options","origin":"library","browserName":"chromium","playwrightVersion":"1.60.0","options":{"noDefaultViewport":false,"viewport":{"width":1280,"height":720},"ignoreHTTPSErrors":false,"javaScriptEnabled":true,"bypassCSP":false,"locale":"en-US","offline":false,"isMobile":false,"hasTouch":false,"colorScheme":"light","acceptDownloads":"accept","baseURL":"http://localhost:3000","serviceWorkers":"allow","selectorEngines":[],"testIdAttributeName":"data-testid"},"platform":"darwin","wallTime":1780835651106,"monotonicTime":31660.818,"sdkLanguage":"javascript","testIdAttributeName":"data-testid","contextId":"browser-context@a05e4a5d920a7aaaac59100b81c81a23","title":"auth.spec.ts:56 › Auth flow › login page renders and signs in successfully"}
+{"type":"before","callId":"call@6","startTime":31662.883,"class":"BrowserContext","method":"newPage","params":{},"stepId":"pw:api@38"}
+{"type":"event","time":31715.158,"class":"BrowserContext","method":"page","params":{"pageId":"page@18e29550c8710b1e96d8c7951af35237"}}
+{"type":"after","callId":"call@6","endTime":31715.231,"result":{"page":"<Page>"}}
+{"type":"before","callId":"call@8","startTime":31717.459,"title":"Route requests","class":"Page","method":"setNetworkInterceptionPatterns","params":{"patterns":[{"glob":"**/api/auth/login"}]},"stepId":"pw:api@39","pageId":"page@18e29550c8710b1e96d8c7951af35237"}
+{"type":"after","callId":"call@8","endTime":31718.033}
+{"type":"before","callId":"call@10","startTime":31718.741,"title":"Route requests","class":"Page","method":"setNetworkInterceptionPatterns","params":{"patterns":[{"glob":"**/api/dashboard/summary"},{"glob":"**/api/auth/login"}]},"stepId":"pw:api@40","pageId":"page@18e29550c8710b1e96d8c7951af35237"}
+{"type":"after","callId":"call@10","endTime":31718.785}
+{"type":"before","callId":"call@12","startTime":31719.447,"class":"Frame","method":"goto","params":{"url":"/login","timeout":0,"waitUntil":"load"},"stepId":"pw:api@41","pageId":"page@18e29550c8710b1e96d8c7951af35237","beforeSnapshot":"before@call@12"}
+{"type":"frame-snapshot","snapshot":{"callId":"call@12","snapshotName":"before@call@12","pageId":"page@18e29550c8710b1e96d8c7951af35237","frameId":"frame@94fff48ae0390dccaed7f579cd781895","frameUrl":"about:blank","html":["HTML",{},["HEAD",{},["BASE",{"href":"about:blank"}]],["BODY"]],"viewport":{"width":1280,"height":720},"timestamp":31720.836,"wallTime":1780835651166,"collectionTime":0.6000000089406967,"resourceOverrides":[],"isMainFrame":true}}
+{"type":"log","callId":"call@12","time":31721.593,"message":"navigating to \"http://localhost:3000/login\", waiting until \"load\""}
+{"type":"console","messageType":"error","text":"Failed to load resource: the server responded with a status of 404 (Not Found)","args":[],"location":{"url":"http://localhost:3000/_next/static/chunks/1t2j65kw_91n2.js","lineNumber":0,"columnNumber":0},"time":31743.533,"pageId":"page@18e29550c8710b1e96d8c7951af35237"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835651213.jpeg","width":1280,"height":720,"timestamp":31767.359,"frameSwapWallTime":1780835651210.198}
+{"type":"after","callId":"call@12","endTime":31773.777,"result":{"response":"<Response>"},"afterSnapshot":"after@call@12"}
+{"type":"frame-snapshot","snapshot":{"callId":"call@12","snapshotName":"after@call@12","pageId":"page@18e29550c8710b1e96d8c7951af35237","frameId":"frame@94fff48ae0390dccaed7f579cd781895","frameUrl":"http://localhost:3000/login","doctype":"html","html":["HTML",{"lang":"en"},["HEAD",{},["BASE",{"href":"http://localhost:3000/login"}],["META",{"charset":"utf-8"}],["META",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["LINK",{"rel":"stylesheet","href":"/_next/static/chunks/1j0sozrkm8-h_.css","data-precedence":"next"}],["LINK",{"rel":"icon","href":"/favicon.svg","type":"image/svg+xml"}],["LINK",{"rel":"manifest","href":"/site.webmanifest"}],["META",{"name":"theme-color","content":"#047857"}],["TITLE",{},"QuoteCraft — Customer quotes for tradespeople"],["META",{"name":"description","content":"Create professional customer quotes in minutes. QuoteCraft helps tradespeople manage estimates, track customers, and generate PDFs."}],["META",{"property":"og:title","content":"QuoteCraft"}],["META",{"property":"og:description","content":"Create professional customer quotes in minutes. Manage estimates, track customers, and generate PDFs."}],["META",{"property":"og:type","content":"website"}],["META",{"name":"twitter:card","content":"summary"}],["META",{"name":"twitter:title","content":"QuoteCraft"}],["META",{"name":"twitter:description","content":"Create professional customer quotes in minutes. Manage estimates, track customers, and generate PDFs."}]],["BODY",{},["DIV",{"hidden":""}],["DIV",{"class":"app-shell app-shell--marketing"},["HEADER",{"class":"app-shell__topbar"},["A",{"class":"app-shell__brand","aria-label":"QuoteCraft home","href":"/"},["SPAN",{"class":"app-shell__mark"},"QC"],["SPAN",{},"QuoteCraft"]],["DIV",{"class":"app-shell__actions"},["A",{"class":"button button--ghost","href":"/login"},"Log in"],["A",{"class":"button button--primary","href":"/signup"},"Sign up"]]],["DIV",{"class":"app-shell__body"},["MAIN",{"class":"app-shell__main"},["SECTION",{"class":"auth-page"},["DIV",{"class":"auth-page__inner"},["DIV",{"class":"auth-page__intro"},["P",{"class":"hero__eyebrow"},"QuoteCraft"],["H1",{},"Sign in to keep quotes moving."],["P",{},"Return to your workspace to manage customers, review quote drafts, and prepare approval-ready PDFs."]],["SECTION",{"class":"auth-card","aria-labelledby":"login-title"},["DIV",{"class":"auth-card__header"},["H2",{"class":"auth-card__title","id":"login-title"},"Welcome back"],["P",{"class":"auth-card__subtitle"},"Use your workspace credentials to continue."]],["FORM",{"class":"auth-form","novalidate":""},["DIV",{"class":"field"},["LABEL",{"for":"email"},"Email"],["INPUT",{"__playwright_value_":"","id":"email","type":"email","autocomplete":"email","aria-invalid":"false","name":"email","value":""}]],["DIV",{"class":"field"},["DIV",{"class":"field__topline"},["LABEL",{"for":"password"},"Password"],["A",{"class":"field__link","href":"/forgot-password"},"Forgot password?"]],["INPUT",{"__playwright_value_":"","id":"password","type":"password","autocomplete":"current-password","aria-invalid":"false","name":"password","value":""}]],["BUTTON",{"class":"button button--primary auth-form__button","disabled":"","type":"submit"},"Sign in"],["P",{"class":"auth-form__footer"},"New to QuoteCraft? ",["A",{"class":"auth-form__link","href":"/signup"},"Create an account"]]]]]]]]]]],"viewport":{"width":1280,"height":720},"timestamp":31775.178,"wallTime":1780835651220,"collectionTime":1,"resourceOverrides":[],"isMainFrame":true}}
+{"type":"before","callId":"call@14","startTime":31778.991,"title":"Expect \"toBeVisible\"","class":"Frame","method":"expect","params":{"selector":"internal:role=heading[name=\"Welcome back\"i]","expression":"to.be.visible","expectedValue":{"value":{"v":"undefined"},"handles":[]},"isNot":false,"timeout":5000},"stepId":"expect@42","pageId":"page@18e29550c8710b1e96d8c7951af35237","beforeSnapshot":"before@call@14"}
+{"type":"frame-snapshot","snapshot":{"callId":"call@14","snapshotName":"before@call@14","pageId":"page@18e29550c8710b1e96d8c7951af35237","frameId":"frame@94fff48ae0390dccaed7f579cd781895","frameUrl":"http://localhost:3000/login","doctype":"html","html":[[1,66]],"viewport":{"width":1280,"height":720},"timestamp":31779.474,"wallTime":1780835651225,"collectionTime":0.20000000298023224,"resourceOverrides":[],"isMainFrame":true}}
+{"type":"log","callId":"call@14","time":31780.002,"message":"Expect \"toBeVisible\" with timeout 5000ms"}
+{"type":"log","callId":"call@14","time":31780.009,"message":"waiting for getByRole('heading', { name: 'Welcome back' })"}
+{"type":"after","callId":"call@14","endTime":31793.599,"result":{"matches":true,"received":{"value":{"s":"visible"},"ariaSnapshot":"- heading \"Welcome back\" [level=2]"}},"afterSnapshot":"after@call@14"}
+{"type":"frame-snapshot","snapshot":{"callId":"call@14","snapshotName":"after@call@14","pageId":"page@18e29550c8710b1e96d8c7951af35237","frameId":"frame@94fff48ae0390dccaed7f579cd781895","frameUrl":"http://localhost:3000/login","doctype":"html","html":["HTML",{"lang":"en"},[[2,16]],["BODY",{},[[2,17]],["DIV",{"class":"app-shell app-shell--marketing"},[[2,28]],["DIV",{"class":"app-shell__body"},["MAIN",{"class":"app-shell__main"},["SECTION",{"class":"auth-page"},["DIV",{"class":"auth-page__inner"},[[2,35]],["SECTION",{"class":"auth-card","aria-labelledby":"login-title"},["DIV",{"class":"auth-card__header"},["H2",{"__playwright_target__":"call@14","class":"auth-card__title","id":"login-title"},[[2,36]]],[[2,39]]],[[2,58]]]]]]]]]],"viewport":{"width":1280,"height":720},"timestamp":31794.154,"wallTime":1780835651239,"collectionTime":0.20000000298023224,"resourceOverrides":[],"isMainFrame":true}}
+{"type":"before","callId":"call@16","startTime":31795.206,"class":"Frame","method":"fill","params":{"selector":"internal:label=\"Email\"i","strict":true,"value":"test@example.com","timeout":0},"stepId":"pw:api@43","pageId":"page@18e29550c8710b1e96d8c7951af35237","beforeSnapshot":"before@call@16"}
+{"type":"frame-snapshot","snapshot":{"callId":"call@16","snapshotName":"before@call@16","pageId":"page@18e29550c8710b1e96d8c7951af35237","frameId":"frame@94fff48ae0390dccaed7f579cd781895","frameUrl":"http://localhost:3000/login","doctype":"html","html":[[1,9]],"viewport":{"width":1280,"height":720},"timestamp":31795.581,"wallTime":1780835651241,"collectionTime":0.20000000298023224,"resourceOverrides":[],"isMainFrame":true}}
+{"type":"log","callId":"call@16","time":31795.915,"message":"waiting for getByLabel('Email')"}
+{"type":"log","callId":"call@16","time":31797.57,"message":"  locator resolved to <input value=\"\" id=\"email\" type=\"email\" name=\"email\" autocomplete=\"email\" aria-invalid=\"false\"/>"}
+{"type":"log","callId":"call@16","time":31798.261,"message":"  fill(\"test@example.com\")"}
+{"type":"log","callId":"call@16","time":31798.268,"message":"attempting fill action"}
+{"type":"input","callId":"call@16","inputSnapshot":"input@call@16"}
+{"type":"frame-snapshot","snapshot":{"callId":"call@16","snapshotName":"input@call@16","pageId":"page@18e29550c8710b1e96d8c7951af35237","frameId":"frame@94fff48ae0390dccaed7f579cd781895","frameUrl":"http://localhost:3000/login","doctype":"html","html":["HTML",{"lang":"en"},[[4,16]],["BODY",{},[[4,17]],["DIV",{"class":"app-shell app-shell--marketing"},[[4,28]],["DIV",{"class":"app-shell__body"},["MAIN",{"class":"app-shell__main"},["SECTION",{"class":"auth-page"},["DIV",{"class":"auth-page__inner"},[[4,35]],["SECTION",{"class":"auth-card","aria-labelledby":"login-title"},[[2,1]],["FORM",{"class":"auth-form","novalidate":""},["DIV",{"class":"field"},[[4,42]],["INPUT",{"__playwright_value_":"","__playwright_target__":"call@16","id":"email","type":"email","autocomplete":"email","aria-invalid":"false","name":"email","value":""}]],[[4,51]],[[4,53]],[[4,57]]]]]]]]]]],"viewport":{"width":1280,"height":720},"timestamp":31798.85,"wallTime":1780835651244,"collectionTime":0.20000000298023224,"resourceOverrides":[],"isMainFrame":true}}
+{"type":"log","callId":"call@16","time":31798.97,"message":"  waiting for element to be visible, enabled and editable"}
+{"type":"after","callId":"call@16","endTime":31806.966,"afterSnapshot":"after@call@16"}
+{"type":"frame-snapshot","snapshot":{"callId":"call@16","snapshotName":"after@call@16","pageId":"page@18e29550c8710b1e96d8c7951af35237","frameId":"frame@94fff48ae0390dccaed7f579cd781895","frameUrl":"http://localhost:3000/login","doctype":"html","html":["HTML",{"lang":"en"},[[5,16]],["BODY",{},[[5,17]],["DIV",{"class":"app-shell app-shell--marketing"},[[5,28]],["DIV",{"class":"app-shell__body"},["MAIN",{"class":"app-shell__main"},["SECTION",{"class":"auth-page"},["DIV",{"class":"auth-page__inner"},[[5,35]],["SECTION",{"class":"auth-card","aria-labelledby":"login-title"},[[3,1]],["FORM",{"class":"auth-form","novalidate":""},["DIV",{"class":"field"},[[5,42]],["INPUT",{"__playwright_value_":"test@example.com","__playwright_target__":"call@16","id":"email","type":"email","autocomplete":"email","aria-invalid":"false","name":"email","value":""}]],[[5,51]],[[5,53]],[[5,57]]]]]]]]]]],"viewport":{"width":1280,"height":720},"timestamp":31807.913,"wallTime":1780835651253,"collectionTime":0.29999999701976776,"resourceOverrides":[],"isMainFrame":true}}
+{"type":"before","callId":"call@18","startTime":31808.649,"class":"Frame","method":"fill","params":{"selector":"internal:label=\"Password\"i","strict":true,"value":"password123","timeout":0},"stepId":"pw:api@44","pageId":"page@18e29550c8710b1e96d8c7951af35237","beforeSnapshot":"before@call@18"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835651254.jpeg","width":1280,"height":720,"timestamp":31809.105,"frameSwapWallTime":1780835651252.562}
+{"type":"frame-snapshot","snapshot":{"callId":"call@18","snapshotName":"before@call@18","pageId":"page@18e29550c8710b1e96d8c7951af35237","frameId":"frame@94fff48ae0390dccaed7f579cd781895","frameUrl":"http://localhost:3000/login","doctype":"html","html":[[1,10]],"viewport":{"width":1280,"height":720},"timestamp":31809.342,"wallTime":1780835651254,"collectionTime":0.20000000298023224,"resourceOverrides":[],"isMainFrame":true}}
+{"type":"log","callId":"call@18","time":31809.401,"message":"waiting for getByLabel('Password')"}
+{"type":"log","callId":"call@18","time":31810.746,"message":"  locator resolved to <input value=\"\" id=\"password\" type=\"password\" name=\"password\" aria-invalid=\"false\" autocomplete=\"current-password\"/>"}
+{"type":"log","callId":"call@18","time":31811.232,"message":"  fill(\"password123\")"}
+{"type":"log","callId":"call@18","time":31811.236,"message":"attempting fill action"}
+{"type":"input","callId":"call@18","inputSnapshot":"input@call@18"}
+{"type":"frame-snapshot","snapshot":{"callId":"call@18","snapshotName":"input@call@18","pageId":"page@18e29550c8710b1e96d8c7951af35237","frameId":"frame@94fff48ae0390dccaed7f579cd781895","frameUrl":"http://localhost:3000/login","doctype":"html","html":["HTML",{"lang":"en"},[[7,16]],["BODY",{},[[7,17]],["DIV",{"class":"app-shell app-shell--marketing"},[[7,28]],["DIV",{"class":"app-shell__body"},["MAIN",{"class":"app-shell__main"},["SECTION",{"class":"auth-page"},["DIV",{"class":"auth-page__inner"},[[7,35]],["SECTION",{"class":"auth-card","aria-labelledby":"login-title"},[[5,1]],["FORM",{"class":"auth-form","novalidate":""},[[2,1]],["DIV",{"class":"field"},[[7,49]],["INPUT",{"__playwright_value_":"","__playwright_target__":"call@18","id":"password","type":"password","autocomplete":"current-password","aria-invalid":"false","name":"password","value":""}]],[[7,53]],[[7,57]]]]]]]]]]],"viewport":{"width":1280,"height":720},"timestamp":31811.666,"wallTime":1780835651257,"collectionTime":0.09999999403953552,"resourceOverrides":[],"isMainFrame":true}}
+{"type":"log","callId":"call@18","time":31811.735,"message":"  waiting for element to be visible, enabled and editable"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835651261.jpeg","width":1280,"height":720,"timestamp":31815.884,"frameSwapWallTime":1780835651259.406}
+{"type":"after","callId":"call@18","endTime":31843.482,"afterSnapshot":"after@call@18"}
+{"type":"frame-snapshot","snapshot":{"callId":"call@18","snapshotName":"after@call@18","pageId":"page@18e29550c8710b1e96d8c7951af35237","frameId":"frame@94fff48ae0390dccaed7f579cd781895","frameUrl":"http://localhost:3000/login","doctype":"html","html":["HTML",{"lang":"en"},[[8,16]],["BODY",{},[[8,17]],["DIV",{"class":"app-shell app-shell--marketing"},[[8,28]],["DIV",{"class":"app-shell__body"},["MAIN",{"class":"app-shell__main"},["SECTION",{"class":"auth-page"},["DIV",{"class":"auth-page__inner"},[[8,35]],["SECTION",{"class":"auth-card","aria-labelledby":"login-title"},[[6,1]],["FORM",{"class":"auth-form","novalidate":""},[[3,1]],["DIV",{"class":"field"},[[8,49]],["INPUT",{"__playwright_value_":"password123","__playwright_target__":"call@18","id":"password","type":"password","autocomplete":"current-password","aria-invalid":"false","name":"password","value":""}]],[[8,53]],[[8,57]]]]]]]]]]],"viewport":{"width":1280,"height":720},"timestamp":31844.074,"wallTime":1780835651289,"collectionTime":0.20000000298023224,"resourceOverrides":[],"isMainFrame":true}}
+{"type":"before","callId":"call@20","startTime":31845.127,"class":"Frame","method":"click","params":{"selector":"internal:role=button[name=\"Sign in\"i]","strict":true,"timeout":0},"stepId":"pw:api@45","pageId":"page@18e29550c8710b1e96d8c7951af35237","beforeSnapshot":"before@call@20"}
+{"type":"frame-snapshot","snapshot":{"callId":"call@20","snapshotName":"before@call@20","pageId":"page@18e29550c8710b1e96d8c7951af35237","frameId":"frame@94fff48ae0390dccaed7f579cd781895","frameUrl":"http://localhost:3000/login","doctype":"html","html":[[1,10]],"viewport":{"width":1280,"height":720},"timestamp":31845.549,"wallTime":1780835651291,"collectionTime":0.20000000298023224,"resourceOverrides":[],"isMainFrame":true}}
+{"type":"log","callId":"call@20","time":31845.713,"message":"waiting for getByRole('button', { name: 'Sign in' })"}
+{"type":"log","callId":"call@20","time":31846.82,"message":"  locator resolved to <button disabled type=\"submit\" class=\"button button--primary auth-form__button\">Sign in</button>"}
+{"type":"log","callId":"call@20","time":31847.314,"message":"attempting click action"}
+{"type":"log","callId":"call@20","time":31847.512,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835651295.jpeg","width":1280,"height":720,"timestamp":31849.989,"frameSwapWallTime":1780835651293.522}
+{"type":"log","callId":"call@20","time":31854.679,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":31854.688,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":31854.722,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835651301.jpeg","width":1280,"height":720,"timestamp":31856.162,"frameSwapWallTime":1780835651299.815}
+{"type":"log","callId":"call@20","time":31870.603,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":31870.609,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":31870.611,"message":"  waiting 20ms"}
+{"type":"log","callId":"call@20","time":31892.117,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":31904.038,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":31904.046,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":31904.048,"message":"  waiting 100ms"}
+{"type":"log","callId":"call@20","time":32006.393,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":32012.688,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":32012.707,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":32012.711,"message":"  waiting 100ms"}
+{"type":"log","callId":"call@20","time":32116.248,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":32122.443,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":32122.508,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":32122.515,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835651816.jpeg","width":1280,"height":720,"timestamp":32370.857,"frameSwapWallTime":1780835651812.15}
+{"type":"log","callId":"call@20","time":32629.515,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":32637.77,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":32637.791,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":32637.796,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835652317.jpeg","width":1280,"height":720,"timestamp":32871.535,"frameSwapWallTime":1780835652312.703}
+{"type":"log","callId":"call@20","time":33143.887,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":33155.794,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":33155.827,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":33155.833,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835652819.jpeg","width":1280,"height":720,"timestamp":33373.369,"frameSwapWallTime":1780835652814.703}
+{"type":"log","callId":"call@20","time":33660.505,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":33672.565,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":33672.597,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":33672.602,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835653317.jpeg","width":1280,"height":720,"timestamp":33871.797,"frameSwapWallTime":1780835653312.9722}
+{"type":"log","callId":"call@20","time":34176.986,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":34188.885,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":34188.939,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":34188.944,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835653816.jpeg","width":1280,"height":720,"timestamp":34370.883,"frameSwapWallTime":1780835653811.869}
+{"type":"log","callId":"call@20","time":34693.849,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":34705.457,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":34705.489,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":34705.494,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835654316.jpeg","width":1280,"height":720,"timestamp":34871.23,"frameSwapWallTime":1780835654312.4849}
+{"type":"log","callId":"call@20","time":35212.797,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":35222.566,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":35222.611,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":35222.616,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835654820.jpeg","width":1280,"height":720,"timestamp":35374.654,"frameSwapWallTime":1780835654816.0469}
+{"type":"log","callId":"call@20","time":35726.716,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":35747.082,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":35747.117,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":35747.124,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835655319.jpeg","width":1280,"height":720,"timestamp":35874.007,"frameSwapWallTime":1780835655315.398}
+{"type":"log","callId":"call@20","time":36252.399,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":36263.542,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":36263.574,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":36263.579,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835655808.jpeg","width":1280,"height":720,"timestamp":36362.611,"frameSwapWallTime":1780835655804.7769}
+{"type":"log","callId":"call@20","time":36767.086,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":36781.099,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":36781.143,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":36781.148,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835656316.jpeg","width":1280,"height":720,"timestamp":36870.765,"frameSwapWallTime":1780835656312.0872}
+{"type":"log","callId":"call@20","time":37285.398,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":37296.518,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":37296.549,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":37296.553,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835656816.jpeg","width":1280,"height":720,"timestamp":37370.696,"frameSwapWallTime":1780835656811.955}
+{"type":"log","callId":"call@20","time":37800.335,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":37816.853,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":37816.916,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":37816.923,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835657315.jpeg","width":1280,"height":720,"timestamp":37870.007,"frameSwapWallTime":1780835657311.394}
+{"type":"log","callId":"call@20","time":38322.166,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":38339.29,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":38339.332,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":38339.341,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835657815.jpeg","width":1280,"height":720,"timestamp":38369.738,"frameSwapWallTime":1780835657811.162}
+{"type":"log","callId":"call@20","time":38851.721,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835658309.jpeg","width":1280,"height":720,"timestamp":38863.402,"frameSwapWallTime":1780835658306.597}
+{"type":"log","callId":"call@20","time":38871.033,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":38871.043,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":38871.046,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835658818.jpeg","width":1280,"height":720,"timestamp":39373.152,"frameSwapWallTime":1780835658814.2869}
+{"type":"log","callId":"call@20","time":39373.618,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":39387.885,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":39387.915,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":39387.918,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835659317.jpeg","width":1280,"height":720,"timestamp":39872.248,"frameSwapWallTime":1780835659313.541}
+{"type":"log","callId":"call@20","time":39890.7,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":39896.127,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":39896.14,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":39896.144,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835659817.jpeg","width":1280,"height":720,"timestamp":40372.138,"frameSwapWallTime":1780835659813.49}
+{"type":"log","callId":"call@20","time":40398.573,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":40404.269,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":40404.282,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":40404.286,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835660318.jpeg","width":1280,"height":720,"timestamp":40872.293,"frameSwapWallTime":1780835660313.578}
+{"type":"log","callId":"call@20","time":40907.067,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":40912.921,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":40912.941,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":40912.945,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835660819.jpeg","width":1280,"height":720,"timestamp":41373.365,"frameSwapWallTime":1780835660814.5918}
+{"type":"log","callId":"call@20","time":41415.877,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":41420.831,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":41420.842,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":41420.845,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835661319.jpeg","width":1280,"height":720,"timestamp":41873.471,"frameSwapWallTime":1780835661313.149}
+{"type":"log","callId":"call@20","time":41923.688,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":41929.655,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":41929.676,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":41929.681,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835661817.jpeg","width":1280,"height":720,"timestamp":42371.996,"frameSwapWallTime":1780835661813.151}
+{"type":"log","callId":"call@20","time":42432.699,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":42437.818,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":42437.835,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":42437.84,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835662316.jpeg","width":1280,"height":720,"timestamp":42870.909,"frameSwapWallTime":1780835662312.1418}
+{"type":"log","callId":"call@20","time":42942.336,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":42946.101,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":42946.123,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":42946.128,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835662817.jpeg","width":1280,"height":720,"timestamp":43372.049,"frameSwapWallTime":1780835662813.3918}
+{"type":"log","callId":"call@20","time":43452.437,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":43464.495,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":43464.529,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":43464.533,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835663317.jpeg","width":1280,"height":720,"timestamp":43872.177,"frameSwapWallTime":1780835663313.344}
+{"type":"log","callId":"call@20","time":43969.353,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":43981.102,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":43981.155,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":43981.227,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835663807.jpeg","width":1280,"height":720,"timestamp":44361.868,"frameSwapWallTime":1780835663804.614}
+{"type":"log","callId":"call@20","time":44483.928,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":44496.57,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":44496.594,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":44496.622,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835664305.jpeg","width":1280,"height":720,"timestamp":44859.433,"frameSwapWallTime":1780835664302.9348}
+{"type":"log","callId":"call@20","time":44999.793,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":45013.591,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":45013.623,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":45013.63,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835664816.jpeg","width":1280,"height":720,"timestamp":45371.137,"frameSwapWallTime":1780835664812.423}
+{"type":"log","callId":"call@20","time":45516.457,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":45529.325,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":45529.351,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":45529.355,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835665317.jpeg","width":1280,"height":720,"timestamp":45871.291,"frameSwapWallTime":1780835665312.836}
+{"type":"log","callId":"call@20","time":46033.597,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":46047.472,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":46047.504,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":46047.508,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835665817.jpeg","width":1280,"height":720,"timestamp":46372.16,"frameSwapWallTime":1780835665813.509}
+{"type":"log","callId":"call@20","time":46552.145,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":46563.837,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":46563.865,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":46563.869,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835666316.jpeg","width":1280,"height":720,"timestamp":46870.886,"frameSwapWallTime":1780835666312.255}
+{"type":"log","callId":"call@20","time":47067.898,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":47080.483,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":47080.514,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":47080.519,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835666818.jpeg","width":1280,"height":720,"timestamp":47372.282,"frameSwapWallTime":1780835666813.559}
+{"type":"log","callId":"call@20","time":47583.669,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":47596.958,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":47596.985,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":47596.989,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835667316.jpeg","width":1280,"height":720,"timestamp":47870.9,"frameSwapWallTime":1780835667312.233}
+{"type":"log","callId":"call@20","time":48102.29,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":48114.374,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":48114.427,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":48114.432,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835667816.jpeg","width":1280,"height":720,"timestamp":48371.024,"frameSwapWallTime":1780835667812.379}
+{"type":"log","callId":"call@20","time":48619.005,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":48631.23,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":48631.291,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":48631.296,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835668318.jpeg","width":1280,"height":720,"timestamp":48872.936,"frameSwapWallTime":1780835668313.828}
+{"type":"log","callId":"call@20","time":49137.592,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":49147.362,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":49147.39,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":49147.395,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835668817.jpeg","width":1280,"height":720,"timestamp":49371.483,"frameSwapWallTime":1780835668812.345}
+{"type":"log","callId":"call@20","time":49651.658,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":49673.266,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":49673.326,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":49673.329,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835669317.jpeg","width":1280,"height":720,"timestamp":49872.076,"frameSwapWallTime":1780835669312.9622}
+{"type":"log","callId":"call@20","time":50178.511,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":50190.173,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":50190.2,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":50190.205,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835669811.jpeg","width":1280,"height":720,"timestamp":50366.003,"frameSwapWallTime":1780835669808.4531}
+{"type":"log","callId":"call@20","time":50706.337,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":50712.355,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":50712.362,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":50712.364,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835670307.jpeg","width":1280,"height":720,"timestamp":50861.415,"frameSwapWallTime":1780835670304.9531}
+{"type":"log","callId":"call@20","time":51215.926,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":51230.919,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":51230.972,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":51230.976,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835670817.jpeg","width":1280,"height":720,"timestamp":51371.546,"frameSwapWallTime":1780835670812.9448}
+{"type":"log","callId":"call@20","time":51734.042,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":51746.265,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":51746.289,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":51746.296,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835671317.jpeg","width":1280,"height":720,"timestamp":51871.262,"frameSwapWallTime":1780835671312.675}
+{"type":"log","callId":"call@20","time":52250.412,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":52264.226,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":52264.267,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":52264.272,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835671816.jpeg","width":1280,"height":720,"timestamp":52370.494,"frameSwapWallTime":1780835671811.9521}
+{"type":"log","callId":"call@20","time":52769.018,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":52791.324,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":52791.391,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":52791.395,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835672315.jpeg","width":1280,"height":720,"timestamp":52869.267,"frameSwapWallTime":1780835672310.95}
+{"type":"log","callId":"call@20","time":53296.087,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":53315.464,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":53315.505,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":53315.509,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835672814.jpeg","width":1280,"height":720,"timestamp":53369.165,"frameSwapWallTime":1780835672812.0479}
+{"type":"log","callId":"call@20","time":53820.72,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":53830.336,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":53830.367,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":53830.371,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835673321.jpeg","width":1280,"height":720,"timestamp":53875.4,"frameSwapWallTime":1780835673316.8982}
+{"type":"log","callId":"call@20","time":54334.427,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":54347.039,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":54347.078,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":54347.086,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835673820.jpeg","width":1280,"height":720,"timestamp":54374.668,"frameSwapWallTime":1780835673816.213}
+{"type":"log","callId":"call@20","time":54852.234,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835674316.jpeg","width":1280,"height":720,"timestamp":54871.033,"frameSwapWallTime":1780835674312.5269}
+{"type":"log","callId":"call@20","time":54871.563,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":54871.572,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":54871.574,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835674816.jpeg","width":1280,"height":720,"timestamp":55370.765,"frameSwapWallTime":1780835674812.222}
+{"type":"log","callId":"call@20","time":55373.868,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":55387.744,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":55387.761,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":55387.765,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835675309.jpeg","width":1280,"height":720,"timestamp":55863.473,"frameSwapWallTime":1780835675307.138}
+{"type":"log","callId":"call@20","time":55889.418,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":55895.882,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":55895.895,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":55895.9,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835675812.jpeg","width":1280,"height":720,"timestamp":56366.799,"frameSwapWallTime":1780835675809.132}
+{"type":"log","callId":"call@20","time":56398.55,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":56404.259,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":56404.273,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":56404.274,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835676306.jpeg","width":1280,"height":720,"timestamp":56860.574,"frameSwapWallTime":1780835676304.229}
+{"type":"log","callId":"call@20","time":56906.271,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":56912.8,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":56912.81,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":56912.812,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835676815.jpeg","width":1280,"height":720,"timestamp":57369.597,"frameSwapWallTime":1780835676812.76}
+{"type":"log","callId":"call@20","time":57415.165,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":57421.276,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":57421.3,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":57421.303,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835677319.jpeg","width":1280,"height":720,"timestamp":57873.795,"frameSwapWallTime":1780835677315.113}
+{"type":"log","callId":"call@20","time":57924.19,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":57929.37,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":57929.383,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":57929.386,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835677818.jpeg","width":1280,"height":720,"timestamp":58372.675,"frameSwapWallTime":1780835677814.2249}
+{"type":"log","callId":"call@20","time":58432.579,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":58437.861,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":58437.886,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":58437.89,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835678315.jpeg","width":1280,"height":720,"timestamp":58869.706,"frameSwapWallTime":1780835678311.288}
+{"type":"log","callId":"call@20","time":58941.497,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":58946.145,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":58946.162,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":58946.164,"message":"  waiting 500ms"}
+{"type":"screencast-frame","pageId":"page@18e29550c8710b1e96d8c7951af35237","sha1":"page@18e29550c8710b1e96d8c7951af35237-1780835678807.jpeg","width":1280,"height":720,"timestamp":59361.64,"frameSwapWallTime":1780835678805.0999}
+{"type":"log","callId":"call@20","time":59448.593,"message":"  waiting for element to be visible, enabled and stable"}
+{"type":"log","callId":"call@20","time":59454.934,"message":"  element is not enabled"}
+{"type":"log","callId":"call@20","time":59454.954,"message":"retrying click action"}
+{"type":"log","callId":"call@20","time":59454.958,"message":"  waiting 500ms"}
+{"type":"event","time":59676.357,"class":"BrowserContext","method":"pageClosed","params":{"pageId":"page@18e29550c8710b1e96d8c7951af35237"}}
+{"type":"after","callId":"call@20","endTime":59676.583,"error":{"message":"Target page, context or browser has been closed","stack":"TargetClosedError: Target page, context or browser has been closed\n    at DispatcherConnection.dispatch (/Users/morganthompson/Desktop/tradely/node_modules/playwright-core/lib/coreBundle.js:24264:19)","name":"TargetClosedError"},"afterSnapshot":"after@call@20"}

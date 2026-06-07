@@ -160,7 +160,7 @@ export function QuoteBuilderPage() {
   }
 
   async function handleImage(f: File) {
-    if (f.size > 2 * 1024 * 1024) { setApiError("Image must be under 2 MB."); return; }
+    if (f.size > 3.5 * 1024 * 1024) { setApiError("Image must be under 3.5 MB."); return; }
     setApiError("");
     setImageLoading(true);
     try {
