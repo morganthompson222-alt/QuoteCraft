@@ -33,44 +33,60 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, "Account creation unavailable. Contact support.", "CONFIG_ERROR");
     }
 
-    const supabase = await createServerSupabaseClient(request);
+    const admin = createAdminClient();
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { name, region_code: region.code } },
-    });
-
-    if (error) {
-      if (error.message.includes("already registered")) {
-        throw new ApiError(409, "Email already registered");
-      }
-      throw new ApiError(400, error.message.includes("rate limit")
-        ? "Please wait a moment and try again."
-        : "Unable to create account. Please try again later.");
+    // Check if email already exists
+    const { data: existingUsers } = await admin.auth.admin.listUsers();
+    const existing = existingUsers?.users?.find(
+      (u: { email?: string }) => u.email?.toLowerCase() === email.toLowerCase()
+    );
+    if (existing) {
+      throw new ApiError(409, "Email already registered");
     }
 
-    if (data.user && data.user.id) {
-      try {
-        const admin = createAdminClient();
-        await admin
-          .from("profiles")
-          .upsert({
-            id: data.user.id,
-            plan_tier: "solo",
-            region_code: region.code,
-            currency_code: region.currencyCode,
-            locale: region.locale,
-          });
-      } catch {
-        // profile creation handled by DB trigger — silent fallback
+    // Create user via admin API (bypasses email confirmation & rate limits)
+    const { data: newUser, error: createErr } = await admin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: { name, region_code: region.code },
+    });
+
+    if (createErr) {
+      if (createErr.message.includes("already been registered")) {
+        throw new ApiError(409, "Email already registered");
       }
+      throw new ApiError(400, createErr.message);
+    }
+
+    if (!newUser.user) {
+      throw new ApiError(500, "Failed to create account");
+    }
+
+    // Create profile with correct plan_tier (admin client bypasses RLS & trigger constraints)
+    await admin.from("profiles").upsert({
+      id: newUser.user.id,
+      plan_tier: "solo",
+      region_code: region.code,
+      currency_code: region.currencyCode,
+      locale: region.locale,
+    });
+
+    // Sign in to get a session token
+    const supabase = await createServerSupabaseClient(request);
+    const { data: session, error: signInErr } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInErr) {
+      throw new ApiError(400, "Account created but unable to sign in. Please try logging in.");
     }
 
     return NextResponse.json({
-      userId: data.user!.id,
-      email: data.user!.email,
-      token: data.session!.access_token,
+      userId: newUser.user.id,
+      email: newUser.user.email,
+      token: session.session.access_token,
     });
   } catch (error) {
     return errorResponse(error);
