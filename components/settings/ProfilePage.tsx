@@ -22,6 +22,15 @@ type Profile = {
   customAiInstructions: string | null;
 };
 
+const COLOUR_SWATCHES: Record<string, string> = {
+  "1F6B4F": "Green", "2563EB": "Blue", "DC2626": "Red", "7C3AED": "Purple",
+  "EA580C": "Orange", "0D9488": "Teal", "DB2777": "Pink", "1E3A5F": "Navy",
+  "0891B2": "Cyan", "D97706": "Amber", "059669": "Emerald", "BE123C": "Rose",
+  "6D28D9": "Violet", "0F766E": "Dark Teal", "B45309": "Brown", "4338CA": "Indigo",
+  "166534": "Forest", "9D174D": "Magenta", "92400E": "Sienna", "3730A3": "Royal Blue",
+};
+const COLOUR_NAMES = COLOUR_SWATCHES;
+
 type ProfileState =
   | { status: "loading" }
   | { status: "error"; error: string }
@@ -62,6 +71,8 @@ export function ProfilePage() {
   const [cleanupLoading, setCleanupLoading] = useState(false);
   const [catalogueLoading, setCatalogueLoading] = useState(false);
   const [catalogueText, setCatalogueText] = useState("");
+  const [catalogueTemplate, setCatalogueTemplate] = useState("classic");
+  const [catalogueColour, setCatalogueColour] = useState("1F6B4F");
   const fileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -184,6 +195,25 @@ export function ProfilePage() {
       setSaveError(x instanceof Error ? x.message : "Failed to generate catalogue");
     } finally {
       setCatalogueLoading(false);
+    }
+  }
+
+  async function handleDownloadCatalogue() {
+    try {
+      const tk = localStorage.getItem("quotecraft_token");
+      const url = `/api/ai/service-catalogue/pdf?template=${catalogueTemplate}&colour=${catalogueColour}`;
+      const r = await fetch(url, { headers: tk ? { Authorization: `Bearer ${tk}` } : {} });
+      if (!r.ok) {
+        const j = await r.json().catch(() => ({}));
+        throw new Error(j?.error?.message ?? "Failed");
+      }
+      const blob = await r.blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "service-catalogue.pdf";
+      a.click();
+    } catch (x) {
+      setSaveError(x instanceof Error ? x.message : "Download failed");
     }
   }
 
@@ -385,11 +415,51 @@ export function ProfilePage() {
                   <div style={{
                     marginTop: 12, padding: "14px 18px", background: "#f8fafc", border: "1px solid var(--border)",
                     borderRadius: 8, whiteSpace: "pre-wrap", fontSize: 13, color: "#334155", lineHeight: 1.7,
-                    maxHeight: 300, overflow: "auto",
+                    maxHeight: 300, overflow: "auto", marginBottom: 12,
                   }}>
                     {catalogueText}
                   </div>
                 ) : null}
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end", marginTop: 8 }}>
+                  <div>
+                    <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Template</label>
+                    <select
+                      value={catalogueTemplate}
+                      onChange={(e) => setCatalogueTemplate(e.target.value)}
+                      style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid var(--border)", fontSize: 13, background: "#fff" }}
+                    >
+                      {["classic","modern","professional","creative","minimal","bold","elegant","natural"].map(t => (
+                        <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Colour</label>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 4, maxWidth: 280 }}>
+                      {Object.keys(COLOUR_SWATCHES).map(c => (
+                        <div
+                          key={c}
+                          onClick={() => setCatalogueColour(c)}
+                          title={COLOUR_NAMES[c] ?? c}
+                          style={{
+                            width: 20, height: 20, borderRadius: "50%", cursor: "pointer",
+                            background: `#${c}`, border: catalogueColour === c ? "2px solid #0f172a" : "1px solid #e5e7eb",
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleDownloadCatalogue}
+                    style={{
+                      padding: "7px 16px", borderRadius: 6, fontSize: 12, fontWeight: 700, cursor: "pointer",
+                      border: "none", background: "#1F6B4F", color: "#fff",
+                    }}
+                  >
+                    Download PDF
+                  </button>
+                </div>
               </div>
             </div>
             {saveError ? <div className="auth-form__error" role="alert" style={{ marginTop: 16 }}>{saveError}</div> : null}
