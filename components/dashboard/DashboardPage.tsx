@@ -20,11 +20,21 @@ type RecentCustomer = {
   totalQuotes: number;
 };
 
+type CalendarDay = {
+  date: string;
+  dayName: string;
+  dayNum: number;
+  isToday: boolean;
+  jobs: Array<{ id: string; job_title: string; start_time: string; customer_name: string; status: string }>;
+};
+
 type DashboardSummary = {
   customerCount: number;
   openQuotesCount: number;
   recentQuotes: RecentQuote[];
   recentCustomers: RecentCustomer[];
+  upcomingJobCount: number;
+  calendarDays: CalendarDay[];
 };
 
 type DashboardState =
@@ -188,6 +198,58 @@ export function DashboardPage() {
             <div className="stat-card">
               <span className="stat-card__value">{state.data.openQuotesCount}</span>
               <span className="stat-card__label">Open quotes</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-card__value">{state.data.upcomingJobCount}</span>
+              <span className="stat-card__label">Jobs next 3 days</span>
+            </div>
+          </div>
+
+          {/* Mini calendar preview */}
+          <div className="table-card" style={{ marginTop: 24 }}>
+            <div className="dashboard-panel__header">
+              <h2>Upcoming schedule</h2>
+              <Link className="button button--ghost" href="/calendar">View calendar</Link>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0 }}>
+              {state.data.calendarDays.map((day) => (
+                <div key={day.date} style={{
+                  padding: "12px 16px", borderRight: "1px solid var(--border)",
+                  background: day.isToday ? "#eefaf4" : "transparent",
+                }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", marginBottom: 4 }}>
+                    {day.dayName}
+                  </div>
+                  <div style={{
+                    fontSize: 20, fontWeight: 800, marginBottom: 8,
+                    color: day.isToday ? "#1F6B4F" : "#0f172a",
+                  }}>
+                    {day.dayNum}
+                    {day.isToday ? <span style={{ fontSize: 11, marginLeft: 6, fontWeight: 600, color: "#1F6B4F" }}>Today</span> : null}
+                  </div>
+                  {day.jobs.length > 0 ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                      {day.jobs.map((j) => (
+                        <Link
+                          key={j.id}
+                          href="/calendar"
+                          style={{
+                            fontSize: 11, padding: "2px 6px", borderRadius: 3,
+                            background: j.status === "completed" ? "#d1fae5" : "#eefaf4",
+                            color: j.status === "completed" ? "#065f46" : "#145c3c",
+                            fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                            textDecoration: "none",
+                          }}
+                        >
+                          {j.start_time?.slice(0, 5)} {j.job_title}
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <div style={{ fontSize: 12, color: "var(--text-muted)" }}>No jobs</div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 

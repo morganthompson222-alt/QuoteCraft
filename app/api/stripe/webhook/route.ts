@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { stripe, normalizeTier } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { normalizeTier } from "@/lib/stripe";
 
 function toDate(ts: number) {
   return new Date(ts * 1000).toISOString();
@@ -17,7 +16,7 @@ export async function POST(request: NextRequest) {
 
   let event;
   try {
-    event = stripe.webhooks.constructEvent(
+    event = stripe().webhooks.constructEvent(
       rawBody,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!,
@@ -36,7 +35,7 @@ export async function POST(request: NextRequest) {
       const subscriptionId = session.subscription as string;
 
       if (userId && subscriptionId) {
-        const subscription = (await stripe.subscriptions.retrieve(
+        const subscription = (await stripe().subscriptions.retrieve(
           subscriptionId,
         )) as unknown as Record<string, unknown>;
 

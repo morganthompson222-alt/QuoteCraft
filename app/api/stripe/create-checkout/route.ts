@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const priceId = sanitizeString(body.priceId);
     const returnUrl = sanitizeString(body.returnUrl ?? process.env.NEXT_PUBLIC_APP_URL + "/settings");
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await stripe().checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
       line_items: [{ price: priceId, quantity: 1 }],

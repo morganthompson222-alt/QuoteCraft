@@ -1777,11 +1777,34 @@ button {
   margin: 24px 0 8px;
 }
 
+.legal-content h3 {
+  color: var(--text);
+  font-size: 14px;
+  margin: 16px 0 6px;
+}
+
 .legal-content p {
   color: var(--text-muted);
   font-size: 14px;
   line-height: 1.7;
   margin: 0 0 16px;
+}
+
+.legal-content ul {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0 0 16px;
+  padding-left: 20px;
+}
+
+.legal-content ul li {
+  margin-bottom: 4px;
+}
+
+.legal-content table {
+  border: 1px solid var(--border);
+  border-radius: 6px;
 }
 
 .onboarding {

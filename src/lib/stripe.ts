@@ -1,12 +1,32 @@
 import Stripe from "stripe";
-import { requireEnv } from "./validation";
 
-export const stripe = new Stripe(requireEnv("STRIPE_SECRET_KEY"), {
-  apiVersion: "2026-05-27.dahlia" as const,
-});
+function getStripeInstance(): Stripe {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    throw new Error(
+      "Missing required environment variable: STRIPE_SECRET_KEY",
+    );
+  }
+  return new Stripe(key, {
+    apiVersion: "2026-05-27.dahlia" as const,
+  });
+}
+
+let _stripe: Stripe | null = null;
+
+export function stripe(): Stripe {
+  if (!_stripe) _stripe = getStripeInstance();
+  return _stripe;
+}
 
 export function getStripePublishableKey(): string {
-  return requireEnv("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY");
+  const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+  if (!key) {
+    throw new Error(
+      "Missing required environment variable: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+    );
+  }
+  return key;
 }
 
 export const PLANS = {
