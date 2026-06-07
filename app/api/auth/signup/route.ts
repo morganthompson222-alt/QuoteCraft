@@ -57,6 +57,7 @@ export async function POST(request: NextRequest) {
           .from("profiles")
           .upsert({
             id: data.user.id,
+            plan_tier: "solo",
             region_code: region.code,
             currency_code: region.currencyCode,
             locale: region.locale,
