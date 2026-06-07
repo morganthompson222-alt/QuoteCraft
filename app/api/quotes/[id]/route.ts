@@ -50,6 +50,7 @@ export async function GET(
       jobDate: quote.job_date ?? null,
       startTime: quote.start_time ?? null,
       endTime: quote.end_time ?? null,
+      imageUrl: quote.image_url ?? null,
       customer: {
         id: quote.customers.id,
         name: quote.customers.name,

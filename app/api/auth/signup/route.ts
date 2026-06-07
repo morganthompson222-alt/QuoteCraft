@@ -9,15 +9,6 @@ import {
 import { ApiError, errorResponse } from "@/lib/api-error";
 import { REGIONS } from "@/lib/localization";
 
-function isValidUrl(s: string): boolean {
-  try {
-    const url = new URL(s);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -38,7 +29,7 @@ export async function POST(request: NextRequest) {
 
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!url || !key || !isValidUrl(url)) {
+    if (!url || !key) {
       throw new ApiError(400, "Account creation unavailable. Contact support.", "CONFIG_ERROR");
     }
 

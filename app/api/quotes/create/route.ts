@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
     const customerId = sanitizeString(body.customerId);
     const taxRate = sanitizeNumber(body.taxRate ?? 0, 0, 100);
     const notes = sanitizeOptionalString(body.notes);
+    const imageUrl = sanitizeOptionalString(body.imageUrl);
 
     const items: Array<{
       description: string;
@@ -75,6 +76,7 @@ export async function POST(request: NextRequest) {
         quote_number: quoteNumber,
         tax_rate: taxRate,
         notes,
+        image_url: imageUrl,
         valid_until: body.validUntil ?? null,
       })
       .select()

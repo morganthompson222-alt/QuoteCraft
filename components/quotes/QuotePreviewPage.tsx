@@ -95,6 +95,8 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
   const [reminderLoading, setReminderLoading] = useState(false);
   const [receiptLoading, setReceiptLoading] = useState(false);
   const [completing, setCompleting] = useState(false);
+  const [showSendMenu, setShowSendMenu] = useState(false);
+  const [showMarkSentAfterPdf, setShowMarkSentAfterPdf] = useState(false);
   const [showJobModal, setShowJobModal] = useState(false);
 
   // Scheduling fields
@@ -295,6 +297,29 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
     }
   }
 
+  async function handleSendLink() {
+    setShowSendMenu(false);
+    const url = `${window.location.origin}/q/${quoteId}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setStatusError("Link copied! Marking as sent...");
+      setTimeout(() => setStatusError(""), 2000);
+    } catch {
+      setStatusError("Failed to copy link");
+      setTimeout(() => setStatusError(""), 2000);
+    }
+    await updateStatus("sent");
+    setRefreshKey((k) => k + 1);
+  }
+
+  async function handleSendPdf() {
+    setShowSendMenu(false);
+    await downloadPdf();
+    if (state.status === "success" && state.data.status === "draft") {
+      setShowMarkSentAfterPdf(true);
+    }
+  }
+
   const quote = state.status === "success" ? state.data : null;
   const validTransitions = quote ? statusTransitions[quote.status] ?? [] : [];
   const hasDate = quote?.jobDate != null;
@@ -340,11 +365,38 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
         <>
           {/* Actions */}
           <div className="qp-actions">
-            {(validTransitions.includes("sent") || validTransitions.includes("accepted") || validTransitions.includes("rejected") || validTransitions.includes("expired")) ? (
+            {(validTransitions.length > 0 || quote.status === "draft") ? (
               <>
                 <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>Status</div>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  {validTransitions.includes("sent") ? (
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                  {/* Send button for draft — shows dropdown */}
+                  {quote.status === "draft" ? (
+                    <div style={{ position: "relative" }}>
+                      <button className="button button--primary" type="button" onClick={() => setShowSendMenu((v) => !v)} style={{ position: "relative" }}>
+                        Send
+                      </button>
+                      {showSendMenu ? (
+                        <>
+                          <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowSendMenu(false)} />
+                          <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 200, overflow: "hidden" }}>
+                            <button type="button" onClick={handleSendLink} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
+                              Share link
+                              <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Copy link & mark as sent</span>
+                            </button>
+                            <button type="button" onClick={handleSendPdf} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
+                              Download PDF
+                              <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Download quote, mark as sent later</span>
+                            </button>
+                          </div>
+                        </>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  {/* Mark as sent — shown after PDF download in draft, or for valid transitions in sent-accepted states */}
+                  {showMarkSentAfterPdf && quote.status === "draft" ? (
+                    <button className="button button--primary" type="button" onClick={() => updateStatus("sent")}>Mark as sent</button>
+                  ) : null}
+                  {validTransitions.includes("sent") && quote.status !== "draft" ? (
                     <button className="button button--primary" type="button" onClick={() => updateStatus("sent")}>Mark as sent</button>
                   ) : null}
                   {validTransitions.includes("accepted") ? (
@@ -361,12 +413,20 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
               </>
             ) : null}
 
-            {(quote.status !== "draft") ? (
+            {(quote.status !== "draft" && quote.status !== "rejected" && quote.status !== "expired") ? (
               <>
                 <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>Documents</div>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   <button className="button button--secondary" type="button" disabled={pdfLoading} onClick={downloadPdf}>
                     {pdfLoading ? "Preparing PDF..." : "Download PDF"}
+                  </button>
+                  <button className="button button--secondary" type="button" onClick={() => {
+                    const url = `${window.location.origin}/q/${quoteId}`;
+                    navigator.clipboard.writeText(url);
+                    setStatusError("Share link copied!");
+                    setTimeout(() => setStatusError(""), 2000);
+                  }}>
+                    Copy share link
                   </button>
                   {!quote.paid && planTier !== "solo" ? (
                     <button className="button button--secondary" type="button" disabled={reminderLoading} onClick={downloadReminder} style={{ borderColor: "var(--danger)", color: "var(--danger)" }}>
@@ -383,16 +443,18 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
               </>
             ) : null}
 
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <button className={`button ${quote.paid ? "button--secondary" : "button--primary"}`} type="button" onClick={() => updateStatus(undefined, !quote.paid)}>
-                {quote.paid ? "Mark unpaid" : "Mark paid"}
-              </button>
-              {quote.jobId && quote.jobStatus !== "completed" ? (
-                <button className="button button--secondary" type="button" disabled={completing} onClick={markJobCompleted} style={{ borderColor: "var(--success, #065f46)", color: "var(--success, #065f46)" }}>
-                  {completing ? "Completing..." : "Mark as completed"}
+            {quote.status !== "rejected" && quote.status !== "expired" ? (
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button className={`button ${quote.paid ? "button--secondary" : "button--primary"}`} type="button" onClick={() => updateStatus(undefined, !quote.paid)}>
+                  {quote.paid ? "Mark unpaid" : "Mark paid"}
                 </button>
-              ) : null}
-            </div>
+                {quote.jobId && quote.jobStatus !== "completed" ? (
+                  <button className="button button--secondary" type="button" disabled={completing} onClick={markJobCompleted} style={{ borderColor: "var(--success, #065f46)", color: "var(--success, #065f46)" }}>
+                    {completing ? "Completing..." : "Mark as completed"}
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
           </div>
 
           {statusError ? (

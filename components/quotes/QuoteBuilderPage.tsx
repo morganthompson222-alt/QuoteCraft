@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useRegion } from "../../hooks/useRegion";
 
@@ -72,6 +72,9 @@ export function QuoteBuilderPage() {
   ]);
   const [taxRate, setTaxRate] = useState(0);
   const [notes, setNotes] = useState("");
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState(false);
+  const imageRef = useRef<HTMLInputElement>(null);
   const [validUntil, setValidUntil] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [apiError, setApiError] = useState("");
@@ -156,6 +159,22 @@ export function QuoteBuilderPage() {
     return Object.keys(nextErrors).length === 0;
   }
 
+  async function handleImage(f: File) {
+    if (f.size > 2 * 1024 * 1024) { setApiError("Image must be under 2 MB."); return; }
+    setApiError("");
+    setImageLoading(true);
+    try {
+      const b64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error("Failed"));
+        reader.readAsDataURL(f);
+      });
+      setImageUrl(b64);
+    } catch { setApiError("Failed to read image."); }
+    finally { setImageLoading(false); }
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setApiError("");
@@ -178,6 +197,7 @@ export function QuoteBuilderPage() {
         taxRate: taxRate || undefined,
         notes: notes.trim() || undefined,
         validUntil: validUntil || undefined,
+        imageUrl: imageUrl || undefined,
       };
 
       const response = await fetch("/api/quotes/create", {
@@ -527,24 +547,25 @@ export function QuoteBuilderPage() {
           <div className="bp-section__body bp-section__body--cols">
             <div className="field">
               <label htmlFor="quote-notes">Notes</label>
-              <textarea
-                id="quote-notes"
-                className="bp-textarea"
-                placeholder="Payment terms, scope notes, etc."
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-              />
+              <textarea id="quote-notes" className="bp-textarea" placeholder="Payment terms, scope notes, etc." value={notes} onChange={(e) => setNotes(e.target.value)} />
             </div>
             <div className="field">
               <label htmlFor="quote-valid">Valid until</label>
-              <input
-                id="quote-valid"
-                className="line-items__input"
-                type="date"
-                value={validUntil}
-                onChange={(e) => setValidUntil(e.target.value)}
-                style={{ minHeight: 42 }}
-              />
+              <input id="quote-valid" className="line-items__input" type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} style={{ minHeight: 42 }} />
+            </div>
+            <div className="field" style={{ gridColumn: "1 / -1" }}>
+              <label>Attach image</label>
+              {imageUrl ? (
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <img src={imageUrl} alt="Attached" style={{ maxHeight: 80, maxWidth: 160, objectFit: "contain", borderRadius: 4, border: "1px solid var(--border)" }} />
+                  <button className="button button--ghost" type="button" onClick={() => { setImageUrl(null); if (imageRef.current) imageRef.current.value = ""; }} style={{ fontSize: 12 }}>Remove</button>
+                </div>
+              ) : (
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input ref={imageRef} type="file" accept="image/*" style={{ fontSize: 13 }} onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImage(f); }} />
+                  {imageLoading ? <span style={{ fontSize: 12, color: "var(--text-muted)" }}>Loading...</span> : null}
+                </div>
+              )}
             </div>
           </div>
         </div>

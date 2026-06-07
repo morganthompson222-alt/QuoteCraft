@@ -34,6 +34,25 @@ export async function GET(
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
+    // Embed logo if available
+    let logoImage: Awaited<ReturnType<typeof pdfDoc.embedPng>> | null = null;
+    let logoDims: { width: number; height: number } | null = null;
+    const logoUrl = (profile as Record<string, unknown>)?.logo_url as string | undefined;
+    if (logoUrl && typeof logoUrl === "string" && logoUrl.startsWith("data:image/")) {
+      try {
+        const match = logoUrl.match(/^data:image\/(png|jpeg|jpg);base64,(.+)$/);
+        if (match) {
+          const type = match[1] === "png" ? "png" : "jpg";
+          const b64 = match[2];
+          const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+          if (type === "png") logoImage = await pdfDoc.embedPng(bytes);
+          else logoImage = await pdfDoc.embedJpg(bytes);
+          const scale = Math.min(120 / logoImage.width, 60 / logoImage.height, 1);
+          logoDims = { width: logoImage.width * scale, height: logoImage.height * scale };
+        }
+      } catch { /* logo embed failed, skip */ }
+    }
+
     const page = pdfDoc.addPage([595.28, 841.89]);
     const { width, height } = page.getSize();
 
@@ -98,6 +117,11 @@ export async function GET(
     if (user?.email) {
       page.drawText(`Email: ${user.email}`, { x: 50, y, size: 10, font, color: rgb(0.4, 0.4, 0.4) });
       y -= 14;
+    }
+
+    // Draw logo top-right
+    if (logoImage && logoDims) {
+      page.drawImage(logoImage, { x: width - 50 - logoDims.width, y: height - 60 - logoDims.height, width: logoDims.width, height: logoDims.height });
     }
 
     y -= 6;

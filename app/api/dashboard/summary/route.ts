@@ -15,12 +15,13 @@ export async function GET(_request: NextRequest) {
     const todayKey = toKey(today);
     const endKey = toKey(new Date(today.getTime() + 3 * 86400000));
 
-    const [customerCountResult, openQuotesResult, recentQuotesResult, recentCustomersResult, upcomingJobsResult] = await Promise.all([
+    const [customerCountResult, openQuotesResult, recentQuotesResult, recentCustomersResult, upcomingJobsResult, paidRevenueResult] = await Promise.all([
       supabase.from("customers").select("id", { count: "exact", head: true }).eq("user_id", userId),
       supabase.from("quotes").select("id", { count: "exact", head: true }).eq("user_id", userId).in("status", ["draft", "sent"]),
       supabase.from("quotes").select("id, quote_number, customer_id, status, total, created_at, customers!inner(name)").eq("user_id", userId).order("created_at", { ascending: false }).limit(10),
       supabase.from("customers").select("id, name").eq("user_id", userId).order("created_at", { ascending: false }).limit(5),
       supabase.from("jobs").select("*").eq("user_id", userId).gte("job_date", todayKey).lte("job_date", endKey).order("job_date", { ascending: true }),
+      supabase.from("quotes").select("total").eq("user_id", userId).eq("paid", true),
     ]);
 
     if (customerCountResult.error) throw new ApiError(400, customerCountResult.error.message);
@@ -67,12 +68,14 @@ export async function GET(_request: NextRequest) {
     });
 
     const upcomingJobCount = (upcomingJobsResult.data ?? []).length;
+    const paidRevenue = (paidRevenueResult.data ?? []).reduce((sum: number, q: Record<string, unknown>) => sum + Number(q.total ?? 0), 0);
 
     return NextResponse.json({
       customerCount: customerCountResult.count ?? 0,
       openQuotesCount: openQuotesResult.count ?? 0,
       recentQuotes, recentCustomers,
       upcomingJobCount,
+      paidRevenue,
       calendarDays,
     });
   } catch (error) {

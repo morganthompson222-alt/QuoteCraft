@@ -34,6 +34,7 @@ type DashboardSummary = {
   recentQuotes: RecentQuote[];
   recentCustomers: RecentCustomer[];
   upcomingJobCount: number;
+  paidRevenue: number;
   calendarDays: CalendarDay[];
 };
 
@@ -191,6 +192,10 @@ export function DashboardPage() {
       {state.status === "success" && !isEmpty ? (
         <>
           <div className="dashboard-stats">
+            <div className="stat-card" style={{ background: "#eefaf4", border: "1px solid #a7f3d0" }}>
+              <span className="stat-card__value" style={{ color: "#065f46" }}>{formatCurrency(state.data.paidRevenue)}</span>
+              <span className="stat-card__label" style={{ color: "#065f46" }}>Revenue to date</span>
+            </div>
             <div className="stat-card">
               <span className="stat-card__value">{state.data.customerCount}</span>
               <span className="stat-card__label">Total customers</span>
