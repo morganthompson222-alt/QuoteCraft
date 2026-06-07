@@ -163,11 +163,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       userId,
       email,
       token: session.data.session.access_token,
     });
+
+    // Set auth cookie so middleware recognizes the session
+    const projectRef = (supabaseUrl.match(/https:\/\/([^.]+)/)?.[1] ?? "");
+    const cookieName = `sb-${projectRef}-auth-token.0`;
+    const cookieValue = Buffer.from(JSON.stringify([
+      session.data.session.access_token,
+      session.data.session.refresh_token,
+      session.data.session.access_token,
+    ])).toString("base64");
+    response.cookies.set(cookieName, cookieValue, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: "lax",
+      secure: true,
+      httpOnly: false,
+    });
+    return response;
   } catch (error) {
     // Surface real error for debugging
     if (error instanceof ApiError) {
