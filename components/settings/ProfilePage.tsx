@@ -31,6 +31,48 @@ const COLOUR_SWATCHES: Record<string, string> = {
 };
 const COLOUR_NAMES = COLOUR_SWATCHES;
 
+function TemplatePreview({ template, colour }: { template: string; colour: string }) {
+  const hex = `#${colour}`;
+  const light = `${hex}18`;
+  const s = (x: number) => `${x}px`;
+  const pre: Record<string, { header: boolean; bar: boolean; lines: boolean; accent: boolean; thick: boolean }> = {
+    classic: { header: true, bar: false, lines: false, accent: false, thick: false },
+    modern: { header: false, bar: true, lines: false, accent: true, thick: true },
+    professional: { header: false, bar: false, lines: true, accent: false, thick: false },
+    creative: { header: true, bar: true, lines: false, accent: true, thick: true },
+    minimal: { header: false, bar: false, lines: false, accent: false, thick: false },
+    bold: { header: true, bar: true, lines: true, accent: false, thick: true },
+    elegant: { header: false, bar: true, lines: true, accent: false, thick: false },
+    natural: { header: true, bar: false, lines: false, accent: true, thick: false },
+  };
+  const p = pre[template] ?? pre.classic;
+  return (
+    <div style={{ width: 220, height: 100, border: "1px solid #e5e7eb", borderRadius: 6, overflow: "hidden", marginTop: 8, background: "#fff", position: "relative" }}>
+      {p.bar && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: hex }} />}
+      {p.header && <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 75, background: light }} />}
+      <div style={{ position: "absolute", top: p.header ? 4 : 4, left: 8, fontWeight: 700, fontSize: 9, color: p.thick ? hex : "#0f172a" }}>
+        Company Name
+      </div>
+      <div style={{ position: "absolute", top: p.header ? 16 : 14, left: 8, fontSize: 7, color: hex }}>
+        {p.accent && <span style={{ display: "inline-block", width: 20, height: 1, background: hex, marginRight: 4, verticalAlign: "middle" }} />}
+        Service Catalogue
+      </div>
+      {p.lines && <div style={{ position: "absolute", top: 24, left: 8, right: 8, height: 0.5, background: hex }} />}
+      <div style={{ position: "absolute", top: p.lines ? 28 : 24, left: 8, right: 8 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", borderBottom: p.lines ? "0.5px solid #e5e7eb" : "none", padding: "1px 0", fontSize: 6, color: "#64748b" }}>
+          <span>Service</span><span>Price</span>
+        </div>
+        {["Hedge trimming","Patio cleaning","Tree surgery"].slice(0, 3).map((svc, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 5.5, color: "#334155", padding: "1px 0" }}>
+            <span>{svc}</span><span style={{ fontWeight: 600 }}>£X</span>
+          </div>
+        ))}
+      </div>
+      {p.accent && <div style={{ position: "absolute", bottom: 4, left: 8, height: 1.5, width: 30, background: hex }} />}
+    </div>
+  );
+}
+
 type ProfileState =
   | { status: "loading" }
   | { status: "error"; error: string }
@@ -360,6 +402,7 @@ export function ProfilePage() {
                               <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
                             ))}
                           </select>
+                          <TemplatePreview template={catalogueTemplate} colour={catalogueColour} />
                         </div>
                         <div>
                           <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Colour</label>
@@ -459,6 +502,7 @@ export function ProfilePage() {
                       ))}
                     </select>
                   </div>
+                  <TemplatePreview template={catalogueTemplate} colour={catalogueColour} />
                   <div>
                     <label style={{ fontSize: 11, fontWeight: 600, color: "#64748b", display: "block", marginBottom: 4 }}>Colour</label>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 4, maxWidth: 280 }}>

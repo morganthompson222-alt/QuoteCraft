@@ -160,15 +160,15 @@ export async function GET(request: NextRequest) {
     const pageWidth = width - margin * 2;
 
     // Template-specific header + layout
-    const templateConfigs: Record<TemplateId, { headerBg: boolean; headerBar: boolean; tableLines: boolean; accentBlock: boolean; subtitle: string }> = {
-      classic: { headerBg: true, headerBar: false, tableLines: false, accentBlock: false, subtitle: "Service & Pricing Catalogue" },
-      modern: { headerBg: false, headerBar: true, tableLines: false, accentBlock: true, subtitle: "Service Catalogue" },
-      professional: { headerBg: false, headerBar: false, tableLines: true, accentBlock: false, subtitle: "Official Price List" },
-      creative: { headerBg: false, headerBar: true, tableLines: false, accentBlock: true, subtitle: "What We Offer" },
-      minimal: { headerBg: false, headerBar: false, tableLines: false, accentBlock: false, subtitle: "Services" },
-      bold: { headerBg: true, headerBar: false, tableLines: true, accentBlock: false, subtitle: "PRICE LIST" },
-      elegant: { headerBg: false, headerBar: true, tableLines: true, accentBlock: false, subtitle: "Our Services" },
-      natural: { headerBg: true, headerBar: false, tableLines: false, accentBlock: true, subtitle: "Service Guide" },
+    const templateConfigs: Record<TemplateId, { headerBg: boolean; headerBar: boolean; tableLines: boolean; accentBlock: boolean; thickHeader: boolean; subtitle: string }> = {
+      classic: { headerBg: true, headerBar: false, tableLines: false, accentBlock: false, thickHeader: false, subtitle: "Service & Pricing Catalogue" },
+      modern: { headerBg: false, headerBar: true, tableLines: false, accentBlock: true, thickHeader: true, subtitle: "Service Catalogue" },
+      professional: { headerBg: false, headerBar: false, tableLines: true, accentBlock: false, thickHeader: false, subtitle: "Official Price List" },
+      creative: { headerBg: true, headerBar: true, tableLines: false, accentBlock: true, thickHeader: true, subtitle: "What We Offer" },
+      minimal: { headerBg: false, headerBar: false, tableLines: false, accentBlock: false, thickHeader: false, subtitle: "Services" },
+      bold: { headerBg: true, headerBar: true, tableLines: true, accentBlock: false, thickHeader: true, subtitle: "PRICE LIST" },
+      elegant: { headerBg: false, headerBar: true, tableLines: true, accentBlock: false, thickHeader: false, subtitle: "Our Services" },
+      natural: { headerBg: true, headerBar: false, tableLines: false, accentBlock: true, thickHeader: false, subtitle: "Service Guide" },
     };
 
     const cfg = templateConfigs[template];
