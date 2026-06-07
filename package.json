@@ -1,0 +1,32 @@
+{
+  "name": "tradely",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "seed": "npx tsx scripts/seed.ts",
+    "db:migrate": "echo 'Run Supabase migrations via supabase/migrations/'"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.107.0",
+    "dotenv": "^17.4.2",
+    "next": "^16.2.7",
+    "openai": "^6.42.0",
+    "pdf-lib": "^1.17.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "stripe": "^22.2.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  }
+}
