@@ -26,12 +26,20 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, "Password must be at least 6 characters");
     }
 
-    const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim().replace(/^["']|["']$/g, "");
-    const anonKey = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "").trim().replace(/^["']|["']$/g, "");
-    const serviceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY ?? "").trim().replace(/^["']|["']$/g, "");
+    const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim().replace(/^["']|["']$/g, "").replace(/\n|\r/g, "");
+    const anonKey = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "").trim().replace(/^["']|["']$/g, "").replace(/\n|\r/g, "");
+    const serviceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY ?? "").trim().replace(/^["']|["']$/g, "").replace(/\n|\r/g, "");
 
     if (!supabaseUrl || !anonKey) {
-      throw new ApiError(500, "Missing Supabase URL or anon key environment variables");
+      const debug = supabaseUrl ? `got "${supabaseUrl.substring(0, 15)}" (${supabaseUrl.length} chars)` : "not set";
+      throw new ApiError(500, `Missing Supabase config: url=${debug}`);
+    }
+
+    // Validate URL format
+    try {
+      new URL(supabaseUrl);
+    } catch {
+      throw new ApiError(500, `Invalid URL format: "${supabaseUrl.substring(0, 30)}"`);
     }
 
     let userId: string | undefined;
