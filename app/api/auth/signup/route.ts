@@ -27,66 +27,106 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, "Password must be at least 6 characters");
     }
 
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!url || !key) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseKey) {
       throw new ApiError(400, "Account creation unavailable. Contact support.", "CONFIG_ERROR");
     }
 
-    const admin = createAdminClient();
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    // Check if email already exists
-    const { data: existingUsers } = await admin.auth.admin.listUsers();
-    const existing = existingUsers?.users?.find(
-      (u: { email?: string }) => u.email?.toLowerCase() === email.toLowerCase()
-    );
-    if (existing) {
-      throw new ApiError(409, "Email already registered");
-    }
+    // Try admin API first (bypasses email confirmation & rate limits)
+    if (serviceKey) {
+      const admin = createAdminClient();
 
-    // Create user via admin API (bypasses email confirmation & rate limits)
-    const { data: newUser, error: createErr } = await admin.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-      user_metadata: { name, region_code: region.code },
-    });
-
-    if (createErr) {
-      if (createErr.message.includes("already been registered")) {
+      const { data: existingUsers } = await admin.auth.admin.listUsers();
+      const exists = existingUsers?.users?.find(
+        (u: { email?: string }) => u.email?.toLowerCase() === email.toLowerCase()
+      );
+      if (exists) {
         throw new ApiError(409, "Email already registered");
       }
-      throw new ApiError(400, createErr.message);
+
+      const { data: newUser, error: createErr } = await admin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: { name, region_code: region.code },
+      });
+
+      if (createErr) {
+        if (createErr.message.includes("already been registered")) {
+          throw new ApiError(409, "Email already registered");
+        }
+        throw new ApiError(400, createErr.message);
+      }
+
+      if (!newUser.user) {
+        throw new ApiError(500, "Failed to create account");
+      }
+
+      await admin.from("profiles").upsert({
+        id: newUser.user.id,
+        plan_tier: "solo",
+        region_code: region.code,
+        currency_code: region.currencyCode,
+        locale: region.locale,
+      });
+
+      const supabase = await createServerSupabaseClient(request);
+      const { data: session, error: signInErr } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInErr) {
+        throw new ApiError(400, "Account created. Please log in.");
+      }
+
+      return NextResponse.json({
+        userId: newUser.user.id,
+        email: newUser.user.email,
+        token: session.session.access_token,
+      });
     }
 
-    if (!newUser.user) {
-      throw new ApiError(500, "Failed to create account");
-    }
-
-    // Create profile with correct plan_tier (admin client bypasses RLS & trigger constraints)
-    await admin.from("profiles").upsert({
-      id: newUser.user.id,
-      plan_tier: "solo",
-      region_code: region.code,
-      currency_code: region.currencyCode,
-      locale: region.locale,
-    });
-
-    // Sign in to get a session token
+    // Fallback: standard signUp via anon key
     const supabase = await createServerSupabaseClient(request);
-    const { data: session, error: signInErr } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: { data: { name, region_code: region.code } },
     });
 
-    if (signInErr) {
-      throw new ApiError(400, "Account created but unable to sign in. Please try logging in.");
+    if (error) {
+      if (error.message.includes("already registered")) {
+        throw new ApiError(409, "Email already registered");
+      }
+      if (error.message.includes("rate limit") || error.message.includes("rate_limit")) {
+        throw new ApiError(429, "Please wait a moment and try again. If this persists, contact support.");
+      }
+      throw new ApiError(400, error.message);
+    }
+
+    if (data.user && data.user.id) {
+      try {
+        const admin = createAdminClient();
+        await admin.from("profiles").upsert({
+          id: data.user.id,
+          plan_tier: "solo",
+          region_code: region.code,
+          currency_code: region.currencyCode,
+          locale: region.locale,
+        });
+      } catch {
+        // silent — DB trigger should handle it
+      }
     }
 
     return NextResponse.json({
-      userId: newUser.user.id,
-      email: newUser.user.email,
-      token: session.session.access_token,
+      userId: data.user!.id,
+      email: data.user!.email,
+      token: data.session!.access_token,
     });
   } catch (error) {
     return errorResponse(error);
