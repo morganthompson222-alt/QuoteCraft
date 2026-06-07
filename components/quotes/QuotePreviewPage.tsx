@@ -98,6 +98,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
   const [showSendMenu, setShowSendMenu] = useState(false);
   const [showMarkSentAfterPdf, setShowMarkSentAfterPdf] = useState(false);
   const [showJobModal, setShowJobModal] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
   const [showAcceptModal, setShowAcceptModal] = useState(false);
 
   const [schedDate, setSchedDate] = useState("");
@@ -320,6 +321,41 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
     }
   }
 
+  function getShareUrl() { return `${window.location.origin}/q/${quoteId}`; }
+
+  function shareVia(platform: "native" | "whatsapp" | "email" | "sms" | "copy") {
+    setShowShareMenu(false);
+    const url = getShareUrl();
+    const title = state.status === "success" ? `Quote ${state.data.quoteNumber}` : "Quote";
+    const text = `Here is your quote: ${url}`;
+
+    switch (platform) {
+      case "native":
+        if (navigator.share) {
+          navigator.share({ title, text, url }).catch(() => {});
+        } else {
+          navigator.clipboard.writeText(url);
+          setStatusError("Link copied!");
+          setTimeout(() => setStatusError(""), 2000);
+        }
+        break;
+      case "whatsapp":
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+        break;
+      case "email":
+        window.open(`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text)}`, "_blank");
+        break;
+      case "sms":
+        window.open(`sms:?body=${encodeURIComponent(text)}`, "_blank");
+        break;
+      case "copy":
+        navigator.clipboard.writeText(url);
+        setStatusError("Link copied!");
+        setTimeout(() => setStatusError(""), 2000);
+        break;
+    }
+  }
+
   const quote = state.status === "success" ? state.data : null;
   const validTransitions = quote ? statusTransitions[quote.status] ?? [] : [];
   const hasDate = quote?.jobDate != null;
@@ -419,14 +455,23 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
                   <button className="button button--secondary" type="button" disabled={pdfLoading} onClick={downloadPdf}>
                     {pdfLoading ? "Preparing PDF..." : "Download PDF"}
                   </button>
-                  <button className="button button--secondary" type="button" onClick={() => {
-                    const url = `${window.location.origin}/q/${quoteId}`;
-                    navigator.clipboard.writeText(url);
-                    setStatusError("Share link copied!");
-                    setTimeout(() => setStatusError(""), 2000);
-                  }}>
-                    Copy share link
-                  </button>
+                  <div style={{ position: "relative" }}>
+                    <button className="button button--secondary" type="button" onClick={() => setShowShareMenu((v) => !v)}>
+                      Share ▾
+                    </button>
+                    {showShareMenu ? (
+                      <>
+                        <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowShareMenu(false)} />
+                        <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 200, overflow: "hidden" }}>
+                          <button type="button" onClick={() => shareVia("native")} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>📱 Share</button>
+                          <button type="button" onClick={() => shareVia("whatsapp")} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>💬 WhatsApp</button>
+                          <button type="button" onClick={() => shareVia("email")} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>✉️ Email</button>
+                          <button type="button" onClick={() => shareVia("sms")} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>💬 SMS</button>
+                          <button type="button" onClick={() => shareVia("copy")} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a" }}>📋 Copy link</button>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
                   {!quote.paid && planTier !== "solo" ? (
                     <button className="button button--secondary" type="button" disabled={reminderLoading} onClick={downloadReminder} style={{ borderColor: "var(--danger)", color: "var(--danger)" }}>
                       {reminderLoading ? "Generating..." : "Send Reminder"}
