@@ -1157,7 +1157,7 @@ button {
 .quote-table {
   display: grid;
   gap: 14px;
-  grid-template-columns: 100px 1fr 90px 100px 100px 70px;
+  grid-template-columns: 90px 1fr 85px 90px 65px 75px 130px 55px;
   padding: 16px 18px;
 }
 
