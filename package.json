@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --ext .ts,.tsx --max-warnings=0",
     "seed": "npx tsx scripts/seed.ts",
     "db:migrate": "echo 'Run Supabase migrations via supabase/migrations/'"
   },
@@ -26,6 +26,8 @@
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.7",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   }
