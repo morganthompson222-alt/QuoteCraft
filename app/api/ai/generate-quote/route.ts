@@ -104,6 +104,7 @@ export async function POST(request: NextRequest) {
     const { data: userData, error: userErr } = await supabase.auth.getUser(token);
     if (userErr || !userData.user) throw new ApiError(401, "Unauthorized");
 
+    await supabase.auth.setSession({ access_token: token, refresh_token: token });
     const user = userData.user;
     await enforcePlanLimit(user.id, "ai_generate");
     const rateLimit = checkRateLimit(user.id);
