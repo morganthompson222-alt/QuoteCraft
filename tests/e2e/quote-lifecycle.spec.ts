@@ -104,6 +104,7 @@ test.describe("Quote lifecycle (status transitions)", () => {
     await expect(page.locator(".status-badge--sent")).toBeVisible();
 
     await page.getByRole("button", { name: "Mark accepted" }).click();
+    await page.getByRole("button", { name: "Accept without scheduling" }).click();
     await expect(page.locator(".status-badge--accepted")).toBeVisible();
   });
 

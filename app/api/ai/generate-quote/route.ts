@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
           materials: result.breakdown.map(b => ({
             name: b.item, quantity: b.quantity, unitPrice: Math.round(b.unitPrice * 100) / 100,
           })),
-          labourCost: result.total,
+          labourCost: 0,
           total: result.total,
           sourceMap: result.sourceMap,
           breakdown: result.breakdown,
