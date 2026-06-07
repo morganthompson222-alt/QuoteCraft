@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import { sanitizeEmail, sanitizeString } from "@/lib/validation";
 import { ApiError, errorResponse } from "@/lib/api-error";
 
@@ -10,14 +10,23 @@ export async function POST(request: NextRequest) {
     const email = sanitizeEmail(body.email);
     const password = sanitizeString(body.password);
 
-    const supabase = await createServerSupabaseClient(request);
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !anonKey) {
+      throw new ApiError(500, "Missing Supabase configuration");
+    }
+
+    const supabase = createClient(supabaseUrl, anonKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error) {
+    if (error || !data.session?.access_token) {
       throw new ApiError(401, "Invalid email or password");
     }
 
@@ -27,6 +36,14 @@ export async function POST(request: NextRequest) {
       token: data.session.access_token,
     });
   } catch (error) {
-    return errorResponse(error);
+    if (error instanceof ApiError) {
+      return errorResponse(error);
+    }
+    console.error("Unhandled login error:", error);
+    const msg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json(
+      { error: { message: `Internal error: ${msg}`, statusCode: 500 } },
+      { status: 500 },
+    );
   }
 }

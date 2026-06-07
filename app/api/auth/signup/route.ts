@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@supabase/supabase-js";
 import {
   sanitizeEmail,
   sanitizeString,
@@ -8,39 +7,6 @@ import {
 } from "@/lib/validation";
 import { ApiError, errorResponse } from "@/lib/api-error";
 import { REGIONS } from "@/lib/localization";
-
-async function tryAdminSignup(email: string, password: string, name: string | null, region: { code: string; currencyCode: string; locale: string }) {
-  const admin = createAdminClient();
-
-  const { data: existingUsers } = await admin.auth.admin.listUsers();
-  const exists = existingUsers?.users?.find(
-    (u: { email?: string }) => u.email?.toLowerCase() === email.toLowerCase()
-  );
-  if (exists) {
-    throw new ApiError(409, "Email already registered");
-  }
-
-  const { data: newUser, error: createErr } = await admin.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true,
-    user_metadata: { name, region_code: region.code },
-  });
-
-  if (createErr || !newUser?.user) {
-    throw new Error(createErr?.message ?? "Failed to create account");
-  }
-
-  await admin.from("profiles").upsert({
-    id: newUser.user.id,
-    plan_tier: "solo",
-    region_code: region.code,
-    currency_code: region.currencyCode,
-    locale: region.locale,
-  });
-
-  return newUser.user;
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -61,81 +27,149 @@ export async function POST(request: NextRequest) {
     }
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!supabaseUrl || !supabaseKey) {
-      throw new ApiError(400, "Account creation unavailable. Contact support.", "CONFIG_ERROR");
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !anonKey) {
+      throw new ApiError(500, "Missing Supabase URL or anon key environment variables");
     }
 
-    // Try admin API first (bypasses email rate limits & confirmation)
-    // If admin fails for any reason, fall back to standard signUp
     let userId: string | undefined;
-    let didAdminWork = false;
 
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    // Path A: Admin API if service key is set
     if (serviceKey) {
       try {
-        const user = await tryAdminSignup(email, password, name, region);
-        userId = user.id;
-        didAdminWork = true;
-      } catch (adminError) {
-        // Admin path failed — silently fall through to standard signUp
-      }
-    }
+        const admin = createClient(supabaseUrl, serviceKey, {
+          auth: { autoRefreshToken: false, persistSession: false },
+        });
 
-    if (!didAdminWork) {
-      const supabase = await createServerSupabaseClient(request);
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { name, region_code: region.code } },
-      });
-
-      if (error) {
-        if (error.message.includes("already registered")) {
+        // Check existing user
+        const listed = await admin.auth.admin.listUsers();
+        const found = listed.data?.users?.find(
+          (u) => (u.email ?? "").toLowerCase() === email.toLowerCase()
+        );
+        if (found) {
           throw new ApiError(409, "Email already registered");
         }
-        if (error.message.includes("rate limit") || error.message.includes("over_email")) {
-          throw new ApiError(429, "Please wait a moment and try again.");
+
+        const created = await admin.auth.admin.createUser({
+          email,
+          password,
+          email_confirm: true,
+          user_metadata: { name, region_code: region.code },
+        });
+
+        if (created.error) {
+          const m = created.error.message ?? "";
+          if (m.toLowerCase().includes("already")) {
+            throw new ApiError(409, "Email already registered");
+          }
+          throw new ApiError(400, `Admin createUser failed: ${m}`);
         }
-        throw new ApiError(400, error.message);
-      }
 
-      if (!data.user?.id) {
-        throw new ApiError(500, "Failed to create account");
-      }
+        if (!created.data?.user?.id) {
+          throw new ApiError(500, "Admin createUser returned no user");
+        }
 
-      userId = data.user.id;
+        userId = created.data.user.id;
 
-      // Try to upsert profile with admin client (best effort)
-      try {
-        const admin = createAdminClient();
-        await admin.from("profiles").upsert({
-          id: data.user.id,
+        // Upsert profile with required fields
+        const profileRes = await admin.from("profiles").upsert({
+          id: userId,
           plan_tier: "solo",
           region_code: region.code,
           currency_code: region.currencyCode,
           locale: region.locale,
         });
-      } catch { /* silent */ }
+
+        if (profileRes.error) {
+          // Profile upsert failed - log but continue (DB trigger may have already created it)
+          console.warn("Profile upsert warning:", profileRes.error.message);
+        }
+      } catch (adminErr) {
+        // If it's already an ApiError (e.g. 409), rethrow
+        if (adminErr instanceof ApiError) throw adminErr;
+        // Otherwise, fall through to standard signUp
+        console.warn("Admin path failed, falling back to anon signUp:", adminErr);
+      }
     }
 
-    // Sign in to get a session token
-    const supabase = await createServerSupabaseClient(request);
-    const { data: session, error: signInErr } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    // Path B: Standard signUp via anon key (used if admin path didn't succeed)
+    if (!userId) {
+      const anon = createClient(supabaseUrl, anonKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
 
-    if (signInErr) {
-      throw new ApiError(400, "Account created. Please log in now.");
+      const signUp = await anon.auth.signUp({
+        email,
+        password,
+        options: { data: { name, region_code: region.code } },
+      });
+
+      if (signUp.error) {
+        const m = signUp.error.message ?? "";
+        if (m.toLowerCase().includes("already") || m.toLowerCase().includes("registered")) {
+          throw new ApiError(409, "Email already registered");
+        }
+        if (m.toLowerCase().includes("rate") || m.toLowerCase().includes("over_email")) {
+          throw new ApiError(429, "Email rate limit hit. Please try again in a moment, or set up the SUPABASE_SERVICE_ROLE_KEY environment variable to bypass this.");
+        }
+        throw new ApiError(400, `Signup failed: ${m}`);
+      }
+
+      if (!signUp.data.user?.id) {
+        throw new ApiError(500, "Signup returned no user");
+      }
+
+      userId = signUp.data.user.id;
+
+      // Best-effort: upsert profile via admin client if available
+      if (serviceKey) {
+        try {
+          const admin = createClient(supabaseUrl, serviceKey, {
+            auth: { autoRefreshToken: false, persistSession: false },
+          });
+          await admin.from("profiles").upsert({
+            id: userId,
+            plan_tier: "solo",
+            region_code: region.code,
+            currency_code: region.currencyCode,
+            locale: region.locale,
+          });
+        } catch (e) {
+          console.warn("Profile upsert (fallback) failed:", e);
+        }
+      }
+    }
+
+    // Sign in to get session token
+    const anon = createClient(supabaseUrl, anonKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    const session = await anon.auth.signInWithPassword({ email, password });
+
+    if (session.error || !session.data.session?.access_token) {
+      throw new ApiError(
+        400,
+        `Account created but sign-in failed: ${session.error?.message ?? "no session"}. Try logging in.`,
+      );
     }
 
     return NextResponse.json({
       userId,
       email,
-      token: session.session.access_token,
+      token: session.data.session.access_token,
     });
   } catch (error) {
-    return errorResponse(error);
+    // Surface real error for debugging
+    if (error instanceof ApiError) {
+      return errorResponse(error);
+    }
+    console.error("Unhandled signup error:", error);
+    const msg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json(
+      { error: { message: `Internal error: ${msg}`, statusCode: 500 } },
+      { status: 500 },
+    );
   }
 }
