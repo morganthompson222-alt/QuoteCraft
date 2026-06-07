@@ -62,8 +62,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     const hasToken = !!localStorage.getItem("quotecraft_token");
     const onboarded = localStorage.getItem("quotecraft_onboarded");
+    const forceTour = globalThis.location?.search.includes("tour=1");
     setLoggedIn(hasToken);
-    if (hasToken && !onboarded && !isMarketing) {
+    if (hasToken && (!onboarded || forceTour) && !isMarketing) {
       setShowTour(true);
     }
 
