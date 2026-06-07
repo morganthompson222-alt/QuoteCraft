@@ -60,6 +60,8 @@ export function ProfilePage() {
   const [logoError, setLogoError] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const [cleanupLoading, setCleanupLoading] = useState(false);
+  const [catalogueLoading, setCatalogueLoading] = useState(false);
+  const [catalogueText, setCatalogueText] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -163,6 +165,25 @@ export function ProfilePage() {
       setSaveError(x instanceof Error ? x.message : "Failed to clean");
     } finally {
       setCleanupLoading(false);
+    }
+  }
+
+  async function handleGenerateCatalogue() {
+    setCatalogueLoading(true);
+    setCatalogueText("");
+    try {
+      const tk = localStorage.getItem("quotecraft_token");
+      const r = await fetch("/api/ai/service-catalogue", {
+        headers: tk ? { Authorization: `Bearer ${tk}` } : {},
+      });
+      if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error(j?.error?.message ?? "Failed"); }
+      const d = await r.json();
+      setCatalogueText(d.catalogue);
+      toast("Service catalogue generated from your history.", "success");
+    } catch (x) {
+      setSaveError(x instanceof Error ? x.message : "Failed to generate catalogue");
+    } finally {
+      setCatalogueLoading(false);
     }
   }
 
@@ -280,6 +301,28 @@ export function ProfilePage() {
                 <dt>AI instructions</dt>
                 <dd style={{ whiteSpace: "pre-wrap", fontSize: 13 }}>{profile.customAiInstructions || "—"}</dd>
               </div>
+              <div className="detail-list__row" style={{ alignItems: "flex-start" }}>
+                <dt>Service catalogue</dt>
+                <dd>
+                  {!catalogueText ? (
+                    <button
+                      type="button"
+                      onClick={handleGenerateCatalogue}
+                      disabled={catalogueLoading}
+                      style={{
+                        padding: "6px 14px", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer",
+                        border: "1px solid var(--border)", background: "#fff", color: "#0f172a",
+                      }}
+                    >
+                      {catalogueLoading ? "Generating..." : "Generate from history ✨"}
+                    </button>
+                  ) : (
+                    <div style={{ whiteSpace: "pre-wrap", fontSize: 13, color: "#334155", lineHeight: 1.7 }}>
+                      {catalogueText}
+                    </div>
+                  )}
+                </dd>
+              </div>
             </dl>
           </div>
         ) : (
@@ -324,6 +367,29 @@ export function ProfilePage() {
                 <span style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4, display: "block" }}>
                   AI will use these rates exactly. Keep it specific: item + price + unit (per hour, per sqm, etc).
                 </span>
+                <div style={{ display: "flex", gap: 8, marginTop: 10, alignItems: "center", flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    onClick={handleGenerateCatalogue}
+                    disabled={catalogueLoading}
+                    style={{
+                      padding: "6px 14px", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer",
+                      border: "1px solid var(--border)", background: "#fff", color: "#0f172a",
+                      opacity: catalogueLoading ? 0.5 : 1,
+                    }}
+                  >
+                    {catalogueLoading ? "Generating..." : "Generate service catalogue"}
+                  </button>
+                </div>
+                {catalogueText ? (
+                  <div style={{
+                    marginTop: 12, padding: "14px 18px", background: "#f8fafc", border: "1px solid var(--border)",
+                    borderRadius: 8, whiteSpace: "pre-wrap", fontSize: 13, color: "#334155", lineHeight: 1.7,
+                    maxHeight: 300, overflow: "auto",
+                  }}>
+                    {catalogueText}
+                  </div>
+                ) : null}
               </div>
             </div>
             {saveError ? <div className="auth-form__error" role="alert" style={{ marginTop: 16 }}>{saveError}</div> : null}
