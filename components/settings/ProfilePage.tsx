@@ -19,6 +19,7 @@ type Profile = {
   defaultTaxRate: number;
   quotePrefix: string;
   planTier: string;
+  customAiInstructions: string | null;
 };
 
 type ProfileState =
@@ -49,7 +50,7 @@ export function ProfilePage() {
   const [state, setState] = useState<ProfileState>({ status: "loading" });
   const [form, setForm] = useState({
     name: "", companyName: "", phone: "", address: "", city: "", state: "", zip: "",
-    defaultTaxRate: 0, quotePrefix: "Q-",
+    defaultTaxRate: 0, quotePrefix: "Q-", customAiInstructions: "",
   });
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -77,6 +78,7 @@ export function ProfilePage() {
             name: data.name ?? "", companyName: data.companyName ?? "", phone: data.phone ?? "",
             address: data.address ?? "", city: data.city ?? "", state: data.state ?? "", zip: data.zip ?? "",
             defaultTaxRate: data.defaultTaxRate ?? 0, quotePrefix: data.quotePrefix ?? "Q-",
+            customAiInstructions: data.customAiInstructions ?? "",
           });
           setLogoUrl(data.logoUrl ?? null);
           setState({ status: "loaded", data });
@@ -124,7 +126,8 @@ export function ProfilePage() {
       const token = window.localStorage.getItem("quotecraft_token");
       const body: Record<string, string | number> = {};
       for (const [key, value] of Object.entries(form)) {
-        if (key === "defaultTaxRate" && value !== 0) body[key] = Number(value);
+        if (key === "customAiInstructions") body[key] = typeof value === "string" ? value : "";
+        else if (key === "defaultTaxRate" && value !== 0) body[key] = Number(value);
         else if (typeof value === "string" && value.trim()) body[key] = value.trim();
       }
       const response = await fetch("/api/profile", {
@@ -148,6 +151,7 @@ export function ProfilePage() {
       name: d.name ?? "", companyName: d.companyName ?? "", phone: d.phone ?? "",
       address: d.address ?? "", city: d.city ?? "", state: d.state ?? "", zip: d.zip ?? "",
       defaultTaxRate: d.defaultTaxRate ?? 0, quotePrefix: d.quotePrefix ?? "Q-",
+      customAiInstructions: d.customAiInstructions ?? "",
     });
     setIsEditing(false); setSaveError("");
   }
@@ -250,6 +254,10 @@ export function ProfilePage() {
               <div className="detail-list__row"><dt>Region</dt><dd>{regionCode} ({currencyCode})</dd></div>
               <div className="detail-list__row"><dt>Default tax</dt><dd>{profile.defaultTaxRate}%</dd></div>
               <div className="detail-list__row"><dt>Quote prefix</dt><dd>{profile.quotePrefix}</dd></div>
+              <div className="detail-list__row">
+                <dt>AI instructions</dt>
+                <dd style={{ whiteSpace: "pre-wrap", fontSize: 13 }}>{profile.customAiInstructions || "—"}</dd>
+              </div>
             </dl>
           </div>
         ) : (
@@ -266,6 +274,21 @@ export function ProfilePage() {
                   />
                 </div>
               ))}
+              <div className="field" style={{ gridColumn: "1 / -1" }}>
+                <label htmlFor="profile-customAiInstructions">AI pricing instructions</label>
+                <textarea
+                  id="profile-customAiInstructions"
+                  value={form.customAiInstructions}
+                  onChange={(e) => setForm((prev) => ({ ...prev, customAiInstructions: e.target.value }))}
+                  className="bp-textarea"
+                  rows={5}
+                  placeholder={'e.g. I charge £80/hr for tree cutting\n£50/hr for patio cleaning\nBricks cost £150 per ton'}
+                  style={{ minHeight: 100 }}
+                />
+                <span style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4, display: "block" }}>
+                  These rates will be included in AI-generated quotes. Available on all plans.
+                </span>
+              </div>
             </div>
             {saveError ? <div className="auth-form__error" role="alert" style={{ marginTop: 16 }}>{saveError}</div> : null}
             <div className="modal-dialog__actions" style={{ marginTop: 20 }}>

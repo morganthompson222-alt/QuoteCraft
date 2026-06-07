@@ -42,6 +42,7 @@ export async function GET(request: NextRequest) {
       regionCode: profile?.region_code ?? "UK",
       currencyCode: profile?.currency_code ?? "GBP",
       locale: profile?.locale ?? "en-GB",
+      customAiInstructions: profile?.custom_ai_instructions ?? null,
     });
   } catch (error) {
     return errorResponse(error);
@@ -96,6 +97,9 @@ export async function PUT(request: NextRequest) {
       }
       profileUpdate.plan_tier = tier;
     }
+    if (body.customAiInstructions !== undefined) {
+      profileUpdate.custom_ai_instructions = sanitizeOptionalString(body.customAiInstructions);
+    }
 
     const hasUpdates = Object.keys(profileUpdate).length > 0 || nameUpdate !== undefined;
     if (!hasUpdates) {
@@ -143,6 +147,7 @@ export async function PUT(request: NextRequest) {
       regionCode: updated?.region_code ?? "UK",
       currencyCode: updated?.currency_code ?? "GBP",
       locale: updated?.locale ?? "en-GB",
+      customAiInstructions: updated?.custom_ai_instructions ?? null,
     });
   } catch (error) {
     return errorResponse(error);

@@ -43,8 +43,8 @@ function checkRateLimit(userId: string) {
   };
 }
 
-async function parseNaturalLanguage(input: string) {
-  const prompt = `You are a quote generation assistant for a contracting business.
+async function parseNaturalLanguage(input: string, customInstructions?: string | null) {
+  let prompt = `You are a quote generation assistant for a contracting business.
 Parse the following natural language request and return a JSON object with:
 - description: a short summary of the job
 - materials: an array of { name: string, quantity: number, unitPrice: number }
@@ -54,9 +54,13 @@ Rules:
 - Add a 15% markup to all prices (materials and labour)
 - Be realistic about quantities and pricing
 - Return ONLY valid JSON, no markdown, no explanation
-- Use GBP pricing
+- Use GBP pricing`;
 
-Input: "${input}"`;
+  if (customInstructions) {
+    prompt += `\n\nCRITICAL - Use the following pricing and preferences from the business owner:\n${customInstructions}\n\nThese rates override any default pricing.`;
+  }
+
+  prompt += `\n\nInput: "${input}"`;
 
   const openai = await getOpenAI();
   const response = await openai.chat.completions.create({
@@ -120,7 +124,17 @@ export async function POST(request: NextRequest) {
       throw new ApiError(400, "Input must be at least 3 characters", "VALIDATION_ERROR");
     }
 
-    const result = await parseNaturalLanguage(input);
+    // Fetch custom AI instructions from profile
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("custom_ai_instructions")
+      .eq("id", user.id)
+      .single();
+
+    const result = await parseNaturalLanguage(
+      input,
+      (profile as { custom_ai_instructions?: string })?.custom_ai_instructions,
+    );
 
     return NextResponse.json(
       {

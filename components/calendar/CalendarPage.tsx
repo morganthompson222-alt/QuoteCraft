@@ -201,7 +201,7 @@ export function CalendarPage() {
 
   // List view
   const filtered = listTab === "all" ? jobs : jobs.filter((j) => j.status === listTab);
-  const sorted = [...filtered].sort((a, b) => b.job_date.localeCompare(a.job_date));
+  const sorted = [...filtered].sort((a, b) => a.job_date.localeCompare(b.job_date));
   const counts = { all: jobs.length } as Record<string, number>;
   for (const j of jobs) counts[j.status] = (counts[j.status] ?? 0) + 1;
 
