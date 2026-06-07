@@ -42,7 +42,6 @@ function LineChart({ data }: { data: MonthlyEntry[] }) {
 
   return (
     <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", maxWidth: w, height: "auto" }}>
-      {/* Grid lines */}
       {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
         const y = padTop + chartH - ratio * chartH;
         return (
@@ -56,36 +55,75 @@ function LineChart({ data }: { data: MonthlyEntry[] }) {
           </g>
         );
       })}
-
-      {/* X-axis labels */}
       {points.filter((_, i) => i % Math.max(Math.floor(data.length / 6), 1) === 0).map((p) => (
-        <text key={p.month} x={p.x} y={h - 6} textAnchor="middle" fontSize={10} fill="#94a3b8">
-          {p.label}
-        </text>
+        <text key={p.month} x={p.x} y={h - 6} textAnchor="middle" fontSize={10} fill="#94a3b8">{p.label}</text>
       ))}
-
-      {/* Area fill */}
-      <path
-        d={`${pathD} L${points[points.length - 1].x},${padTop + chartH} L${points[0].x},${padTop + chartH} Z`}
-        fill="url(#revenueGradient)"
-        opacity={0.3}
-      />
-
-      {/* Line */}
+      <path d={`${pathD} L${points[points.length - 1].x},${padTop + chartH} L${points[0].x},${padTop + chartH} Z`} fill="url(#revenueGradient)" opacity={0.3} />
       <path d={pathD} fill="none" stroke={GREEN} strokeWidth={2.5} strokeLinejoin="round" />
-
-      {/* Points */}
       {points.map((p) => (
         <circle key={p.month} cx={p.x} cy={p.y} r={3} fill="#fff" stroke={GREEN} strokeWidth={2} />
       ))}
-
-      {/* Gradient */}
       <defs>
         <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={GREEN} stopOpacity={0.4} />
           <stop offset="100%" stopColor={GREEN} stopOpacity={0} />
         </linearGradient>
       </defs>
+    </svg>
+  );
+}
+
+function BarChart({ data }: { data: MonthlyEntry[] }) {
+  const w = 700;
+  const h = 260;
+  const padLeft = 50;
+  const padRight = 20;
+  const padTop = 20;
+  const padBottom = 30;
+  const chartW = w - padLeft - padRight;
+  const chartH = h - padTop - padBottom;
+
+  const maxVal = Math.max(...data.map((d) => d.total), 1);
+  const barCount = data.length;
+  const barGap = 8;
+  const barW = Math.max(4, (chartW - barGap * (barCount - 1)) / barCount);
+
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", maxWidth: w, height: "auto" }}>
+      {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
+        const y = padTop + chartH - ratio * chartH;
+        return (
+          <g key={ratio}>
+            <line x1={padLeft} y1={y} x2={padLeft + chartW} y2={y} stroke={BORDER} strokeWidth={1} />
+            {ratio > 0 && (
+              <text x={padLeft - 8} y={y + 4} textAnchor="end" fontSize={10} fill="#94a3b8">
+                £{Math.round(maxVal * ratio)}
+              </text>
+            )}
+          </g>
+        );
+      })}
+      {data.map((d, i) => {
+        const x = padLeft + i * (barW + barGap);
+        const barH = Math.max(2, (d.total / maxVal) * chartH);
+        const y = padTop + chartH - barH;
+        return (
+          <g key={d.month}>
+            <rect x={x} y={y} width={barW} height={barH} rx={2} fill={GREEN} opacity={0.8} />
+            {barW > 20 && (
+              <text x={x + barW / 2} y={y - 4} textAnchor="middle" fontSize={9} fill="#475569" fontWeight={600}>
+                £{Math.round(d.total)}
+              </text>
+            )}
+          </g>
+        );
+      })}
+      {data.filter((_, i) => i % Math.max(Math.floor(data.length / 6), 1) === 0).map((d, i) => {
+        const x = padLeft + data.indexOf(d) * (barW + barGap);
+        return (
+          <text key={d.month} x={x + barW / 2} y={h - 6} textAnchor="middle" fontSize={10} fill="#94a3b8">{d.label}</text>
+        );
+      })}
     </svg>
   );
 }
@@ -97,20 +135,21 @@ export default function RevenuePage() {
   const [error, setError] = useState("");
   const [months, setMonths] = useState(12);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [chartType, setChartType] = useState<"line" | "bar">("line");
+  const [planTier, setPlanTier] = useState("solo");
 
   useEffect(() => {
     setLoading(true);
     (async () => {
       try {
         const tk = localStorage.getItem("quotecraft_token");
-        const r = await fetch(`/api/revenue/summary?months=${months}`, {
-          headers: tk ? { Authorization: `Bearer ${tk}` } : {},
-        });
-        if (!r.ok) {
-          const j = await r.json().catch(() => ({}));
-          throw new Error(j?.error?.message ?? "Failed");
-        }
+        const [r, pr] = await Promise.all([
+          fetch(`/api/revenue/summary?months=${months}`, { headers: tk ? { Authorization: `Bearer ${tk}` } : {} }),
+          fetch("/api/profile", { headers: tk ? { Authorization: `Bearer ${tk}` } : {} }),
+        ]);
+        if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error(j?.error?.message ?? "Failed"); }
         setData(await r.json());
+        if (pr.ok) { const p = await pr.json(); setPlanTier(p.planTier ?? "solo"); }
       } catch (x) {
         setError(x instanceof Error ? x.message : "Failed to load");
       } finally {
@@ -118,6 +157,8 @@ export default function RevenuePage() {
       }
     })();
   }, [months, refreshKey]);
+
+  const isPaidPlan = planTier !== "solo" && planTier !== "free";
 
   const S = {
     page: { padding: "32px 24px", maxWidth: 800, margin: "0 auto" } as React.CSSProperties,
@@ -158,7 +199,9 @@ export default function RevenuePage() {
           <h1 style={S.h1}>Revenue analytics</h1>
         </div>
         {data?.monthlyData?.length ? (
-          <button style={S.exportBtn} onClick={handleExportCSV}>Export CSV</button>
+          isPaidPlan ? (
+            <button style={S.exportBtn} onClick={handleExportCSV}>Export CSV</button>
+          ) : null
         ) : null}
       </div>
 
@@ -202,21 +245,40 @@ export default function RevenuePage() {
 
           {/* Chart */}
           <div style={S.chartCard}>
-            <div style={S.timeButtons}>
-              {[3, 6, 12].map((m) => (
-                <button key={m} style={S.timeBtn(months === m)} onClick={() => setMonths(m)}>
-                  {m} months
-                </button>
-              ))}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+              <div style={S.timeButtons}>
+                {[3, 6, 12].map((m) => (
+                  <button key={m} style={S.timeBtn(months === m)} onClick={() => setMonths(m)}>
+                    {m} months
+                  </button>
+                ))}
+              </div>
+              <div style={{ display: "flex", gap: 4 }}>
+                <button style={S.timeBtn(chartType === "line")} onClick={() => setChartType("line")}>Line</button>
+                <button style={S.timeBtn(chartType === "bar")} onClick={() => setChartType("bar")}>Bar</button>
+              </div>
             </div>
             {data.monthlyData.length > 0 ? (
-              <LineChart data={data.monthlyData} />
+              chartType === "line" ? (
+                <LineChart data={data.monthlyData} />
+              ) : (
+                <BarChart data={data.monthlyData} />
+              )
             ) : (
               <div style={{ padding: 40, textAlign: "center", color: "#94a3b8", fontSize: 13 }}>
                 No data for this period
               </div>
             )}
           </div>
+
+          {!isPaidPlan ? (
+            <div style={{
+              marginTop: 14, padding: "10px 16px", background: "#fefce8", border: "1px solid #fde68a",
+              borderRadius: 8, fontSize: 13, color: "#92400e",
+            }}>
+              Export is available on paid plans. Upgrade to download your revenue data as CSV.
+            </div>
+          ) : null}
         </>
       )}
     </section>
