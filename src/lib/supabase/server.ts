@@ -4,8 +4,8 @@ import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 
 export async function createServerSupabaseClient(request?: NextRequest) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim().replace(/^["']|["']$/g, "");
+  const supabaseKey = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "").trim().replace(/^["']|["']$/g, "");
 
   // If a request is passed with a Bearer token, create a direct client (no cookies)
   if (request) {

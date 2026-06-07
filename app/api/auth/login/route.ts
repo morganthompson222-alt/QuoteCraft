@@ -10,8 +10,8 @@ export async function POST(request: NextRequest) {
     const email = sanitizeEmail(body.email);
     const password = sanitizeString(body.password);
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim().replace(/^["']|["']$/g, "");
+    const anonKey = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "").trim().replace(/^["']|["']$/g, "");
 
     if (!supabaseUrl || !anonKey) {
       throw new ApiError(500, "Missing Supabase configuration");
