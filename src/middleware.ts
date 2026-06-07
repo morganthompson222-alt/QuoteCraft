@@ -66,9 +66,13 @@ export async function middleware(request: NextRequest) {
       });
       const { data } = await supabase.auth.getUser();
       if (!data.user) {
+        // Debug: log cookies available and the auth check result
+        const cookies = request.cookies.getAll().map(c => `${c.name}=${c.value.substring(0, 10)}...`);
+        console.warn("Middleware auth failed for", pathname, "cookies:", cookies);
         return NextResponse.redirect(new URL("/login", request.url));
       }
-    } catch {
+    } catch (e) {
+      console.error("Middleware auth error:", e);
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
