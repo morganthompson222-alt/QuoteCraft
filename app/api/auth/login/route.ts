@@ -5,7 +5,7 @@ import { ApiError, errorResponse } from "@/lib/api-error";
 
 function setAuthCookie(response: NextResponse, token: string, refreshToken: string) {
   const projectRef = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").match(/https:\/\/([^.]+)/)?.[1] ?? "";
-  const cookieName = `sb-${projectRef}-auth-token.0`;
+  const cookieName = `sb-${projectRef}-auth-token`;
   const cookieValue = Buffer.from(JSON.stringify([token, refreshToken, token])).toString("base64");
   response.cookies.set(cookieName, cookieValue, {
     path: "/",
