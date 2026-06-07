@@ -54,7 +54,16 @@ Rules:
 - Use GBP pricing`;
 
   if (customInstructions) {
-    prompt += `\n\nCRITICAL - Use the following pricing and preferences from the business owner:\n${customInstructions}\n\nThese rates override any default pricing.`;
+    prompt += `\n\nCRITICAL PRICING RULES - You MUST follow these exactly:
+${customInstructions}
+
+When calculating labourCost:
+- Find the per-unit rate in the pricing rules above (e.g. per hour, per square meter, per item)
+- Multiply by the quantity or area the customer mentioned
+- Add 15% markup AFTER multiplication
+- DO NOT guess or use generic prices — use ONLY the rates provided above
+
+Example: If rules say "£5 per square meter" and customer says "24 square meter patio", labour = 24 × 5 × 1.15 = £138`;
   }
 
   prompt += `\n\nInput: "${input}"`;
