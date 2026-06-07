@@ -86,12 +86,6 @@ export async function GET(
       y -= 14;
     }
 
-    const addrParts = [profileData?.address, profileData?.city, profileData?.state, profileData?.zip].filter(Boolean);
-    if (addrParts.length > 0) {
-      page.drawText(addrParts.join(", "), { x: 50, y, size: 10, font, color: rgb(0.4, 0.4, 0.4) });
-      y -= 14;
-    }
-
     if (user?.email) {
       page.drawText(`Email: ${user.email}`, { x: 50, y, size: 10, font, color: rgb(0.4, 0.4, 0.4) });
       y -= 14;
