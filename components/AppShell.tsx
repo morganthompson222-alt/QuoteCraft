@@ -138,7 +138,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     >
       <header className="app-shell__topbar">
         <Link href={loggedIn ? "/dashboard" : "/"} className="app-shell__brand" aria-label="JobStacker home">
-          <span className="app-shell__mark">QC</span>
+          <span className="app-shell__mark">JS</span>
           <span>JobStacker</span>
         </Link>
 
