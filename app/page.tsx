@@ -219,8 +219,22 @@ export default function LandingPage() {
 
       {/* ═══════════════════ CUSTOMERS ═══════════════════ */}
       <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 32px", background: "#f8fafc", borderTop: `1px solid ${BORDER}` }}>
-        <div style={{ maxWidth: 1200, width: "100%", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center", direction: "rtl" }}>
-          <div style={{ direction: "ltr" }}>
+        <div style={{ maxWidth: 1200, width: "100%", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
+          <div style={{ order: 2 }}>
+            <SectionBadge text="Customers" />
+            <SectionHeading>Know every customer and every quote.</SectionHeading>
+            <SectionBody>
+              Store customer contact details, track their full quote history, and see which jobs are scheduled — all from one customer profile page.
+            </SectionBody>
+            <FeatureList items={[
+              "Full quote history per customer",
+              "Search by name, company, or email",
+              "Quick-create new customer in 2 clicks",
+              "Phone, email, address all in one place",
+            ]} />
+            <div style={{ marginTop: 32 }}>{CTA}</div>
+          </div>
+          <div style={{ order: 1 }}>
             <SectionBadge text="Customers" />
             <SectionHeading>Know every customer and every quote.</SectionHeading>
             <SectionBody>
@@ -288,7 +302,7 @@ export default function LandingPage() {
                 const isThisMonth = day >= 1 && day <= 30;
                 const jobEntry = mockJobs.find((j) => j.day === (day > 0 ? day : 0));
                 return (
-                  <div key={i} style={{ minHeight: 56, padding: 4, textAlign: "center", borderRadius: 5, background: day === 12 ? GREEN_LIGHT : "transparent" }}>
+                  <div key={i} style={{ minHeight: 56, padding: 4, textAlign: "center", borderRadius: 5, background: jobEntry ? GREEN_LIGHT : "transparent" }}>
                     <span style={{ fontSize: 12, fontWeight: 700, color: isThisMonth ? (day === 12 ? GREEN : DARK) : "#d1d5db" }}>
                       {day > 0 ? day : ""}
                     </span>

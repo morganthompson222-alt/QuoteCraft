@@ -38,26 +38,42 @@ function checkRateLimit(userId: string) {
   return { limit: RATE_LIMIT, remaining: RATE_LIMIT - entry.count, reset: entry.windowStart + RATE_WINDOW_MS };
 }
 
-async function estimateWithAI(input: string, regionLabel: string, currencyCode: string): Promise<{
+async function estimateWithAI(input: string, regionLabel: string, currencyCode: string, costRates?: string): Promise<{
   description: string; materials: Array<{ name: string; quantity: number; unitPrice: number }>;
   labourCost: number; total: number;
 }> {
   const openai = await getOpenAI();
+  let rateGuidance = "";
+  if (costRates?.trim()) {
+    rateGuidance = `\nUse these cost rates when available:\n${costRates}\n`;
+  }
+
   const response = await openai.chat.completions.create({
     model: process.env.AI_MODEL ?? (process.env.GROQ_API_KEY ? "llama-3.3-70b-versatile" : "gpt-4o-mini"),
     messages: [{
       role: "user",
-      content: `Generate a realistic quote for: "${input}"
+      content: `Generate a detailed quote for this job: "${input}"
 
-Return JSON: { "description": "...", "materials": [{ "name": "...", "quantity": number, "unitPrice": number }], "labourCost": number }
+Return JSON:
+{
+  "description": "brief job summary",
+  "materials": [
+    { "name": "material name", "quantity": number, "unitPrice": number }
+  ],
+  "labourCost": number
+}
 
 Rules:
-- Add 15% markup to all prices
+- Apply 15% markup to all costs
 - Use ${currencyCode} pricing, realistic ${regionLabel} rates
-- Return ONLY valid JSON, no markdown`,
+- Include ALL materials needed (supplies, parts, consumables)
+- Estimate labour cost based on time × local trade rates${rateGuidance}
+- Separate material costs from labour — materials use unitPrice, labourCost is total
+- Round to 2 decimal places
+- Return ONLY valid JSON, no markdown, no explanation`,
     }],
     temperature: 0.3,
-    max_tokens: 500,
+    max_tokens: 600,
   });
 
   const content = response.choices[0]?.message?.content;
@@ -98,18 +114,20 @@ export async function POST(request: NextRequest) {
     const input = sanitizeString(body.input);
     if (input.length < 3) throw new ApiError(400, "Input must be at least 3 characters");
 
-    // Fetch custom instructions and region
+    // Fetch custom instructions, region, and cost rates
     let customInstructions = "";
     let regionCode = "UK";
     let currencyCode = "GBP";
+    let costRates = "";
     try {
       const { data: profile } = await supabase
-        .from("profiles").select("custom_ai_instructions, region_code, currency_code")
+        .from("profiles").select("custom_ai_instructions, region_code, currency_code, cost_rates")
         .eq("id", user.id).single();
       if (profile) {
         customInstructions = (profile as { custom_ai_instructions?: string }).custom_ai_instructions ?? "";
         regionCode = (profile as { region_code?: string }).region_code ?? "UK";
         currencyCode = (profile as { currency_code?: string }).currency_code ?? "GBP";
+        costRates = (profile as { cost_rates?: string }).cost_rates ?? "";
       }
     } catch { /* skip */ }
 
@@ -156,7 +174,7 @@ export async function POST(request: NextRequest) {
     // No custom instructions — use AI estimation
     const rateLimit = checkRateLimit(user.id);
     const regionName = REGIONS[regionCode]?.name ?? "United Kingdom";
-    const result = await estimateWithAI(input, regionName, currencyCode);
+    const result = await estimateWithAI(input, regionName, currencyCode, costRates);
     return NextResponse.json({
       description: result.description,
       materials: result.materials.map(m => ({ name: m.name, quantity: m.quantity, unitPrice: Math.round(m.unitPrice * 100) / 100 })),

@@ -60,7 +60,7 @@ function BarChart({ data, maxVal }: { data: Array<{ month: string; revenue: numb
               <div style={{ width: "100%", height: Math.max(2, rH), background: GREEN, borderRadius: "3px 3px 0 0" }} />
               <div style={{ width: "100%", height: Math.max(2, eH), background: "#fca5a5", borderRadius: "3px 3px 0 0" }} />
             </div>
-            <div style={{ fontSize: 10, fontWeight: 600, color: "#64748b", marginTop: 6, transform: "rotate(-45deg)", transformOrigin: "left top", whiteSpace: "nowrap" }}>{d.month.slice(2)}</div>
+            <div style={{ fontSize: 10, fontWeight: 600, color: "#64748b", marginTop: 6, whiteSpace: "nowrap" }}>{d.month.slice(2)}</div>
           </div>
         );
       })}
@@ -250,7 +250,7 @@ export function FinanceHubPage() {
           </div>
 
           {/* Chart + Health + Forecasting */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 16, marginBottom: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(300px, 1fr) 240px", gap: 16, marginBottom: 24 }}>
             <div className="table-card">
               <h2 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 4px" }}>Revenue vs Expenses</h2>
               <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8, display: "flex", gap: 16 }}>
@@ -300,7 +300,7 @@ export function FinanceHubPage() {
               {expenses.length === 0 ? (
                 <div style={{ padding: 32, textAlign: "center", color: "#64748b", fontSize: 14 }}>No expenses yet. Track costs for better profit insights.</div>
               ) : (
-                expenses.slice(0, 8).map((e) => (
+                expenses.map((e) => (
                   <div key={e.id} style={{ padding: "10px 16px", borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", gap: 10, fontSize: 14 }}>
                     <span style={{ width: 80, fontWeight: 600, color: "#334155" }}>{e.expense_date}</span>
                     <span style={{ minWidth: 90, fontWeight: 600, background: "#f1f5f9", color: "#334155", borderRadius: 6, padding: "2px 8px", fontSize: 12, textAlign: "center" }}>{e.category}</span>
