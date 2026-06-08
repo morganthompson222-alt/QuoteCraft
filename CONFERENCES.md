@@ -165,6 +165,9 @@ CREATE TABLE IF NOT EXISTS public.notifications (
 );
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 CREATE POLICY notifications_self ON public.notifications FOR ALL USING (user_id = auth.uid());
+ALTER TABLE public.jobs ADD COLUMN IF NOT EXISTS completed_at TIMESTAMPTZ;
+ALTER TABLE public.jobs ADD COLUMN IF NOT EXISTS archived BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS archived BOOLEAN DEFAULT FALSE;
 ```
 
 ## Vercel Environment Variables
