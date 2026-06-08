@@ -1,11 +1,11 @@
 {
-  "name": "QuoteCraft",
-  "short_name": "QuoteCraft",
-  "description": "Create professional customer quotes for tradespeople.",
+  "name": "JobStacker",
+  "short_name": "JobStacker",
+  "description": "Stack your jobs, quotes, and clients in one place.",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#f8fafc",
-  "theme_color": "#047857",
+  "theme_color": "#1F6B4F",
   "icons": [
     {
       "src": "/favicon.svg",
