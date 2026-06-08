@@ -48,12 +48,12 @@ export async function GET(
     const dtStart = formatICSDate(job.job_date, job.start_time);
     const dtEnd = formatICSDate(job.job_date, job.end_time || job.start_time);
     const now = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-    const uid = `quotecraft-job-${job.id}@quotecraft.app`;
+    const uid = `jobstacker-job-${job.id}@jobstacker.app`;
 
     const ics = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
-      "PRODID:-//QuoteCraft//Job Calendar//EN",
+      "PRODID:-//JobStacker//Job Calendar//EN",
       "CALSCALE:GREGORIAN",
       "METHOD:PUBLISH",
       "BEGIN:VEVENT",

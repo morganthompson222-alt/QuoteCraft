@@ -55,7 +55,8 @@ test.describe("Quote creation and AI generation", () => {
     await qtyInputs.nth(1).fill("125");
 
     await page.getByRole("button", { name: "Create quote" }).click();
-    await page.waitForURL("/quotes/q-new");
+    await expect(page.getByText("Back to quotes")).toBeVisible();
+    await expect(page.getByText("Q-001")).toBeVisible();
   });
 
   test("adds and removes line items", async ({ page }) => {

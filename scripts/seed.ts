@@ -1,5 +1,5 @@
 /**
- * QuoteCraft Database Seed Script
+ * JobStacker Database Seed Script
  * Run: npx tsx scripts/seed.ts
  *
  * Requires:
@@ -22,11 +22,11 @@ const admin = createClient(supabaseUrl, serviceRoleKey, {
 });
 
 async function seed() {
-  console.log("🌱 Seeding QuoteCraft demo data...\n");
+  console.log("🌱 Seeding JobStacker demo data...\n");
 
   // Create demo user
   const { data: authUser, error: authError } = await admin.auth.admin.createUser({
-    email: "demo@quotecraft.com",
+    email: "demo@jobstacker.app",
     password: "demo123456",
     email_confirm: true,
     user_metadata: { name: "Demo User" },
@@ -38,7 +38,7 @@ async function seed() {
   }
 
   const userId = authUser.user.id;
-  console.log(`  ✅ Demo user created: demo@quotecraft.com / demo123456`);
+  console.log(`  ✅ Demo user created: demo@jobstacker.app / demo123456`);
 
   // Create profile
   await admin.from("profiles").upsert({
@@ -139,7 +139,7 @@ async function seed() {
 
   console.log(`  ✅ ${quotesData.length} quotes created with line items`);
   console.log(`\n🎉 Seed complete!`);
-  console.log(`\nLogin: demo@quotecraft.com / demo123456`);
+  console.log(`\nLogin: demo@jobstacker.app / demo123456`);
 }
 
 seed().catch(console.error);

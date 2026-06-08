@@ -7,7 +7,7 @@ async function main() {
 
   console.log("🌱 Seeding demo account...");
 
-  const DEMO_EMAIL = "demo@quotecraft.app";
+  const DEMO_EMAIL = "demo@jobstacker.app";
   const DEMO_PASSWORD = "demo123456";
   let userId: string;
 

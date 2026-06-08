@@ -5,7 +5,7 @@ export default function LoginPage() {
     <section className="auth-page">
       <div className="auth-page__inner">
         <div className="auth-page__intro">
-          <p className="hero__eyebrow">QuoteCraft</p>
+          <p className="hero__eyebrow">JobStacker</p>
           <h1>Sign in to keep quotes moving.</h1>
           <p>
             Return to your workspace to manage customers, review quote drafts,

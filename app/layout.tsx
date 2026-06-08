@@ -6,13 +6,13 @@ import { Providers } from "../components/Providers";
 
 export const metadata: Metadata = {
   title: {
-    default: "QuoteCraft — Customer quotes for tradespeople",
-    template: "%s — QuoteCraft",
+    default: "JobStacker — Customer quotes for tradespeople",
+    template: "%s — JobStacker",
   },
   description:
-    "Create professional customer quotes in minutes. QuoteCraft helps tradespeople manage estimates, track customers, and generate PDFs.",
+    "Create professional customer quotes in minutes. JobStacker helps tradespeople manage estimates, track customers, and generate PDFs.",
   openGraph: {
-    title: "QuoteCraft",
+    title: "JobStacker",
     description:
       "Create professional customer quotes in minutes. Manage estimates, track customers, and generate PDFs.",
     type: "website",

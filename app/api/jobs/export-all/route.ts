@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
       const dtStart = fmtICS(new Date(`${job.job_date}T${job.start_time || "09:00"}:00`));
       const endTime = job.end_time || job.start_time || "09:00";
       const dtEnd = fmtICS(new Date(`${job.job_date}T${endTime}:00`));
-      const uid = `quotecraft-job-${job.id}@quotecraft.app`;
+      const uid = `jobstacker-job-${job.id}@jobstacker.app`;
       const lines = [
         "BEGIN:VEVENT",
         `UID:${uid}`,
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
     const ics = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
-      "PRODID:-//QuoteCraft//Job Calendar//EN",
+      "PRODID:-//JobStacker//Job Calendar//EN",
       "CALSCALE:GREGORIAN",
       "METHOD:PUBLISH",
       ...vevents,
@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
     return new NextResponse(ics, {
       headers: {
         "Content-Type": "text/calendar; charset=utf-8",
-        "Content-Disposition": `attachment; filename="quotecraft-calendar.ics"`,
+        "Content-Disposition": `attachment; filename="jobstacker-calendar.ics"`,
       },
     });
   } catch (error) {

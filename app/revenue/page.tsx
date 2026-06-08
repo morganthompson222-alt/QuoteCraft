@@ -142,7 +142,7 @@ export default function RevenuePage() {
     setLoading(true);
     (async () => {
       try {
-        const tk = localStorage.getItem("quotecraft_token");
+        const tk = localStorage.getItem("jobstacker_token");
         const [r, pr] = await Promise.all([
           fetch(`/api/revenue/summary?months=${months}`, { headers: tk ? { Authorization: `Bearer ${tk}` } : {} }),
           fetch("/api/profile", { headers: tk ? { Authorization: `Bearer ${tk}` } : {} }),

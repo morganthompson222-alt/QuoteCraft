@@ -48,7 +48,10 @@ export async function PATCH(
         throw new ApiError(400, "Invalid status. Allowed: scheduled, in_progress, completed, cancelled", "VALIDATION_ERROR");
       }
       update.status = s;
-      statusChanged = body.status !== undefined;
+      statusChanged = true;
+      if (s === "completed") {
+        update.completed_at = new Date().toISOString();
+      }
     }
 
     if (Object.keys(update).length === 0) {

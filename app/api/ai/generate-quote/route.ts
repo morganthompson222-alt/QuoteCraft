@@ -5,6 +5,7 @@ import { sanitizeString } from "@/lib/validation";
 import { ApiError, errorResponse } from "@/lib/api-error";
 import { enforcePlanLimit } from "@/lib/plan-enforcement";
 import { calculateQuote, calculateFromAITasks, getPricingPrompt } from "@/lib/pricing-engine";
+import { REGIONS } from "@/lib/localization";
 
 let _openai: OpenAI | null = null;
 async function getOpenAI(): Promise<OpenAI> {
@@ -37,7 +38,7 @@ function checkRateLimit(userId: string) {
   return { limit: RATE_LIMIT, remaining: RATE_LIMIT - entry.count, reset: entry.windowStart + RATE_WINDOW_MS };
 }
 
-async function estimateWithAI(input: string): Promise<{
+async function estimateWithAI(input: string, regionLabel: string, currencyCode: string): Promise<{
   description: string; materials: Array<{ name: string; quantity: number; unitPrice: number }>;
   labourCost: number; total: number;
 }> {
@@ -52,7 +53,7 @@ Return JSON: { "description": "...", "materials": [{ "name": "...", "quantity": 
 
 Rules:
 - Add 15% markup to all prices
-- Use GBP pricing, realistic UK 2026 rates
+- Use ${currencyCode} pricing, realistic ${regionLabel} rates
 - Return ONLY valid JSON, no markdown`,
     }],
     temperature: 0.3,
@@ -97,13 +98,19 @@ export async function POST(request: NextRequest) {
     const input = sanitizeString(body.input);
     if (input.length < 3) throw new ApiError(400, "Input must be at least 3 characters");
 
-    // Fetch custom instructions
+    // Fetch custom instructions and region
     let customInstructions = "";
+    let regionCode = "UK";
+    let currencyCode = "GBP";
     try {
       const { data: profile } = await supabase
-        .from("profiles").select("custom_ai_instructions")
+        .from("profiles").select("custom_ai_instructions, region_code, currency_code")
         .eq("id", user.id).single();
-      customInstructions = (profile as { custom_ai_instructions?: string } | null)?.custom_ai_instructions ?? "";
+      if (profile) {
+        customInstructions = (profile as { custom_ai_instructions?: string }).custom_ai_instructions ?? "";
+        regionCode = (profile as { region_code?: string }).region_code ?? "UK";
+        currencyCode = (profile as { currency_code?: string }).currency_code ?? "GBP";
+      }
     } catch { /* skip */ }
 
     const hasInstructions = customInstructions.trim().length > 0;
@@ -148,7 +155,8 @@ export async function POST(request: NextRequest) {
 
     // No custom instructions — use AI estimation
     const rateLimit = checkRateLimit(user.id);
-    const result = await estimateWithAI(input);
+    const regionName = REGIONS[regionCode]?.name ?? "United Kingdom";
+    const result = await estimateWithAI(input, regionName, currencyCode);
     return NextResponse.json({
       description: result.description,
       materials: result.materials.map(m => ({ name: m.name, quantity: m.quantity, unitPrice: Math.round(m.unitPrice * 100) / 100 })),

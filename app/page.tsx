@@ -24,10 +24,10 @@ export default function LandingPage() {
     <section className="page">
       <div className="page__inner hero">
         <div>
-          <p className="hero__eyebrow">QuoteCraft MVP</p>
+          <p className="hero__eyebrow">JobStacker MVP</p>
           <h1>Customer quotes without the spreadsheet shuffle.</h1>
           <p className="hero__copy">
-            QuoteCraft gives service teams one focused place to draft quotes,
+            JobStacker gives service teams one focused place to draft quotes,
             track customers, preview totals, and prepare clean PDFs for approval.
           </p>
 
@@ -40,7 +40,7 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          <div className="hero__metrics" aria-label="QuoteCraft workflow">
+          <div className="hero__metrics" aria-label="JobStacker workflow">
             {metrics.map((metric) => (
               <div className="metric" key={metric.label}>
                 <span className="metric__value">{metric.value}</span>

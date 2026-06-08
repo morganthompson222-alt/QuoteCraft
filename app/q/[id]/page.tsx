@@ -194,7 +194,7 @@ export default function QuoteViewPage() {
       ) : null}
 
       <div style={{ marginTop: 40, textAlign: "center", fontSize: 12, color: "#94a3b8" }}>
-        Sent via QuoteCraft &middot; {quote.companyName}
+        Sent via JobStacker &middot; {quote.companyName}
       </div>
     </div>
   );

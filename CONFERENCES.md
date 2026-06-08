@@ -1,4 +1,4 @@
-# QuoteCraft — Build Session Summary
+# JobStacker — Build Session Summary
 
 ## Session: 6 June 2026
 
@@ -45,7 +45,7 @@ Complete SaaS build for tradespeople: quote generation, customer management, job
 
 ### Auth & Onboarding
 - Robust signup/login using raw `createClient` (no SSR cookies) — works on Vercel
-- Middleware auth via `quotecraft_auth` cookie + public paths
+- Middleware auth via `jobstacker_auth` cookie + public paths
 - Logout clears auth state completely
 - 5-step guided product tour for new accounts (`?tour=1` to replay)
 - Terms & Privacy Policy pages with full legal content
@@ -127,7 +127,7 @@ Complete SaaS build for tradespeople: quote generation, customer management, job
 
 ## Demo Account
 ```
-Email: demo@quotecraft.app
+Email: demo@jobstacker.app
 Password: demo123456
 URL: https://quotecraft026.vercel.app
 ```
@@ -219,3 +219,31 @@ GROQ_API_KEY=gsk_...
 - **User:** Run remaining SQL migrations in Supabase
 - **User:** Test Vercel app at `https://quotecraft026.vercel.app`
 - **Agent E:** Verify all 12 catalogue templates generate correctly
+
+---
+
+## UX Simplification — 7 June 2026 (Evening)
+
+### Problem Identified
+User feedback: app was too complex, too many clicks, too many buttons, not a natural extension of the trade workflow. The quote→job lifecycle was 11+ steps with 2 page navigations.
+
+### Changes Made
+
+**Phase 1: Merge builder + preview into one screen**
+- `QuoteBuilderPage.tsx` rewritten: now has "builder" and "view" modes. After creating a quote, it stays on the same page and shows the preview inline. No more redirect to `/quotes/{id}`.
+- Step count: 11+ → ~5 for the full quote→job cycle
+
+**Phase 2: Progressive actions (both pages)**
+- `QuotePreviewPage.tsx` and merged `QuoteBuilderPage.tsx` now show only the **single next relevant action** as the primary button:
+  - Draft → big "Send" button with link/PDF dropdown
+  - Sent → big "Mark accepted" button
+  - Accepted → schedule prompt
+- All other actions (rejected, expired, mark paid, download PDF, etc.) live behind a "More ▾" dropdown
+- Removed the old "Documents" section, "Share" dropdown, and "Status" label section
+- Cleaner: went from ~10 visible buttons to max 3 visible
+
+**Files changed:**
+- `components/quotes/QuoteBuilderPage.tsx` — full rewrite with dual mode
+- `components/quotes/QuotePreviewPage.tsx` — simplified action section
+- `tests/e2e/quotes.spec.ts` — updated "creates a quote" test (no longer checks URL redirect, checks inline content instead)
+- `tests/e2e/quote-lifecycle.spec.ts` — updated accept flow test

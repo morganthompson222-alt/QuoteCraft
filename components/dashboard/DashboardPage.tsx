@@ -86,7 +86,7 @@ export function DashboardPage() {
       setState({ status: "loading" });
 
       try {
-        const token = window.localStorage.getItem("quotecraft_token");
+        const token = window.localStorage.getItem("jobstacker_token");
         const response = await fetch("/api/dashboard/summary", {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
@@ -129,7 +129,7 @@ export function DashboardPage() {
 
   useEffect(() => {
     if (state.status === "success") {
-      const dismissed = window.localStorage.getItem("quotecraft_onboarding_dismissed");
+      const dismissed = window.localStorage.getItem("jobstacker_onboarding_dismissed");
       if (isEmpty && !dismissed) {
         setShowOnboarding(true);
       }
@@ -340,7 +340,7 @@ export function DashboardPage() {
 
       {isEmpty ? (
         <div className="state-panel">
-          <h2>Welcome to QuoteCraft</h2>
+          <h2>Welcome to JobStacker</h2>
           <p>
             Your workspace is ready. Add a customer to start creating quotes and
             tracking estimates.
@@ -358,11 +358,11 @@ export function DashboardPage() {
       <OnboardingWizard
         open={showOnboarding}
         onComplete={() => {
-          window.localStorage.setItem("quotecraft_onboarding_dismissed", "1");
+          window.localStorage.setItem("jobstacker_onboarding_dismissed", "1");
           setShowOnboarding(false);
         }}
         onDismiss={() => {
-          window.localStorage.setItem("quotecraft_onboarding_dismissed", "1");
+          window.localStorage.setItem("jobstacker_onboarding_dismissed", "1");
           setShowOnboarding(false);
         }}
       />

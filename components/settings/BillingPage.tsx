@@ -51,10 +51,10 @@ async function readErrorMessage(response: Response) {
 
 const tierPrices: Record<string, string> = {
   solo: "",
-  solo_pro: "price_solo_pro",
-  business: "price_business",
-  growth: "price_growth",
-  enterprise: "price_enterprise",
+  solo_pro: process.env.NEXT_PUBLIC_STRIPE_PRICE_SOLO_PRO || "price_solo_pro",
+  business: process.env.NEXT_PUBLIC_STRIPE_PRICE_BUSINESS || "price_business",
+  growth: process.env.NEXT_PUBLIC_STRIPE_PRICE_GROWTH || "price_growth",
+  enterprise: process.env.NEXT_PUBLIC_STRIPE_PRICE_ENTERPRISE || "price_enterprise",
 };
 
 const TIER_RANK: Record<string, number> = {
@@ -78,7 +78,7 @@ export function BillingPage() {
       setState({ status: "loading" });
 
       try {
-        const token = window.localStorage.getItem("quotecraft_token");
+        const token = window.localStorage.getItem("jobstacker_token");
         const response = await fetch("/api/billing/status", {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
@@ -114,7 +114,7 @@ export function BillingPage() {
     setCheckoutError("");
 
     try {
-      const token = window.localStorage.getItem("quotecraft_token");
+      const token = window.localStorage.getItem("jobstacker_token");
       const response = await fetch("/api/stripe/create-checkout", {
         method: "POST",
         headers: {
@@ -143,7 +143,7 @@ export function BillingPage() {
     setTestLoading(true);
     setTestError("");
     try {
-      const tk = localStorage.getItem("quotecraft_token");
+      const tk = localStorage.getItem("jobstacker_token");
       const r = await fetch("/api/billing/tier", {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },

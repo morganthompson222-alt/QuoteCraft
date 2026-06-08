@@ -31,7 +31,7 @@ export async function setupPage(page: Page) {
   await page.context().addCookies([makeSupabaseSessionCookie()]);
 
   await page.addInitScript((token) => {
-    window.localStorage.setItem("quotecraft_token", token);
+    window.localStorage.setItem("jobstacker_token", token);
   }, MOCK_TOKEN);
 
   await page.route("**/api/auth/me", async (route) => {

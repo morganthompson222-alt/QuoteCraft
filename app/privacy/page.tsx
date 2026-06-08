@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — QuoteCraft",
+  title: "Privacy Policy — JobStacker",
 };
 
 export default function PrivacyPage() {
@@ -16,8 +16,8 @@ export default function PrivacyPage() {
 
         <div className="legal-content">
           <p>
-            This Privacy Policy explains how QuoteCraft (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) collects,
-            uses, stores, and protects personal data in connection with the QuoteCraft
+            This Privacy Policy explains how JobStacker (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) collects,
+            uses, stores, and protects personal data in connection with the JobStacker
             platform (&ldquo;Service&rdquo;). It also sets out the rights you have over your personal
             data.
           </p>
@@ -29,10 +29,10 @@ export default function PrivacyPage() {
 
           <h2>1. Data Controller</h2>
           <p>
-            QuoteCraft is the data controller in respect of personal data we collect
+            JobStacker is the data controller in respect of personal data we collect
             directly from you (such as your account and profile information). Where you
             enter your customers&rsquo; personal data into the Service, you remain the data
-            controller of that data and QuoteCraft acts as your data processor. Our
+            controller of that data and JobStacker acts as your data processor. Our
             contact details for privacy matters are set out in clause 13.
           </p>
 
@@ -109,7 +109,7 @@ export default function PrivacyPage() {
           <h3>6.1 Supabase, Inc. (Database and Authentication)</h3>
           <p>Supabase provides our database and authentication infrastructure. All user account data, customer data, quotes, and jobs are stored with Supabase. Data is stored in the United States. We have entered or will enter into a Data Processing Agreement with Supabase that includes Standard Contractual Clauses (SCCs) as required by UK GDPR for international transfers.</p>
           <h3>6.2 Stripe, Inc. (Payment Processing)</h3>
-          <p>Stripe processes subscription payments. We share your email address, an internal user identifier, and your selected subscription plan with Stripe to initiate checkout. Stripe handles all payment card data directly; QuoteCraft never receives or stores your card details. Stripe operates under its own Data Processing Agreement, available at stripe.com/dpa.</p>
+          <p>Stripe processes subscription payments. We share your email address, an internal user identifier, and your selected subscription plan with Stripe to initiate checkout. Stripe handles all payment card data directly; JobStacker never receives or stores your card details. Stripe operates under its own Data Processing Agreement, available at stripe.com/dpa.</p>
           <h3>6.3 Groq, Inc. and/or OpenAI, L.L.C. (AI Features)</h3>
           <p>When you use the AI quote generation feature, the natural language description of work you enter is transmitted to Groq or OpenAI to generate a quote suggestion. We transmit only the work description text &mdash; no customer names, contact details, addresses, or any other personal data are included in this transmission. Both providers have Data Processing Agreements covering this processing. If you do not wish to use AI features, you may use the Service on the Solo tier, which does not include AI functionality.</p>
           <h3>6.4 Other Disclosures</h3>
@@ -149,7 +149,7 @@ export default function PrivacyPage() {
           <p>You have the right to lodge a complaint with the Information Commissioner&rsquo;s Office (ICO) at ico.org.uk or by calling 0303 123 1113, if you believe we have not complied with our data protection obligations. We would appreciate the opportunity to address your concerns directly before you contact the ICO.</p>
 
           <h2>11. Third-Party Links</h2>
-          <p>The Service may contain links to third-party websites or services. This Privacy Policy applies only to the QuoteCraft Service. We are not responsible for the privacy practices of any third-party sites and encourage you to review their privacy policies before providing any personal data.</p>
+          <p>The Service may contain links to third-party websites or services. This Privacy Policy applies only to the JobStacker Service. We are not responsible for the privacy practices of any third-party sites and encourage you to review their privacy policies before providing any personal data.</p>
 
           <h2>12. Changes to This Privacy Policy</h2>
           <p>We may update this Privacy Policy from time to time to reflect changes to our practices, the Service, or applicable law. Where we make material changes, we will notify you by email or in-app notification at least 30 days before the changes take effect. The effective date at the top of this document indicates when the current version came into force. We encourage you to review this Privacy Policy periodically.</p>
@@ -157,14 +157,14 @@ export default function PrivacyPage() {
           <h2>13. Contact Us</h2>
           <p>If you have any questions about this Privacy Policy, wish to exercise your data subject rights, or have a privacy concern, please contact us at:</p>
           <div style={{ background: "#f8fafc", border: "1px solid var(--border)", borderRadius: 8, padding: "16px 20px", margin: "16px 0" }}>
-            <p style={{ margin: "0 0 4px" }}><strong style={{ color: "#1F6B4F" }}>QuoteCraft Privacy Team</strong></p>
-            <p style={{ margin: "4px 0" }}>Email: privacy@quotecraft.app</p>
+            <p style={{ margin: "0 0 4px" }}><strong style={{ color: "#1F6B4F" }}>JobStacker Privacy Team</strong></p>
+            <p style={{ margin: "4px 0" }}>Email: privacy@jobstacker.app</p>
             <p style={{ margin: 0 }}>Postal address: [Registered Office Address]</p>
           </div>
           <p>We aim to respond to all privacy-related requests within 5 business days and to complete substantive responses within the statutory timeframe.</p>
 
           <div className="legal-footer" style={{ marginTop: 48, borderTop: "1px solid var(--border)", paddingTop: 24, color: "var(--text-muted)", fontSize: 13 }}>
-            &copy; QuoteCraft. All rights reserved.
+            &copy; JobStacker. All rights reserved.
           </div>
         </div>
       </div>

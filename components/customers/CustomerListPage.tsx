@@ -77,7 +77,7 @@ export function CustomerListPage() {
       setState({ status: "loading" });
 
       try {
-        const token = window.localStorage.getItem("quotecraft_token");
+        const token = window.localStorage.getItem("jobstacker_token");
         const response = await fetch(`/api/customers/list?${query}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
@@ -127,7 +127,7 @@ export function CustomerListPage() {
     setDeleteLoading(true);
 
     try {
-      const token = window.localStorage.getItem("quotecraft_token");
+      const token = window.localStorage.getItem("jobstacker_token");
       const response = await fetch(`/api/customers/${deleteTarget.id}/delete`, {
         method: "DELETE",
         headers: token ? { Authorization: `Bearer ${token}` } : {},

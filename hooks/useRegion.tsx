@@ -68,13 +68,13 @@ export function RegionProvider({ children }: { children: React.ReactNode }) {
 
     async function loadRegion() {
       try {
-        const stored = window.localStorage.getItem("quotecraft_region");
+        const stored = window.localStorage.getItem("jobstacker_region");
         if (stored && regionMeta[stored]) {
           if (!cancelled) setRegionCode(stored);
           return;
         }
 
-        const token = window.localStorage.getItem("quotecraft_token");
+        const token = window.localStorage.getItem("jobstacker_token");
         const res = await fetch("/api/profile", {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
@@ -84,7 +84,7 @@ export function RegionProvider({ children }: { children: React.ReactNode }) {
           const code = data.region_code ?? FALLBACK;
           if (!cancelled) {
             setRegionCode(code);
-            window.localStorage.setItem("quotecraft_region", code);
+            window.localStorage.setItem("jobstacker_region", code);
           }
         }
       } catch {
@@ -103,7 +103,7 @@ export function RegionProvider({ children }: { children: React.ReactNode }) {
   const setRegion = useCallback((code: string) => {
     if (regionMeta[code]) {
       setRegionCode(code);
-      window.localStorage.setItem("quotecraft_region", code);
+      window.localStorage.setItem("jobstacker_region", code);
     }
   }, []);
 

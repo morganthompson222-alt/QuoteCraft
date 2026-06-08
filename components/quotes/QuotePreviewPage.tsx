@@ -98,8 +98,8 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
   const [showSendMenu, setShowSendMenu] = useState(false);
   const [showMarkSentAfterPdf, setShowMarkSentAfterPdf] = useState(false);
   const [showJobModal, setShowJobModal] = useState(false);
-  const [showShareMenu, setShowShareMenu] = useState(false);
   const [showAcceptModal, setShowAcceptModal] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const [schedDate, setSchedDate] = useState("");
   const [schedStart, setSchedStart] = useState("09:00");
@@ -112,7 +112,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
       setState({ status: "loading" });
 
       try {
-        const token = window.localStorage.getItem("quotecraft_token");
+        const token = window.localStorage.getItem("jobstacker_token");
         const response = await fetch(`/api/quotes/${quoteId}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
@@ -143,7 +143,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
     loadQuote();
     (async () => {
       try {
-        const tk = localStorage.getItem("quotecraft_token");
+        const tk = localStorage.getItem("jobstacker_token");
         const r = await fetch("/api/profile", { headers: tk ? { Authorization: `Bearer ${tk}` } : {} });
         if (r.ok) { const d = await r.json(); setPlanTier(d.planTier ?? "solo"); }
       } catch { /* ok */ }
@@ -155,7 +155,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
     setStatusError("");
 
     try {
-      const token = window.localStorage.getItem("quotecraft_token");
+      const token = window.localStorage.getItem("jobstacker_token");
       const body: Record<string, unknown> = {};
       if (newStatus !== undefined) body.status = newStatus;
       if (newPaid !== undefined) body.paid = newPaid;
@@ -193,7 +193,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
     setPdfLoading(true);
 
     try {
-      const token = window.localStorage.getItem("quotecraft_token");
+      const token = window.localStorage.getItem("jobstacker_token");
       const response = await fetch(`/api/quotes/${quoteId}/pdf`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -222,7 +222,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
     setReminderLoading(true);
 
     try {
-      const token = window.localStorage.getItem("quotecraft_token");
+      const token = window.localStorage.getItem("jobstacker_token");
       const response = await fetch(`/api/quotes/${quoteId}/reminder`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -251,7 +251,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
     setReceiptLoading(true);
 
     try {
-      const token = window.localStorage.getItem("quotecraft_token");
+      const token = window.localStorage.getItem("jobstacker_token");
       const response = await fetch(`/api/quotes/${quoteId}/receipt`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -280,7 +280,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
     if (!quote?.jobId) return;
     setCompleting(true);
     try {
-      const tk = localStorage.getItem("quotecraft_token");
+      const tk = localStorage.getItem("jobstacker_token");
       const r = await fetch(`/api/jobs/${quote.jobId}/update`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
@@ -322,39 +322,6 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
   }
 
   function getShareUrl() { return `${window.location.origin}/q/${quoteId}`; }
-
-  function shareVia(platform: "native" | "whatsapp" | "email" | "sms" | "copy") {
-    setShowShareMenu(false);
-    const url = getShareUrl();
-    const title = state.status === "success" ? `Quote ${state.data.quoteNumber}` : "Quote";
-    const text = `Here is your quote: ${url}`;
-
-    switch (platform) {
-      case "native":
-        if (navigator.share) {
-          navigator.share({ title, text, url }).catch(() => {});
-        } else {
-          navigator.clipboard.writeText(url);
-          setStatusError("Link copied!");
-          setTimeout(() => setStatusError(""), 2000);
-        }
-        break;
-      case "whatsapp":
-        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-        break;
-      case "email":
-        window.open(`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text)}`, "_blank");
-        break;
-      case "sms":
-        window.open(`sms:?body=${encodeURIComponent(text)}`, "_blank");
-        break;
-      case "copy":
-        navigator.clipboard.writeText(url);
-        setStatusError("Link copied!");
-        setTimeout(() => setStatusError(""), 2000);
-        break;
-    }
-  }
 
   const quote = state.status === "success" ? state.data : null;
   const validTransitions = quote ? statusTransitions[quote.status] ?? [] : [];
@@ -398,107 +365,78 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
 
       {quote ? (
         <>
-          {/* Actions */}
+          {/* Primary action + More dropdown */}
           <div className="qp-actions">
-            {(validTransitions.length > 0 || quote.status === "draft") ? (
-              <>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>Status</div>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-                  {/* Send button for draft — shows dropdown */}
-                  {quote.status === "draft" ? (
-                    <div style={{ position: "relative" }}>
-                      <button className="button button--primary" type="button" onClick={() => setShowSendMenu((v) => !v)} style={{ position: "relative" }}>
-                        Send
-                      </button>
-                      {showSendMenu ? (
-                        <>
-                          <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowSendMenu(false)} />
-                          <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 200, overflow: "hidden" }}>
-                            <button type="button" onClick={handleSendLink} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
-                              Share link
-                              <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Copy link & mark as sent</span>
-                            </button>
-                            <button type="button" onClick={handleSendPdf} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
-                              Download PDF
-                              <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Download quote, mark as sent later</span>
-                            </button>
-                          </div>
-                        </>
-                      ) : null}
-                    </div>
-                  ) : null}
-                  {/* Mark as sent — shown after PDF download in draft, or for valid transitions in sent-accepted states */}
-                  {showMarkSentAfterPdf && quote.status === "draft" ? (
-                    <button className="button button--primary" type="button" onClick={() => updateStatus("sent")}>Mark as sent</button>
-                  ) : null}
-                  {validTransitions.includes("sent") && quote.status !== "draft" ? (
-                    <button className="button button--primary" type="button" onClick={() => updateStatus("sent")}>Mark as sent</button>
-                  ) : null}
-                  {validTransitions.includes("accepted") ? (
-                    <button className="button button--primary" type="button" onClick={() => setShowAcceptModal(true)}>Mark accepted</button>
-                  ) : null}
-                  {validTransitions.includes("rejected") ? (
-                    <button className="button button--secondary" type="button" onClick={() => updateStatus("rejected")}>Mark rejected</button>
-                  ) : null}
-                  {validTransitions.includes("expired") ? (
-                    <button className="button button--ghost" type="button" onClick={() => updateStatus("expired")}>Mark expired</button>
-                  ) : null}
-                </div>
-                <div style={{ width: "100%", height: 1, background: "var(--border)", margin: "10px 0" }} />
-              </>
-            ) : null}
-
-            {(quote.status !== "draft" && quote.status !== "rejected" && quote.status !== "expired") ? (
-              <>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>Documents</div>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <button className="button button--secondary" type="button" disabled={pdfLoading} onClick={downloadPdf}>
-                    {pdfLoading ? "Preparing PDF..." : "Download PDF"}
-                  </button>
-                  <div style={{ position: "relative" }}>
-                    <button className="button button--secondary" type="button" onClick={() => setShowShareMenu((v) => !v)}>
-                      Share ▾
-                    </button>
-                    {showShareMenu ? (
-                      <>
-                        <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowShareMenu(false)} />
-                        <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 200, overflow: "hidden" }}>
-                          <button type="button" onClick={() => shareVia("native")} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>📱 Share</button>
-                          <button type="button" onClick={() => shareVia("whatsapp")} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>💬 WhatsApp</button>
-                          <button type="button" onClick={() => shareVia("email")} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>✉️ Email</button>
-                          <button type="button" onClick={() => shareVia("sms")} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>💬 SMS</button>
-                          <button type="button" onClick={() => shareVia("copy")} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a" }}>📋 Copy link</button>
-                        </div>
-                      </>
-                    ) : null}
-                  </div>
-                  {!quote.paid && planTier !== "solo" ? (
-                    <button className="button button--secondary" type="button" disabled={reminderLoading} onClick={downloadReminder} style={{ borderColor: "var(--danger)", color: "var(--danger)" }}>
-                      {reminderLoading ? "Generating..." : "Send Reminder"}
-                    </button>
-                  ) : null}
-                  {quote.paid ? (
-                    <button className="button button--primary" type="button" disabled={receiptLoading} onClick={downloadReceipt} style={{ background: "#065f46", borderColor: "#065f46" }}>
-                      {receiptLoading ? "Generating..." : "Download Receipt"}
-                    </button>
-                  ) : null}
-                </div>
-                <div style={{ width: "100%", height: 1, background: "var(--border)", margin: "10px 0" }} />
-              </>
-            ) : null}
-
-            {quote.status !== "rejected" && quote.status !== "expired" ? (
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                <button className={`button ${quote.paid ? "button--secondary" : "button--primary"}`} type="button" onClick={() => updateStatus(undefined, !quote.paid)}>
-                  {quote.paid ? "Mark unpaid" : "Mark paid"}
+            {quote.status === "draft" ? (
+              <div style={{ position: "relative" }}>
+                <button className="button button--primary" type="button" onClick={() => setShowSendMenu((v) => !v)} style={{ minWidth: 160, fontSize: 15, padding: "10px 24px" }}>
+                  Send
                 </button>
-                {quote.jobId && quote.jobStatus !== "completed" ? (
-                  <button className="button button--secondary" type="button" disabled={completing} onClick={markJobCompleted} style={{ borderColor: "var(--success, #065f46)", color: "var(--success, #065f46)" }}>
-                    {completing ? "Completing..." : "Mark as completed"}
-                  </button>
+                {showSendMenu ? (
+                  <>
+                    <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowSendMenu(false)} />
+                    <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 220, overflow: "hidden" }}>
+                      <button type="button" onClick={handleSendLink} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
+                        Share link
+                        <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Copy link & mark as sent</span>
+                      </button>
+                      <button type="button" onClick={handleSendPdf} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
+                        Download PDF
+                        <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Send via email or print</span>
+                      </button>
+                    </div>
+                  </>
                 ) : null}
               </div>
             ) : null}
+
+            {showMarkSentAfterPdf && quote.status === "draft" ? (
+              <button className="button button--primary" type="button" onClick={() => updateStatus("sent")}>Mark as sent</button>
+            ) : null}
+
+            {validTransitions.includes("sent") && quote.status !== "draft" ? (
+              <button className="button button--primary" type="button" onClick={() => updateStatus("sent")}>Mark as sent</button>
+            ) : null}
+
+            {validTransitions.includes("accepted") ? (
+              <button className="button button--primary" type="button" onClick={() => setShowAcceptModal(true)} style={{ minWidth: 160, fontSize: 15, padding: "10px 24px" }}>
+                Mark accepted
+              </button>
+            ) : null}
+
+            {/* More actions dropdown */}
+            <div style={{ position: "relative" }}>
+              <button className="button button--ghost" type="button" onClick={() => setShowMore((v) => !v)}>
+                More ▾
+              </button>
+              {showMore ? (
+                <>
+                  <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowMore(false)} />
+                  <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 180, overflow: "hidden" }}>
+                    {validTransitions.includes("rejected") ? (
+                      <button type="button" onClick={() => { setShowMore(false); updateStatus("rejected"); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#991b1b", borderBottom: "1px solid var(--border)" }}>
+                        Mark rejected
+                      </button>
+                    ) : null}
+                    {validTransitions.includes("expired") ? (
+                      <button type="button" onClick={() => { setShowMore(false); updateStatus("expired"); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#64748b", borderBottom: "1px solid var(--border)" }}>
+                        Mark expired
+                      </button>
+                    ) : null}
+                    {quote.status !== "rejected" && quote.status !== "expired" ? (
+                      <>
+                        <button type="button" onClick={() => { setShowMore(false); updateStatus(undefined, !quote.paid); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
+                          {quote.paid ? "Mark unpaid" : "Mark paid"}
+                        </button>
+                        <button type="button" onClick={() => { setShowMore(false); downloadPdf(); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a" }}>
+                          Download PDF
+                        </button>
+                      </>
+                    ) : null}
+                  </div>
+                </>
+              ) : null}
+            </div>
           </div>
 
           {statusError ? (

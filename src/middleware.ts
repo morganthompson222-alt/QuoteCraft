@@ -58,7 +58,7 @@ export async function middleware(request: NextRequest) {
 
   if (url && anonKey) {
     // Check for simple auth marker cookie set by the frontend on login
-    const authCookie = request.cookies.get("quotecraft_auth");
+    const authCookie = request.cookies.get("jobstacker_auth");
     if (authCookie?.value === "true") {
       return NextResponse.next({ request });
     }

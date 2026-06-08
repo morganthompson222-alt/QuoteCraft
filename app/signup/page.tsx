@@ -5,7 +5,7 @@ export default function SignupPage() {
     <section className="auth-page">
       <div className="auth-page__inner">
         <div className="auth-page__intro">
-          <p className="hero__eyebrow">QuoteCraft</p>
+          <p className="hero__eyebrow">JobStacker</p>
           <h1>Create a quoting workspace your team can trust.</h1>
           <p>
             Set up a clean workflow for customer records, quote drafts, previews,

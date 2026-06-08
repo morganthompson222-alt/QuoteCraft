@@ -13,7 +13,7 @@ type OnboardingWizardProps = {
 const steps = [
   {
     id: "welcome",
-    title: "Welcome to QuoteCraft",
+    title: "Welcome to JobStacker",
     description:
       "You're all set up. Let's get you started with your first customer and quote.",
   },

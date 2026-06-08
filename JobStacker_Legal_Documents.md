@@ -1,9 +1,9 @@
-**QuoteCraft --- Terms and Conditions**
+**JobStacker --- Terms and Conditions**
 
 *Effective date: 6 June 2026*
 
 Please read these Terms and Conditions ("Terms") carefully before using
-the QuoteCraft platform. By creating an account or using any part of the
+the JobStacker platform. By creating an account or using any part of the
 Service, you agree to be bound by these Terms. If you do not agree, you
 must not use the Service.
 
@@ -11,10 +11,10 @@ must not use the Service.
 
 In these Terms, the following definitions apply:
 
--   \"QuoteCraft\", \"we\", \"us\", \"our\" means the operator of the
-    QuoteCraft platform.
+-   \"JobStacker\", \"we\", \"us\", \"our\" means the operator of the
+    JobStacker platform.
 
--   \"Service\" means the QuoteCraft web application, including all
+-   \"Service\" means the JobStacker web application, including all
     features, APIs, and associated documentation.
 
 -   \"User\", \"you\", \"your\" means any individual or business that
@@ -57,7 +57,7 @@ restrictions.
 
 **3.1 Description**
 
-QuoteCraft provides a cloud-based SaaS platform for tradespeople and
+JobStacker provides a cloud-based SaaS platform for tradespeople and
 small businesses to create, manage, and send trade quotes, generate PDF
 quote documents, manage customer records, schedule jobs, and manage
 subscriptions. The Service includes an optional AI-assisted quote
@@ -102,7 +102,7 @@ are inclusive of any applicable VAT unless stated otherwise.
 
 **4.2 Payment Processing**
 
-Payments are processed by Stripe, Inc. ("Stripe"). QuoteCraft does not
+Payments are processed by Stripe, Inc. ("Stripe"). JobStacker does not
 store or process your payment card details. By subscribing, you agree to
 Stripe\'s terms of service and privacy policy in addition to these
 Terms. You authorise us to instruct Stripe to charge your payment method
@@ -154,7 +154,7 @@ warrant that:
     connection with your use of the Service.
 
 You remain the data controller in respect of your customers\' personal
-data. QuoteCraft acts as a data processor on your behalf in respect of
+data. JobStacker acts as a data processor on your behalf in respect of
 that data. Where required, we will enter into a Data Processing
 Agreement with you on request.
 
@@ -216,7 +216,7 @@ practical to do so before taking enforcement action.
 
 All rights, title, and interest in the Service (including the software,
 design, branding, and documentation) are and remain the exclusive
-property of QuoteCraft or our licensors. Nothing in these Terms
+property of JobStacker or our licensors. Nothing in these Terms
 transfers any ownership of intellectual property to you. You are granted
 a limited, non-exclusive, non-transferable, revocable licence to access
 and use the Service for your own internal business purposes during the
@@ -226,7 +226,7 @@ remains active).
 **7.2 Your Content**
 
 You retain ownership of all Content you create or upload to the Service.
-By using the Service, you grant QuoteCraft a limited, non-exclusive
+By using the Service, you grant JobStacker a limited, non-exclusive
 licence to store, process, and reproduce your Content solely to the
 extent necessary to provide the Service to you. We will not use your
 Content for any other purpose, including training AI models, without
@@ -282,7 +282,7 @@ consumer that cannot be excluded or limited by law.
 
 **11.1 Exclusion of Consequential Loss**
 
-To the maximum extent permitted by law, QuoteCraft shall not be liable
+To the maximum extent permitted by law, JobStacker shall not be liable
 for any indirect, incidental, special, consequential, or punitive
 damages, including loss of profits, loss of business, loss of data, or
 loss of goodwill, arising out of or in connection with the Service or
@@ -291,10 +291,10 @@ damages.
 
 **11.2 Cap on Liability**
 
-To the maximum extent permitted by law, QuoteCraft\'s total aggregate
+To the maximum extent permitted by law, JobStacker\'s total aggregate
 liability to you for all claims arising out of or relating to the
 Service or these Terms in any 12-month period shall not exceed the
-greater of: (a) the total fees paid by you to QuoteCraft during the 12
+greater of: (a) the total fees paid by you to JobStacker during the 12
 months immediately preceding the claim; or (b) £100.
 
 **11.3 Exceptions**
@@ -312,13 +312,13 @@ Nothing in these Terms limits or excludes our liability for:
 
 You acknowledge that the limitations and exclusions of liability in this
 clause 11 reflect a reasonable allocation of risk and are an essential
-element of the basis of the bargain between the parties. QuoteCraft
+element of the basis of the bargain between the parties. JobStacker
 would not provide the Service on the terms set out in these Terms
 without these limitations.
 
 **12. Indemnity**
 
-You agree to indemnify, defend, and hold harmless QuoteCraft and its
+You agree to indemnify, defend, and hold harmless JobStacker and its
 officers, employees, and agents from and against any claims, damages,
 losses, liabilities, costs, and expenses (including reasonable legal
 fees) arising out of or relating to: (a) your use of the Service in
@@ -331,7 +331,7 @@ Service, including claims by your customers.
 The Service integrates with third-party platforms including Supabase
 (database and authentication), Stripe (payment processing), and
 Groq/OpenAI (AI features). These third-party services are provided under
-their own terms and privacy policies. QuoteCraft is not responsible for
+their own terms and privacy policies. JobStacker is not responsible for
 the performance, availability, or practices of any third-party service
 provider. Links to third-party services within the Service do not
 constitute our endorsement of those services.
@@ -438,7 +438,7 @@ emergency or interim relief from a court.
 
 These Terms, together with the Privacy Policy and any order confirmation
 or Subscription documentation, constitute the entire agreement between
-you and QuoteCraft in relation to the Service and supersede all prior
+you and JobStacker in relation to the Service and supersede all prior
 agreements, representations, or understandings.
 
 **19.2 Severability**
@@ -456,21 +456,21 @@ in future.
 **19.4 No Partnership**
 
 Nothing in these Terms creates a partnership, joint venture, agency,
-franchise, or employment relationship between you and QuoteCraft.
+franchise, or employment relationship between you and JobStacker.
 
 **19.5 Contact**
 
 Questions about these Terms should be directed to us at:
-legal@quotecraft.app (or the contact address provided in your account
+legal@jobstacker.app (or the contact address provided in your account
 settings). We aim to respond to all enquiries within 5 business days.
 
-**QuoteCraft --- Privacy Policy**
+**JobStacker --- Privacy Policy**
 
 *Effective date: 6 June 2026*
 
-This Privacy Policy explains how QuoteCraft ("we", "us", "our")
+This Privacy Policy explains how JobStacker ("we", "us", "our")
 collects, uses, stores, and protects personal data in connection with
-the QuoteCraft platform ("Service"). It also sets out the rights you
+the JobStacker platform ("Service"). It also sets out the rights you
 have over your personal data.
 
 We are committed to handling personal data responsibly and in compliance
@@ -480,10 +480,10 @@ Regulations 2003 (PECR).
 
 **1. Data Controller**
 
-QuoteCraft is the data controller in respect of personal data we collect
+JobStacker is the data controller in respect of personal data we collect
 directly from you (such as your account and profile information). Where
 you enter your customers\' personal data into the Service, you remain
-the data controller of that data and QuoteCraft acts as your data
+the data controller of that data and JobStacker acts as your data
 processor. Our contact details for privacy matters are set out in clause
 13.
 
@@ -657,7 +657,7 @@ international transfers.
 Stripe processes subscription payments. We share your email address, an
 internal user identifier, and your selected subscription plan with
 Stripe to initiate checkout. Stripe handles all payment card data
-directly; QuoteCraft never receives or stores your card details. Stripe
+directly; JobStacker never receives or stores your card details. Stripe
 operates under its own Data Processing Agreement, available at
 stripe.com/dpa.
 
@@ -807,7 +807,7 @@ concerns directly before you contact the ICO.
 **11. Third-Party Links**
 
 The Service may contain links to third-party websites or services. This
-Privacy Policy applies only to the QuoteCraft Service. We are not
+Privacy Policy applies only to the JobStacker Service. We are not
 responsible for the privacy practices of any third-party sites and
 encourage you to review their privacy policies before providing any
 personal data.
@@ -827,13 +827,13 @@ If you have any questions about this Privacy Policy, wish to exercise
 your data subject rights, or have a privacy concern, please contact us
 at:
 
-QuoteCraft Privacy Team
+JobStacker Privacy Team
 
-Email: privacy@quotecraft.app
+Email: privacy@jobstacker.app
 
 Postal address: \[Registered Office Address\]
 
 We aim to respond to all privacy-related requests within 5 business days
 and to complete substantive responses within the statutory timeframe.
 
-*© QuoteCraft. All rights reserved.*
+*© JobStacker. All rights reserved.*

@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   return NextResponse.json({
     status: "ok",
-    service: "quotecraft-api",
+    service: "jobstacker-api",
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
   });

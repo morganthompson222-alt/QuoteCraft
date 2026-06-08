@@ -1,4 +1,4 @@
-# QuoteCraft
+# JobStacker
 
 Quote generation platform for tradespeople. Create professional customer quotes, manage estimates, track status, and export to PDF.
 
@@ -142,7 +142,7 @@ node .next/standalone/server.js
 
 ### Required services
 
-QuoteCraft requires these external services:
+JobStacker requires these external services:
 - **Supabase** — Database + Auth (project must exist with migrations applied)
 - **Stripe** — Subscription billing (products and prices configured)
 - **OpenAI** — AI quote generation (optional, disabled for free tier)

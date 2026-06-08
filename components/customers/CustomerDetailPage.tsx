@@ -72,7 +72,7 @@ export function CustomerDetailPage({ customerId }: CustomerDetailPageProps) {
       setState({ status: "loading" });
 
       try {
-        const token = window.localStorage.getItem("quotecraft_token");
+        const token = window.localStorage.getItem("jobstacker_token");
         const response = await fetch(`/api/customers/${customerId}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });

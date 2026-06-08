@@ -40,7 +40,7 @@ npx playwright test --ui
 - **Components:** `"use client"` when using hooks, event handlers, or browser APIs
 - **Styling:** CSS custom properties (`--brand`, `--surface`, `--text`, `--border`, etc.) + BEM class names
 - **Forms:** `noValidate` on `<form>`, manual validation with `aria-describedby` error IDs
-- **API calls:** Fetch with `Authorization: Bearer <token>` from `localStorage.quotecraft_token`
+- **API calls:** Fetch with `Authorization: Bearer <token>` from `localStorage.jobstacker_token`
 - **Error handling:** Check for `error.code` in API responses (e.g., `PLAN_LIMIT_REACHED`, `RATE_LIMITED`)
 
 ## Branch strategy

@@ -95,7 +95,7 @@ export function QuoteListPage() {
     async function loadQuotes() {
       setState({ status: "loading" });
       try {
-        const token = window.localStorage.getItem("quotecraft_token");
+        const token = window.localStorage.getItem("jobstacker_token");
         const [quotesRes, jobsRes] = await Promise.all([
           fetch(`/api/quotes/list?${query}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} }),
           fetch("/api/jobs/list?limit=100", { headers: token ? { Authorization: `Bearer ${token}` } : {} }),
@@ -136,7 +136,7 @@ export function QuoteListPage() {
     if (!deleteTarget) return;
     setDeleteLoading(true);
     try {
-      const token = window.localStorage.getItem("quotecraft_token");
+      const token = window.localStorage.getItem("jobstacker_token");
       const response = await fetch(`/api/quotes/${deleteTarget.id}/delete`, {
         method: "DELETE",
         headers: token ? { Authorization: `Bearer ${token}` } : {},

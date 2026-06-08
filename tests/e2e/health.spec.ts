@@ -5,7 +5,7 @@ test("health endpoint returns ok", async ({ request }) => {
   expect(resp.ok()).toBeTruthy();
   const body = await resp.json();
   expect(body.status).toBe("ok");
-  expect(body.service).toBe("quotecraft-api");
+  expect(body.service).toBe("jobstacker-api");
 });
 
 test("unauthenticated endpoints return 401", async ({ request }) => {

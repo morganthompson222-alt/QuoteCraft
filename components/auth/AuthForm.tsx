@@ -112,9 +112,9 @@ export function AuthForm({ mode }: AuthFormProps) {
       }
 
       const data = (await response.json()) as AuthResponse;
-      window.localStorage.setItem("quotecraft_token", data.token);
-      window.localStorage.setItem("quotecraft_region", region);
-      document.cookie = "quotecraft_auth=true; path=/; max-age=604800; SameSite=Lax; Secure";
+      window.localStorage.setItem("jobstacker_token", data.token);
+      window.localStorage.setItem("jobstacker_region", region);
+      document.cookie = "jobstacker_auth=true; path=/; max-age=604800; SameSite=Lax; Secure";
       window.location.assign("/dashboard");
     } catch (error) {
       setApiError(
@@ -135,7 +135,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         </h2>
         <p className="auth-card__subtitle">
           {isSignup
-            ? "Start a QuoteCraft account for your service team."
+            ? "Start a JobStacker account for your service team."
             : "Use your workspace credentials to continue."}
         </p>
       </div>
@@ -279,7 +279,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         </button>
 
         <p className="auth-form__footer">
-          {isSignup ? "Already have an account? " : "New to QuoteCraft? "}
+          {isSignup ? "Already have an account? " : "New to JobStacker? "}
           <Link
             className="auth-form__link"
             href={isSignup ? "/login" : "/signup"}

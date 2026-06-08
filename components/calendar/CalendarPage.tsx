@@ -127,7 +127,7 @@ export function CalendarPage() {
   const load = useCallback(async () => {
     setLoading(true); setError("");
     try {
-      const tk = localStorage.getItem("quotecraft_token");
+      const tk = localStorage.getItem("jobstacker_token");
       const from = toKey(new Date(monthStart.getFullYear(), monthStart.getMonth() - 1, 1));
       const to = toKey(new Date(monthEnd.getFullYear(), monthEnd.getMonth() + 1, 0));
       const r = await fetch(`/api/jobs/list?from=${from}&to=${to}`, {
@@ -144,7 +144,7 @@ export function CalendarPage() {
     load();
     (async () => {
       try {
-        const tk = localStorage.getItem("quotecraft_token");
+        const tk = localStorage.getItem("jobstacker_token");
         const r = await fetch("/api/profile", { headers: tk ? { Authorization: `Bearer ${tk}` } : {} });
         if (r.ok) { const d = await r.json(); setPlanTier(d.planTier ?? "solo"); }
       } catch { /* ok */ }
@@ -177,18 +177,18 @@ export function CalendarPage() {
   const handleExport = async () => {
     try {
       const from = toKey(monthStart); const to = toKey(monthEnd);
-      const tk = localStorage.getItem("quotecraft_token");
+      const tk = localStorage.getItem("jobstacker_token");
       const r = await fetch(`/api/jobs/export-all?from=${from}&to=${to}`, { headers: tk ? { Authorization: `Bearer ${tk}` } : {} });
       if (!r.ok) throw new Error((await r.json().catch(() => ({})))?.error?.message ?? "Export failed");
       const blob = await r.blob(); const url = URL.createObjectURL(blob);
-      const a = document.createElement("a"); a.href = url; a.download = `quotecraft-${toKey(new Date())}.ics`; a.click();
+      const a = document.createElement("a"); a.href = url; a.download = `jobstacker-${toKey(new Date())}.ics`; a.click();
       URL.revokeObjectURL(url);
     } catch (x) { setError(x instanceof Error ? x.message : "Export failed"); }
   };
 
   async function handleStatusChange(jobId: string, newStatus: string) {
     try {
-      const tk = localStorage.getItem("quotecraft_token");
+      const tk = localStorage.getItem("jobstacker_token");
       const r = await fetch(`/api/jobs/${jobId}/update`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },

@@ -6,7 +6,7 @@ Owner:
 Agent A
 
 Product:
-QuoteCraft
+JobStacker
 
 Audience:
 Small service businesses creating customer quotes, managing customer records, and exporting quote PDFs.

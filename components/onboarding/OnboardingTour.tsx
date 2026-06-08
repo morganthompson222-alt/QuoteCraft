@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const STEPS = [
   {
-    title: "Welcome to QuoteCraft",
+    title: "Welcome to JobStacker",
     body: "Create professional quotes, schedule jobs, and manage customers — all from one place. This quick tour will show you around.",
     icon: "📋",
   },

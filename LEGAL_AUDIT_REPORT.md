@@ -1,4 +1,4 @@
-# QuoteCraft — Data Handling, Privacy & Third-Party Sharing Audit
+# JobStacker — Data Handling, Privacy & Third-Party Sharing Audit
 
 **Date:** 6 June 2026
 **Prepared for:** Legal review (Terms & Conditions / Privacy Policy drafting)
@@ -7,7 +7,7 @@
 
 ## 1. APP OVERVIEW
 
-QuoteCraft is a SaaS application for creating, managing, and accepting job quotes. Users (typically tradespeople or small businesses) sign up, create customer profiles, build quotes with line items, optionally generate quotes via AI, accept quotes into jobs, and manage subscriptions via Stripe.
+JobStacker is a SaaS application for creating, managing, and accepting job quotes. Users (typically tradespeople or small businesses) sign up, create customer profiles, build quotes with line items, optionally generate quotes via AI, accept quotes into jobs, and manage subscriptions via Stripe.
 
 **Stack:** Next.js 15 (App Router), React 19, TypeScript, Supabase (PostgreSQL + Auth), Stripe Billing, Groq/OpenAI (AI), pdf-lib (PDF generation)
 **Deployment:** Docker container, GitHub Actions CI/CD
@@ -86,10 +86,10 @@ QuoteCraft is a SaaS application for creating, managing, and accepting job quote
 
 | Key | Data | Purpose |
 |---|---|---|
-| `quotecraft_token` | JWT authentication token | API authentication (persisted until logout) |
-| `quotecraft_region` | Region code (e.g. "GB", "US") | Currency/date formatting preference |
-| `quotecraft_onboarded` | Boolean flag | Tracks whether onboarding tour completed |
-| `quotecraft_onboarding_dismissed` | Boolean flag | Tracks dashboard wizard dismissal |
+| `jobstacker_token` | JWT authentication token | API authentication (persisted until logout) |
+| `jobstacker_region` | Region code (e.g. "GB", "US") | Currency/date formatting preference |
+| `jobstacker_onboarded` | Boolean flag | Tracks whether onboarding tour completed |
+| `jobstacker_onboarding_dismissed` | Boolean flag | Tracks dashboard wizard dismissal |
 
 **Cookies:** Supabase SSR middleware sets `supabase-auth-token` cookie (encrypted session data) for server-side authentication. No third-party or tracking cookies are used.
 
@@ -108,7 +108,7 @@ QuoteCraft is a SaaS application for creating, managing, and accepting job quote
 - **Provider:** Stripe Inc. (US-based)
 - **Data sent:** User email, user ID, price selection — to Stripe Checkout
 - **Data received:** Stripe subscription events, customer IDs, subscription statuses, period dates
-- **Payment card details:** Never touch QuoteCraft servers — handled entirely by Stripe.js/Checkout
+- **Payment card details:** Never touch JobStacker servers — handled entirely by Stripe.js/Checkout
 - **Stripe DPA:** Standard Stripe Data Processing Agreement available at stripe.com/dpa
 
 ### 4.3 AI Providers — Groq / OpenAI
@@ -134,7 +134,7 @@ No Google Analytics, Facebook Pixel, Mixpanel, Hotjar, or any analytics/tracking
 ```
 USER'S BROWSER
   │
-  │  localStorage: quotecraft_token (JWT), quotecraft_region, onboarding flags
+  │  localStorage: jobstacker_token (JWT), jobstacker_region, onboarding flags
   │
   ├──> POST /api/auth/login ───> Supabase Auth ───> Returns JWT token
   ├──> POST /api/auth/signup ──> Supabase Auth + creates profile ──> Returns JWT token
@@ -223,7 +223,7 @@ DATA LOCATIONS:
 ## 8. REGULATORY CONSIDERATIONS
 
 ### 8.1 UK GDPR / EU GDPR
-- **Data controller:** The QuoteCraft operator/company
+- **Data controller:** The JobStacker operator/company
 - **Data processors:** Supabase, Stripe, Groq, OpenAI
 - **Personal data processed:** Email, name, phone, address (users + their customers)
 - **Processing purpose:** Provision of quoting SaaS service
@@ -271,7 +271,7 @@ Based on the codebase, Terms should cover:
 - **Third-party customer data:** User warrants they have lawful basis to enter their customers' personal data
 - **AI features:** Description of AI quote generation, disclaimer that AI-generated content is for assistance only, user responsibility for final quotes
 - **Acceptable use:** No illegal content, no misuse of customer data
-- **Intellectual property:** App code remains with QuoteCraft, user data remains with user
+- **Intellectual property:** App code remains with JobStacker, user data remains with user
 - **Limitation of liability:** Standard SaaS limitations
 - **Data retention & deletion:** Data retained while account active, deleted within 30 days of account deletion
 - **Governing law:** Specify jurisdiction

@@ -97,7 +97,7 @@ export function CustomerCreateModal({
     setIsSubmitting(true);
 
     try {
-      const token = window.localStorage.getItem("quotecraft_token");
+      const token = window.localStorage.getItem("jobstacker_token");
       const body: Record<string, string> = {};
 
       for (const [key, value] of Object.entries(form)) {

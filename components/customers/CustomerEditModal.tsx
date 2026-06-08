@@ -95,7 +95,7 @@ export function CustomerEditModal({
       setApiError("");
 
       try {
-        const token = window.localStorage.getItem("quotecraft_token");
+        const token = window.localStorage.getItem("jobstacker_token");
         const response = await fetch(`/api/customers/${customerId}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
@@ -166,7 +166,7 @@ export function CustomerEditModal({
     setIsSubmitting(true);
 
     try {
-      const token = window.localStorage.getItem("quotecraft_token");
+      const token = window.localStorage.getItem("jobstacker_token");
       const body: Record<string, string> = {};
 
       for (const [key, value] of Object.entries(form)) {

@@ -10,6 +10,7 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/customers", label: "Customers" },
   { href: "/quotes", label: "Quotes" },
+  { href: "/jobs", label: "Jobs" },
   { href: "/calendar", label: "Schedule" },
   { href: "/revenue", label: "Revenue" },
   { href: "/settings", label: "Settings" },
@@ -21,7 +22,7 @@ function NotificationDropdown({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     (async () => {
       try {
-        const tk = localStorage.getItem("quotecraft_token");
+        const tk = localStorage.getItem("jobstacker_token");
         const r = await fetch("/api/notifications/list", { headers: { Authorization: `Bearer ${tk}` } });
         if (r.ok) { const d = await r.json(); setItems(d.notifications ?? []); }
       } catch { /* ok */ } finally { setLd(false); }
@@ -61,8 +62,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [showNotifs, setShowNotifs] = useState(false);
 
   useEffect(() => {
-    const hasToken = !!localStorage.getItem("quotecraft_token");
-    const onboarded = localStorage.getItem("quotecraft_onboarded");
+    const hasToken = !!localStorage.getItem("jobstacker_token");
+    const onboarded = localStorage.getItem("jobstacker_onboarded");
     const forceTour = globalThis.location?.search.includes("tour=1");
     setLoggedIn(hasToken);
     if (hasToken && (!onboarded || forceTour) && !isMarketing) {
@@ -75,7 +76,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
     async function loadPlan() {
       try {
-        const token = window.localStorage.getItem("quotecraft_token");
+        const token = window.localStorage.getItem("jobstacker_token");
         if (!token) return;
 
         const response = await fetch("/api/billing/status", {
@@ -95,7 +96,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     // Poll notifications
     const ival = setInterval(async () => {
       try {
-        const tk = localStorage.getItem("quotecraft_token");
+        const tk = localStorage.getItem("jobstacker_token");
         if (!tk) return;
         const r = await fetch("/api/notifications/list", { headers: { Authorization: `Bearer ${tk}` } });
         if (r.ok) {
@@ -107,7 +108,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     // Initial check
     (async () => {
       try {
-        const tk = localStorage.getItem("quotecraft_token");
+        const tk = localStorage.getItem("jobstacker_token");
         if (!tk) return;
         const r = await fetch("/api/notifications/list", { headers: { Authorization: `Bearer ${tk}` } });
         if (r.ok) { const d = await r.json(); setUnreadCount(d.unreadCount ?? 0); }
@@ -117,15 +118,15 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [isMarketing]);
 
   function handleLogout() {
-    localStorage.removeItem("quotecraft_token");
-    localStorage.removeItem("quotecraft_onboarded");
-    document.cookie = "quotecraft_auth=; path=/; max-age=0";
+    localStorage.removeItem("jobstacker_token");
+    localStorage.removeItem("jobstacker_onboarded");
+    document.cookie = "jobstacker_auth=; path=/; max-age=0";
     setLoggedIn(false);
     router.push("/");
   }
 
   function handleTourDone() {
-    localStorage.setItem("quotecraft_onboarded", "true");
+    localStorage.setItem("jobstacker_onboarded", "true");
     setShowTour(false);
   }
 
@@ -136,9 +137,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       }
     >
       <header className="app-shell__topbar">
-        <Link href={loggedIn ? "/dashboard" : "/"} className="app-shell__brand" aria-label="QuoteCraft home">
+        <Link href={loggedIn ? "/dashboard" : "/"} className="app-shell__brand" aria-label="JobStacker home">
           <span className="app-shell__mark">QC</span>
-          <span>QuoteCraft</span>
+          <span>JobStacker</span>
         </Link>
 
         <div className="app-shell__actions">
@@ -152,7 +153,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     if (unreadCount > 0) {
                       fetch("/api/notifications/read", {
                         method: "POST",
-                        headers: { Authorization: `Bearer ${localStorage.getItem("quotecraft_token") ?? ""}` },
+                        headers: { Authorization: `Bearer ${localStorage.getItem("jobstacker_token") ?? ""}` },
                       }).then(() => setUnreadCount(0)).catch(() => {});
                     }
                   }}

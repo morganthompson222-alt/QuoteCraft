@@ -34,7 +34,7 @@ Priority order during conflicts:
 ## Project Status
 
 Current Goal:
-Build QuoteCraft MVP
+Build JobStacker MVP
 
 Current Sprint:
 Authentication + Customer Management.

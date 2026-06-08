@@ -1,5 +1,5 @@
 /**
- * QuoteCraft API Smoke Tests
+ * JobStacker API Smoke Tests
  * Run: npx tsx tests/api-smoke.test.ts
  * Requires: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, NEXT_PUBLIC_APP_URL (default http://localhost:3000)
  */
@@ -38,7 +38,7 @@ function expectShape(obj: unknown, keys: string[]) {
 }
 
 async function main() {
-  console.log("\n🚀 QuoteCraft API Smoke Tests\n");
+  console.log("\n🚀 JobStacker API Smoke Tests\n");
   console.log(`Base URL: ${BASE}\n`);
 
   // ── Auth ──

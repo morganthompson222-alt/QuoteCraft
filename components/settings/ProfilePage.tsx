@@ -135,7 +135,7 @@ export function ProfilePage() {
     async function loadProfile() {
       setState({ status: "loading" });
       try {
-        const token = window.localStorage.getItem("quotecraft_token");
+        const token = window.localStorage.getItem("jobstacker_token");
         const response = await fetch("/api/profile", { headers: token ? { Authorization: `Bearer ${token}` } : {} });
         if (!response.ok) throw new Error(await readErrorMessage(response));
         const data = (await response.json()) as Profile;
@@ -164,7 +164,7 @@ export function ProfilePage() {
     setLogoLoading(true);
     try {
       const b64 = await toBase64(f);
-      const tk = localStorage.getItem("quotecraft_token");
+      const tk = localStorage.getItem("jobstacker_token");
       const r = await fetch("/api/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
@@ -189,7 +189,7 @@ export function ProfilePage() {
     event.preventDefault();
     setSaveError(""); setIsSaving(true);
     try {
-      const token = window.localStorage.getItem("quotecraft_token");
+      const token = window.localStorage.getItem("jobstacker_token");
       const body: Record<string, string | number> = {};
       for (const [key, value] of Object.entries(form)) {
         if (key === "customAiInstructions") body[key] = typeof value === "string" ? value : "";
@@ -214,7 +214,7 @@ export function ProfilePage() {
     if (!form.customAiInstructions.trim()) return;
     setCleanupLoading(true);
     try {
-      const tk = localStorage.getItem("quotecraft_token");
+      const tk = localStorage.getItem("jobstacker_token");
       const r = await fetch("/api/ai/cleanup-instructions", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
@@ -235,7 +235,7 @@ export function ProfilePage() {
     setCatalogueLoading(true);
     setCatalogueText("");
     try {
-      const tk = localStorage.getItem("quotecraft_token");
+      const tk = localStorage.getItem("jobstacker_token");
       const r = await fetch("/api/ai/service-catalogue", {
         headers: tk ? { Authorization: `Bearer ${tk}` } : {},
       });
@@ -252,7 +252,7 @@ export function ProfilePage() {
 
   async function handleDownloadCatalogue() {
     try {
-      const tk = localStorage.getItem("quotecraft_token");
+      const tk = localStorage.getItem("jobstacker_token");
       const url = `/api/ai/service-catalogue/pdf?template=${catalogueTemplate}&colour=${catalogueColour}`;
       const r = await fetch(url, { headers: tk ? { Authorization: `Bearer ${tk}` } : {} });
       if (!r.ok) {

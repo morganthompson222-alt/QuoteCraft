@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — QuoteCraft",
+  title: "Terms of Service — JobStacker",
 };
 
 export default function TermsPage() {
@@ -17,7 +17,7 @@ export default function TermsPage() {
         <div className="legal-content">
           <p>
             Please read these Terms and Conditions (&ldquo;Terms&rdquo;) carefully before using
-            the QuoteCraft platform. By creating an account or using any part of the
+            the JobStacker platform. By creating an account or using any part of the
             Service, you agree to be bound by these Terms. If you do not agree, you
             must not use the Service.
           </p>
@@ -25,8 +25,8 @@ export default function TermsPage() {
           <h2>1. Interpretation</h2>
           <p>In these Terms, the following definitions apply:</p>
           <ul>
-            <li>&ldquo;QuoteCraft&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo; means the operator of the QuoteCraft platform.</li>
-            <li>&ldquo;Service&rdquo; means the QuoteCraft web application, including all features, APIs, and associated documentation.</li>
+            <li>&ldquo;JobStacker&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo; means the operator of the JobStacker platform.</li>
+            <li>&ldquo;Service&rdquo; means the JobStacker web application, including all features, APIs, and associated documentation.</li>
             <li>&ldquo;User&rdquo;, &ldquo;you&rdquo;, &ldquo;your&rdquo; means any individual or business that registers for or uses the Service.</li>
             <li>&ldquo;Account&rdquo; means the registered account created by a User to access the Service.</li>
             <li>&ldquo;Content&rdquo; means any data, text, information, or files uploaded or entered into the Service by a User, including customer data and quote information.</li>
@@ -43,7 +43,7 @@ export default function TermsPage() {
 
           <h2>3. The Service</h2>
           <h3>3.1 Description</h3>
-          <p>QuoteCraft provides a cloud-based SaaS platform for tradespeople and small businesses to create, manage, and send trade quotes, generate PDF quote documents, manage customer records, schedule jobs, and manage subscriptions. The Service includes an optional AI-assisted quote generation feature available on paid plans.</p>
+          <p>JobStacker provides a cloud-based SaaS platform for tradespeople and small businesses to create, manage, and send trade quotes, generate PDF quote documents, manage customer records, schedule jobs, and manage subscriptions. The Service includes an optional AI-assisted quote generation feature available on paid plans.</p>
           <h3>3.2 Free and Paid Tiers</h3>
           <p>The Service is offered on multiple plan tiers (Solo, Solo Pro, Business, Growth, and Enterprise). Plan-specific feature limits (such as the maximum number of customers, active quotes, and access to AI features) are set out on our pricing page and may be updated from time to time with reasonable notice.</p>
           <h3>3.3 AI-Generated Content</h3>
@@ -55,7 +55,7 @@ export default function TermsPage() {
           <h3>4.1 Subscription Plans</h3>
           <p>Access to certain features requires a paid Subscription. Subscription fees are charged in advance on a monthly or annual basis as selected at the time of purchase. All prices are as listed on our pricing page and are inclusive of any applicable VAT unless stated otherwise.</p>
           <h3>4.2 Payment Processing</h3>
-          <p>Payments are processed by Stripe, Inc. (&ldquo;Stripe&rdquo;). QuoteCraft does not store or process your payment card details. By subscribing, you agree to Stripe&rsquo;s terms of service and privacy policy in addition to these Terms. You authorise us to instruct Stripe to charge your payment method on each renewal date.</p>
+          <p>Payments are processed by Stripe, Inc. (&ldquo;Stripe&rdquo;). JobStacker does not store or process your payment card details. By subscribing, you agree to Stripe&rsquo;s terms of service and privacy policy in addition to these Terms. You authorise us to instruct Stripe to charge your payment method on each renewal date.</p>
           <h3>4.3 Auto-Renewal</h3>
           <p>Subscriptions renew automatically at the end of each billing period unless cancelled before the renewal date. You may cancel your Subscription at any time via your account settings. Cancellation takes effect at the end of the current billing period; no partial-period refunds are issued unless required by applicable law.</p>
           <h3>4.4 Price Changes</h3>
@@ -67,16 +67,16 @@ export default function TermsPage() {
           <h3>5.1 Accuracy of Information</h3>
           <p>You are responsible for ensuring that all information you enter into the Service &mdash; including your own business details, customer information, and quote data &mdash; is accurate and lawful.</p>
           <h3>5.2 Customer Data and Client Consent</h3>
-          <p>You may enter personal data relating to your customers into the Service (such as names, email addresses, postal addresses, and telephone numbers). By entering any such data into the Service, you represent, warrant, and undertake to QuoteCraft on a continuing basis that:</p>
+          <p>You may enter personal data relating to your customers into the Service (such as names, email addresses, postal addresses, and telephone numbers). By entering any such data into the Service, you represent, warrant, and undertake to JobStacker on a continuing basis that:</p>
           <ul>
             <li>you have obtained all necessary and valid consents from each individual whose personal data you enter, or otherwise have a clear and documented lawful basis under applicable data protection law (including the UK GDPR and the Data Protection Act 2018) for processing and storing that personal data via a third-party SaaS platform;</li>
-            <li>prior to entering your customers&rsquo; personal data into the Service, you have clearly informed each affected individual: (a) that their personal data will be stored on a third-party cloud platform (QuoteCraft); (b) the nature of the data being stored; (c) the purposes for which it will be used; (d) that the data will be held on servers located in the United States under appropriate data transfer safeguards; and (e) how they may exercise their data subject rights, including the right to access, correct, or request deletion of their data;</li>
+            <li>prior to entering your customers&rsquo; personal data into the Service, you have clearly informed each affected individual: (a) that their personal data will be stored on a third-party cloud platform (JobStacker); (b) the nature of the data being stored; (c) the purposes for which it will be used; (d) that the data will be held on servers located in the United States under appropriate data transfer safeguards; and (e) how they may exercise their data subject rights, including the right to access, correct, or request deletion of their data;</li>
             <li>you have made your customers aware of the inherent risks associated with storing personal data via internet-based services, including the risk that, despite reasonable security measures, no system can guarantee absolute protection against unauthorised access, data breaches, or loss, and that you have taken responsibility for communicating those risks to your clients before entering their data into the Service;</li>
             <li>you have provided your customers with a privacy notice or fair processing information that is accurate, up to date, and compliant with your obligations as a data controller under UK GDPR Article 13 or 14 (as applicable); and</li>
             <li>you will comply with all applicable data protection and privacy laws in connection with your use of the Service, and will promptly notify affected individuals and, where required, the Information Commissioner&rsquo;s Office (ICO), in the event of any personal data breach involving data you have entered into the Service.</li>
           </ul>
-          <p>You remain the data controller in respect of your customers&rsquo; personal data at all times. QuoteCraft acts solely as a data processor on your behalf in respect of that data and will process it only in accordance with your instructions and these Terms. Where required by applicable law, we will enter into a separate Data Processing Agreement with you on request.</p>
-          <p><strong>You acknowledge that QuoteCraft bears no liability for any failure on your part to obtain the necessary consents, provide adequate privacy information to your clients, or otherwise comply with your obligations as a data controller. Any claim brought by your customers arising from your failure to meet these obligations is your sole responsibility.</strong></p>
+          <p>You remain the data controller in respect of your customers&rsquo; personal data at all times. JobStacker acts solely as a data processor on your behalf in respect of that data and will process it only in accordance with your instructions and these Terms. Where required by applicable law, we will enter into a separate Data Processing Agreement with you on request.</p>
+          <p><strong>You acknowledge that JobStacker bears no liability for any failure on your part to obtain the necessary consents, provide adequate privacy information to your clients, or otherwise comply with your obligations as a data controller. Any claim brought by your customers arising from your failure to meet these obligations is your sole responsibility.</strong></p>
           <h3>5.3 Account Security</h3>
           <p>You must take reasonable steps to keep your login credentials secure. You should use a strong, unique password and enable any multi-factor authentication features we make available. We are not liable for any loss or damage arising from your failure to maintain the security of your Account.</p>
 
@@ -100,9 +100,9 @@ export default function TermsPage() {
 
           <h2>7. Intellectual Property</h2>
           <h3>7.1 Our Intellectual Property</h3>
-          <p>All rights, title, and interest in the Service (including the software, design, branding, and documentation) are and remain the exclusive property of QuoteCraft or our licensors. Nothing in these Terms transfers any ownership of intellectual property to you. You are granted a limited, non-exclusive, non-transferable, revocable licence to access and use the Service for your own internal business purposes during the term of your Subscription (or, for the Free tier, while your Account remains active).</p>
+          <p>All rights, title, and interest in the Service (including the software, design, branding, and documentation) are and remain the exclusive property of JobStacker or our licensors. Nothing in these Terms transfers any ownership of intellectual property to you. You are granted a limited, non-exclusive, non-transferable, revocable licence to access and use the Service for your own internal business purposes during the term of your Subscription (or, for the Free tier, while your Account remains active).</p>
           <h3>7.2 Your Content</h3>
-          <p>You retain ownership of all Content you create or upload to the Service. By using the Service, you grant QuoteCraft a limited, non-exclusive licence to store, process, and reproduce your Content solely to the extent necessary to provide the Service to you. We will not use your Content for any other purpose, including training AI models, without your express consent.</p>
+          <p>You retain ownership of all Content you create or upload to the Service. By using the Service, you grant JobStacker a limited, non-exclusive licence to store, process, and reproduce your Content solely to the extent necessary to provide the Service to you. We will not use your Content for any other purpose, including training AI models, without your express consent.</p>
           <h3>7.3 Feedback</h3>
           <p>If you submit feedback, suggestions, or ideas about the Service, you grant us an irrevocable, royalty-free licence to use that feedback for any purpose without restriction or compensation to you.</p>
 
@@ -119,19 +119,19 @@ export default function TermsPage() {
 
           <h2>11. Limitation of Liability</h2>
           <h3>11.1 Exclusion of Consequential Loss</h3>
-          <p>To the maximum extent permitted by law, QuoteCraft shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, loss of business, loss of data, or loss of goodwill, arising out of or in connection with the Service or these Terms, even if we have been advised of the possibility of such damages.</p>
+          <p>To the maximum extent permitted by law, JobStacker shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, loss of business, loss of data, or loss of goodwill, arising out of or in connection with the Service or these Terms, even if we have been advised of the possibility of such damages.</p>
           <h3>11.2 Cap on Liability</h3>
-          <p>To the maximum extent permitted by law, QuoteCraft&rsquo;s total aggregate liability to you for all claims arising out of or relating to the Service or these Terms in any 12-month period shall not exceed the greater of: (a) the total fees paid by you to QuoteCraft during the 12 months immediately preceding the claim; or (b) &pound;100.</p>
+          <p>To the maximum extent permitted by law, JobStacker&rsquo;s total aggregate liability to you for all claims arising out of or relating to the Service or these Terms in any 12-month period shall not exceed the greater of: (a) the total fees paid by you to JobStacker during the 12 months immediately preceding the claim; or (b) &pound;100.</p>
           <h3>11.3 Exceptions</h3>
           <p>Nothing in these Terms limits or excludes our liability for: death or personal injury caused by our negligence; fraud or fraudulent misrepresentation; or any other liability that cannot lawfully be excluded or limited under the laws of England and Wales.</p>
           <h3>11.4 Basis of the Bargain</h3>
-          <p>You acknowledge that the limitations and exclusions of liability in this clause 11 reflect a reasonable allocation of risk and are an essential element of the basis of the bargain between the parties. QuoteCraft would not provide the Service on the terms set out in these Terms without these limitations.</p>
+          <p>You acknowledge that the limitations and exclusions of liability in this clause 11 reflect a reasonable allocation of risk and are an essential element of the basis of the bargain between the parties. JobStacker would not provide the Service on the terms set out in these Terms without these limitations.</p>
 
           <h2>12. Indemnity</h2>
-          <p>You agree to indemnify, defend, and hold harmless QuoteCraft and its officers, employees, and agents from and against any claims, damages, losses, liabilities, costs, and expenses (including reasonable legal fees) arising out of or relating to: (a) your use of the Service in breach of these Terms; (b) your violation of any applicable law; or (c) any third-party claim arising from data you have entered into the Service, including claims by your customers.</p>
+          <p>You agree to indemnify, defend, and hold harmless JobStacker and its officers, employees, and agents from and against any claims, damages, losses, liabilities, costs, and expenses (including reasonable legal fees) arising out of or relating to: (a) your use of the Service in breach of these Terms; (b) your violation of any applicable law; or (c) any third-party claim arising from data you have entered into the Service, including claims by your customers.</p>
 
           <h2>13. Third-Party Services</h2>
-          <p>The Service integrates with third-party platforms including Supabase (database and authentication), Stripe (payment processing), and Groq/OpenAI (AI features). These third-party services are provided under their own terms and privacy policies. QuoteCraft is not responsible for the performance, availability, or practices of any third-party service provider. Links to third-party services within the Service do not constitute our endorsement of those services.</p>
+          <p>The Service integrates with third-party platforms including Supabase (database and authentication), Stripe (payment processing), and Groq/OpenAI (AI features). These third-party services are provided under their own terms and privacy policies. JobStacker is not responsible for the performance, availability, or practices of any third-party service provider. Links to third-party services within the Service do not constitute our endorsement of those services.</p>
 
           <h2>14. Suspension and Termination</h2>
           <h3>14.1 Termination by You</h3>
@@ -163,18 +163,18 @@ export default function TermsPage() {
 
           <h2>19. General</h2>
           <h3>19.1 Entire Agreement</h3>
-          <p>These Terms, together with the Privacy Policy and any order confirmation or Subscription documentation, constitute the entire agreement between you and QuoteCraft in relation to the Service and supersede all prior agreements, representations, or understandings.</p>
+          <p>These Terms, together with the Privacy Policy and any order confirmation or Subscription documentation, constitute the entire agreement between you and JobStacker in relation to the Service and supersede all prior agreements, representations, or understandings.</p>
           <h3>19.2 Severability</h3>
           <p>If any provision of these Terms is found by a court to be invalid, unlawful, or unenforceable, that provision will be deemed severed from the remaining provisions, which will continue in full force and effect.</p>
           <h3>19.3 Waiver</h3>
           <p>Our failure to enforce any provision of these Terms shall not constitute a waiver of our right to enforce that provision or any other provision in future.</p>
           <h3>19.4 No Partnership</h3>
-          <p>Nothing in these Terms creates a partnership, joint venture, agency, franchise, or employment relationship between you and QuoteCraft.</p>
+          <p>Nothing in these Terms creates a partnership, joint venture, agency, franchise, or employment relationship between you and JobStacker.</p>
           <h3>19.5 Contact</h3>
-          <p>Questions about these Terms should be directed to us at: legal@quotecraft.app (or the contact address provided in your account settings). We aim to respond to all enquiries within 5 business days.</p>
+          <p>Questions about these Terms should be directed to us at: legal@jobstacker.app (or the contact address provided in your account settings). We aim to respond to all enquiries within 5 business days.</p>
 
           <div className="legal-footer" style={{ marginTop: 48, borderTop: "1px solid var(--border)", paddingTop: 24, color: "var(--text-muted)", fontSize: 13 }}>
-            &copy; QuoteCraft. All rights reserved.
+            &copy; JobStacker. All rights reserved.
           </div>
         </div>
       </div>

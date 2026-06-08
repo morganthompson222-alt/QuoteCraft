@@ -63,7 +63,7 @@ export function JobModal({
     setLoadingQuotes(true);
     (async () => {
       try {
-        const tk = localStorage.getItem("quotecraft_token");
+        const tk = localStorage.getItem("jobstacker_token");
         const r = await fetch("/api/quotes/list?status=accepted&limit=50&sortOrder=desc", {
           headers: tk ? { Authorization: `Bearer ${tk}` } : {},
         });
@@ -98,7 +98,7 @@ export function JobModal({
     setSaving(true);
     setErr("");
     try {
-      const tk = localStorage.getItem("quotecraft_token");
+      const tk = localStorage.getItem("jobstacker_token");
       const body: Record<string, string> = {
         job_title: title,
         job_date: date,

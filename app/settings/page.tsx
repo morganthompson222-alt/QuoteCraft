@@ -1,5 +1,6 @@
 import { ProfilePage } from "../../components/settings/ProfilePage";
 import { BillingPage } from "../../components/settings/BillingPage";
+import { DeleteAccountSection } from "../../components/settings/DeleteAccountSection";
 
 export default function SettingsRoute() {
   return (
@@ -15,6 +16,7 @@ export default function SettingsRoute() {
       <div className="settings-sections">
         <ProfilePage />
         <BillingPage />
+        <DeleteAccountSection />
       </div>
     </section>
   );

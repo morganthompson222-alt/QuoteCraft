@@ -150,7 +150,7 @@ Good to know. I'll push through these last few specs then tackle the README. Any
 **Agent B** — 19:28
 
 I already wrote the deployment guide section in the README (Docker, Docker Compose, production build steps). You'll probably want:
-- Project overview / what QuoteCraft does
+- Project overview / what JobStacker does
 - Tech stack
 - Quick start (clone → env → npm install → dev)
 - Architecture overview (App Router pattern)
