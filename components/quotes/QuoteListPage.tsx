@@ -45,6 +45,7 @@ const statusOptions = [
   { value: "accepted", label: "Accepted" },
   { value: "rejected", label: "Rejected" },
   { value: "expired", label: "Expired" },
+  { value: "archived", label: "Archived" },
 ];
 
 function statusLabel(status: string) {
@@ -149,6 +150,21 @@ export function QuoteListPage() {
       toast(error instanceof Error ? error.message : "Failed to delete quote.", "error");
     } finally {
       setDeleteLoading(false);
+    }
+  }
+
+  async function handleArchiveQuote(quoteId: string) {
+    try {
+      const token = window.localStorage.getItem("jobstacker_token");
+      const r = await fetch(`/api/quotes/${quoteId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify({ archived: true }),
+      });
+      if (!r.ok) throw new Error(await readErrorMessage(r));
+      setRefreshKey((k) => k + 1);
+    } catch {
+      // silently fail
     }
   }
 
@@ -268,6 +284,16 @@ export function QuoteListPage() {
                 >
                   Delete
                 </button>
+                {(quote.status === "rejected" || quote.status === "expired" || (quote.status === "accepted" && !canSchedule)) ? (
+                  <button
+                    className="button button--ghost"
+                    type="button"
+                    style={{ fontSize: 12, minHeight: 32, padding: "0 10px", color: "#64748b" }}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleArchiveQuote(quote.id); }}
+                  >
+                    Archive
+                  </button>
+                ) : null}
               </Link>
             );
           })}

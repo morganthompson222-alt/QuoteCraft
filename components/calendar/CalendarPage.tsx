@@ -16,6 +16,7 @@ type Job = {
   end_time: string | null;
   location: string | null;
   notes: string | null;
+  archived: boolean;
 };
 
 const DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -34,7 +35,7 @@ const GREEN = "#1F6B4F";
 const GREEN_LIGHT = "#eefaf4";
 const BORDER = "#e5e7eb";
 
-const STATUS_TABS = ["all", "scheduled", "in_progress", "completed", "cancelled"] as const;
+const STATUS_TABS = ["all", "scheduled", "in_progress", "completed", "cancelled", "archived"] as const;
 
 const STATUS_COLORS: Record<string, { bg: string; fg: string; label: string }> = {
   scheduled: { bg: "#dbeafe", fg: "#1e40af", label: "Scheduled" },
@@ -130,7 +131,8 @@ export function CalendarPage() {
       const tk = localStorage.getItem("jobstacker_token");
       const from = toKey(new Date(monthStart.getFullYear(), monthStart.getMonth() - 1, 1));
       const to = toKey(new Date(monthEnd.getFullYear(), monthEnd.getMonth() + 1, 0));
-      const r = await fetch(`/api/jobs/list?from=${from}&to=${to}`, {
+      const archivedParam = listTab === "archived" ? "&include_archived=true" : "";
+      const r = await fetch(`/api/jobs/list?from=${from}&to=${to}${archivedParam}`, {
         headers: tk ? { Authorization: `Bearer ${tk}` } : {},
       });
       if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error(j?.error?.message ?? "Failed"); }
@@ -138,7 +140,7 @@ export function CalendarPage() {
       setJobs(d.jobs ?? []);
     } catch (x) { setError(x instanceof Error ? x.message : "Failed"); }
     finally { setLoading(false); }
-  }, [cursor.getFullYear(), cursor.getMonth()]);
+  }, [cursor.getFullYear(), cursor.getMonth(), listTab]);
 
   useEffect(() => {
     load();
@@ -199,11 +201,25 @@ export function CalendarPage() {
     } catch (x) { setError(x instanceof Error ? x.message : "Failed to update"); }
   }
 
+  async function handleArchive(jobId: string) {
+    try {
+      const tk = localStorage.getItem("jobstacker_token");
+      const r = await fetch(`/api/jobs/${jobId}/update`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
+        body: JSON.stringify({ archived: true }),
+      });
+      if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error(j?.error?.message ?? "Failed"); }
+      setRefreshKey((k) => k + 1);
+    } catch (x) { setError(x instanceof Error ? x.message : "Failed to archive"); }
+  }
+
   // List view
-  const filtered = listTab === "all" ? jobs : jobs.filter((j) => j.status === listTab);
-  const sorted = [...filtered].sort((a, b) => a.job_date.localeCompare(b.job_date));
-  const counts = { all: jobs.length } as Record<string, number>;
-  for (const j of jobs) counts[j.status] = (counts[j.status] ?? 0) + 1;
+  const filtered = listTab === "all" ? jobs : listTab === "archived" ? jobs.filter((j) => j.archived) : jobs.filter((j) => j.status === listTab);
+  const sorted = [...filtered].sort((a, b) => b.job_date.localeCompare(a.job_date));
+  const counts = { all: jobs.filter((j) => !j.archived).length } as Record<string, number>;
+  for (const j of jobs) { if (!j.archived) counts[j.status] = (counts[j.status] ?? 0) + 1; }
+  counts.archived = jobs.filter((j) => j.archived).length;
 
   // Styles
   const PAGE: React.CSSProperties = { padding: "32px 24px", maxWidth: 960, margin: "0 auto" };
@@ -327,10 +343,12 @@ export function CalendarPage() {
                     <span style={{ width: 55 }}>Time</span>
                     <span style={{ flex: 1 }}>Job</span>
                     <span style={{ width: 140 }}>Customer</span>
-                    <span style={{ width: 120, textAlign: "center" as const }}>Status</span>
+                    <span style={{ width: 110, textAlign: "center" as const }}>Status</span>
+                    <span style={{ width: 60 }}></span>
                   </div>
                   {sorted.map((j) => {
                     const sc = STATUS_COLORS[j.status] ?? { bg: "#f1f5f9", fg: "#334155", label: j.status };
+                    const canArchive = (j.status === "completed" || j.status === "cancelled") && !j.archived;
                     return (
                       <div key={j.id} style={TROW}
                         onMouseEnter={(e) => (e.currentTarget.style.background = "#f8fafc")}
@@ -340,7 +358,7 @@ export function CalendarPage() {
                         <span style={{ width: 55, color: "#64748b" }}>{j.start_time?.slice(0, 5)}</span>
                         <span onClick={(e) => { e.stopPropagation(); setSelectedJob(j); }} style={{ flex: 1, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "pointer" }}>{j.job_title}</span>
                         <span style={{ width: 140, color: "#64748b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{j.customer_name || "—"}</span>
-                        <span style={{ width: 120, textAlign: "center" }}>
+                        <span style={{ width: 110, textAlign: "center" }}>
                           <select
                             value={j.status}
                             onChange={(e) => handleStatusChange(j.id, e.target.value)}
@@ -356,6 +374,18 @@ export function CalendarPage() {
                             <option value="completed">Completed</option>
                             <option value="cancelled">Cancelled</option>
                           </select>
+                        </span>
+                        <span style={{ width: 60, textAlign: "center" }}>
+                          {canArchive ? (
+                            <button
+                              style={{ fontSize: 11, fontWeight: 600, border: "none", background: "#f1f5f9", color: "#64748b", borderRadius: 4, cursor: "pointer", padding: "2px 8px" }}
+                              onClick={(e) => { e.stopPropagation(); handleArchive(j.id); }}
+                            >
+                              Archive
+                            </button>
+                          ) : j.archived ? (
+                            <span style={{ fontSize: 10, color: "#94a3b8" }}>✓</span>
+                          ) : null}
                         </span>
                       </div>
                     );

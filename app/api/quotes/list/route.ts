@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status");
     const customerId = searchParams.get("customerId");
     const paidFilter = searchParams.get("paid");
+    const showArchived = searchParams.get("archived") === "1";
 
     const sortBy = searchParams.get("sortBy") ?? "created_at";
     const sortOrder = (searchParams.get("sortOrder") ?? "desc") as "asc" | "desc";
@@ -43,7 +44,11 @@ export async function GET(request: NextRequest) {
       .eq("user_id", user.id);
 
     if (status) {
-      query = query.eq("status", status);
+      if (status === "archived") {
+        query = query.eq("archived", true);
+      } else {
+        query = query.eq("status", status);
+      }
     }
 
     if (customerId) {
@@ -54,6 +59,10 @@ export async function GET(request: NextRequest) {
       query = query.eq("paid", true);
     } else if (paidFilter === "false") {
       query = query.eq("paid", false);
+    }
+
+    if (!showArchived && status !== "archived") {
+      query = query.neq("archived", true);
     }
 
     const { data, error, count } = await query

@@ -321,6 +321,18 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
     }
   }
 
+  async function handleArchive() {
+    try {
+      const token = window.localStorage.getItem("jobstacker_token");
+      await fetch(`/api/quotes/${quoteId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify({ archived: true }),
+      });
+      setRefreshKey((k) => k + 1);
+    } catch { /* ok */ }
+  }
+
   function getShareUrl() { return `${window.location.origin}/q/${quoteId}`; }
 
   const quote = state.status === "success" ? state.data : null;
@@ -428,11 +440,14 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
                         <button type="button" onClick={() => { setShowMore(false); updateStatus(undefined, !quote.paid); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
                           {quote.paid ? "Mark unpaid" : "Mark paid"}
                         </button>
-                        <button type="button" onClick={() => { setShowMore(false); downloadPdf(); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a" }}>
+                        <button type="button" onClick={() => { setShowMore(false); downloadPdf(); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
                           Download PDF
                         </button>
                       </>
                     ) : null}
+                    <button type="button" onClick={() => { setShowMore(false); updateStatus(undefined, undefined); handleArchive(); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#64748b" }}>
+                      Archive
+                    </button>
                   </div>
                 </>
               ) : null}

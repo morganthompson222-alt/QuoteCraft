@@ -15,6 +15,7 @@ type Job = {
   location: string | null;
   notes: string | null;
   completed_at: string | null;
+  archived: boolean;
 };
 
 const STATUS_COLORS: Record<string, { bg: string; fg: string; label: string }> = {
@@ -40,7 +41,7 @@ export function JobListPage({ view }: { view: "active" | "completed" }) {
     (async () => {
       try {
         const tk = localStorage.getItem("jobstacker_token");
-        const r = await fetch("/api/jobs/list", {
+        const r = await fetch("/api/jobs/list?include_archived=true", {
           headers: tk ? { Authorization: `Bearer ${tk}` } : {},
         });
         if (!r.ok) {
@@ -63,10 +64,11 @@ export function JobListPage({ view }: { view: "active" | "completed" }) {
   const dayAgo = new Date(now.getTime() - 24 * 3600000);
 
   const filtered = useMemo(() => {
+    const nonArchived = jobs.filter((j) => !j.archived);
     if (isCompleted) {
-      return jobs.filter((j) => j.status === "completed" || j.status === "cancelled");
+      return nonArchived.filter((j) => j.status === "completed" || j.status === "cancelled");
     }
-    return jobs.filter((j) => {
+    return nonArchived.filter((j) => {
       if (j.status === "completed") {
         return new Date(j.completed_at ?? j.job_date) >= dayAgo;
       }
@@ -74,6 +76,18 @@ export function JobListPage({ view }: { view: "active" | "completed" }) {
       return true;
     });
   }, [jobs, isCompleted, dayAgo]);
+
+  async function handleArchive(jobId: string) {
+    try {
+      const tk = localStorage.getItem("jobstacker_token");
+      const r = await fetch(`/api/jobs/${jobId}/update`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
+        body: JSON.stringify({ archived: true }),
+      });
+      if (r.ok) setRefreshKey((k) => k + 1);
+    } catch { /* ok */ }
+  }
 
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
@@ -161,9 +175,11 @@ export function JobListPage({ view }: { view: "active" | "completed" }) {
             <span style={{ flex: 1 }}>Job</span>
             <span style={{ width: 140 }}>Customer</span>
             <span style={{ width: 110, textAlign: "center" as const }}>Status</span>
+            <span style={{ width: 60 }}></span>
           </div>
           {sorted.map((j) => {
             const sc = STATUS_COLORS[j.status] ?? { bg: "#f1f5f9", fg: "#334155", label: j.status };
+            const canArchive = (j.status === "completed" || j.status === "cancelled") && !j.archived;
             return (
               <div
                 key={j.id}
@@ -189,6 +205,18 @@ export function JobListPage({ view }: { view: "active" | "completed" }) {
                   }}>
                     {sc.label}
                   </span>
+                </span>
+                <span style={{ width: 60, textAlign: "center" }}>
+                  {canArchive ? (
+                    <button
+                      style={{ fontSize: 11, fontWeight: 600, border: "none", background: "#f1f5f9", color: "#64748b", borderRadius: 4, cursor: "pointer", padding: "2px 8px" }}
+                      onClick={(e) => { e.stopPropagation(); handleArchive(j.id); }}
+                    >
+                      Archive
+                    </button>
+                  ) : j.archived ? (
+                    <span style={{ fontSize: 10, color: "#94a3b8" }}>Archived</span>
+                  ) : null}
                 </span>
               </div>
             );

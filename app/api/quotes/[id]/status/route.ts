@@ -105,6 +105,10 @@ export async function PATCH(
       update.paid_at = Boolean(body.paid) ? new Date().toISOString() : null;
     }
 
+    if (body.archived !== undefined) {
+      update.archived = Boolean(body.archived);
+    }
+
     // Allow updating job_date/start_time/end_time directly
     if (body.job_date !== undefined && body.status !== "accepted") {
       const d = sanitizeString(body.job_date);

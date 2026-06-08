@@ -54,6 +54,10 @@ export async function PATCH(
       }
     }
 
+    if (body.archived !== undefined) {
+      update.archived = Boolean(body.archived);
+    }
+
     if (Object.keys(update).length === 0) {
       throw new ApiError(400, "No fields to update", "VALIDATION_ERROR");
     }

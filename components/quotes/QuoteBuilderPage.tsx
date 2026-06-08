@@ -414,6 +414,19 @@ export function QuoteBuilderPage() {
     }
   }
 
+  async function handleArchive() {
+    if (!createdQuoteId) return;
+    try {
+      const token = window.localStorage.getItem("jobstacker_token");
+      await fetch(`/api/quotes/${createdQuoteId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify({ archived: true }),
+      });
+      window.location.assign("/quotes");
+    } catch { /* ok */ }
+  }
+
   // ─── Render ───
 
   if (mode === "view") {
@@ -515,11 +528,14 @@ export function QuoteBuilderPage() {
                           <button type="button" onClick={() => { setShowMore(false); updateStatus(undefined, !quote.paid); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
                             {quote.paid ? "Mark unpaid" : "Mark paid"}
                           </button>
-                          <button type="button" onClick={() => { setShowMore(false); downloadPdf(); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a" }}>
+                          <button type="button" onClick={() => { setShowMore(false); downloadPdf(); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
                             Download PDF
                           </button>
                         </>
                       ) : null}
+                      <button type="button" onClick={() => { setShowMore(false); handleArchive(); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#64748b" }}>
+                        Archive
+                      </button>
                     </div>
                   </>
                 ) : null}
