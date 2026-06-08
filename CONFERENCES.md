@@ -168,6 +168,19 @@ CREATE POLICY notifications_self ON public.notifications FOR ALL USING (user_id 
 ALTER TABLE public.jobs ADD COLUMN IF NOT EXISTS completed_at TIMESTAMPTZ;
 ALTER TABLE public.jobs ADD COLUMN IF NOT EXISTS archived BOOLEAN DEFAULT FALSE;
 ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS archived BOOLEAN DEFAULT FALSE;
+CREATE TABLE IF NOT EXISTS public.expenses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  expense_date DATE NOT NULL DEFAULT CURRENT_DATE,
+  amount DECIMAL(10,2) NOT NULL,
+  category TEXT NOT NULL DEFAULT 'Other',
+  description TEXT,
+  receipt_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE public.expenses ENABLE ROW LEVEL SECURITY;
+CREATE POLICY expenses_self ON public.expenses FOR ALL USING (user_id = auth.uid());
 ```
 
 ## Vercel Environment Variables
