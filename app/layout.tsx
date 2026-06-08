@@ -29,7 +29,10 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="manifest" href="/site.webmanifest" />
-        <meta name="theme-color" content="#047857" />
+        <meta name="theme-color" content="#1F6B4F" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="JobStacker" />
       </head>
       <body>
         <Providers>

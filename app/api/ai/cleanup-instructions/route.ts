@@ -46,17 +46,21 @@ export async function POST(request: NextRequest) {
 Rules:
 - Remove duplicates, filler words, and redundancy
 - Keep ALL pricing data intact — never delete a rate
-- Format as: "service description" = £X per unit
+- **Preserve tiered pricing as a single line** — e.g. "£30 first metre, £18 per additional metre" stays as one line, NOT split into two
+- Format flat rates as: "service" = £X per unit
+- Format tiered rates as: "service" = £X first UNIT, £Y per additional UNIT
 - Standardise units: "per hour", "per sqm", "per metre", "per ton", "per item"
 - If a service has no unit, default to "per job"
 - Remove markdown, quotes, and explanations
 - Output ONLY the cleaned text
 
-Example input: "so i ussually charge about 80 an hour for tree work and cutting, and for patios i do £5 per square meter"
+Example 1 (flat rate):
+Input: "so i ussually charge about 80 an hour for tree work"
+Output: Tree cutting/work = £80 per hour
 
-Example output:
-Tree cutting/work = £80 per hour
-Patio cleaning = £5 per sqm
+Example 2 (tiered pricing — KEEP TOGETHER):
+Input: "for gutter cleaning i charge £30 for the first meter and then £18 for every additional meter"
+Output: Gutter cleaning = £30 first metre, £18 per additional metre
 
 Now clean up:
 

@@ -133,7 +133,6 @@ export function QuoteBuilderPage() {
   const [statusError, setStatusError] = useState("");
   const [pdfLoading, setPdfLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [showMore, setShowMore] = useState(false);
   const [showSendMenu, setShowSendMenu] = useState(false);
   const [showAcceptModal, setShowAcceptModal] = useState(false);
   const [schedDate, setSchedDate] = useState("");
@@ -467,77 +466,91 @@ export function QuoteBuilderPage() {
 
         {quote ? (
           <>
-            {/* Next action — primary button */}
+            {/* Action toolbar */}
             <div className="qp-actions">
-              {quote.status === "draft" ? (
-                <div style={{ position: "relative" }}>
-                  <button className="button button--primary" type="button" onClick={() => setShowSendMenu((v) => !v)} style={{ minWidth: 160, fontSize: 15, padding: "10px 24px" }}>
-                    Send
-                  </button>
-                  {showSendMenu ? (
-                    <>
-                      <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowSendMenu(false)} />
-                      <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 220, overflow: "hidden" }}>
-                        <button type="button" onClick={async () => { setShowSendMenu(false); await updateStatus("sent"); }} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
-                          Share link
-                          <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Copy link & mark as sent</span>
-                        </button>
-                        <button type="button" onClick={async () => { setShowSendMenu(false); await downloadPdf(); }} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
-                          Download PDF
-                          <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Send via email or print</span>
-                        </button>
-                      </div>
-                    </>
-                  ) : null}
-                </div>
-              ) : null}
-
-              {validTransitions.includes("sent") && quote.status !== "draft" ? (
-                <button className="button button--primary" type="button" onClick={() => updateStatus("sent")}>
-                  Mark as sent
-                </button>
-              ) : null}
-
-              {validTransitions.includes("accepted") ? (
-                <button className="button button--primary" type="button" onClick={() => setShowAcceptModal(true)} style={{ minWidth: 160, fontSize: 15, padding: "10px 24px" }}>
-                  Mark accepted
-                </button>
-              ) : null}
-
-              {/* More actions dropdown */}
-              <div style={{ position: "relative" }}>
-                <button className="button button--ghost" type="button" onClick={() => setShowMore((v) => !v)}>
-                  More ▾
-                </button>
-                {showMore ? (
-                  <>
-                    <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowMore(false)} />
-                    <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 180, overflow: "hidden" }}>
-                      {validTransitions.includes("rejected") ? (
-                        <button type="button" onClick={() => { setShowMore(false); updateStatus("rejected"); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#991b1b", borderBottom: "1px solid var(--border)" }}>
-                          Mark rejected
-                        </button>
-                      ) : null}
-                      {validTransitions.includes("expired") ? (
-                        <button type="button" onClick={() => { setShowMore(false); updateStatus("expired"); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#64748b", borderBottom: "1px solid var(--border)" }}>
-                          Mark expired
-                        </button>
-                      ) : null}
-                      {quote.status !== "rejected" && quote.status !== "expired" ? (
-                        <>
-                          <button type="button" onClick={() => { setShowMore(false); updateStatus(undefined, !quote.paid); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
-                            {quote.paid ? "Mark unpaid" : "Mark paid"}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", padding: "14px 0", borderBottom: `1px solid var(--border)`, marginBottom: 14 }}>
+                {/* Primary */}
+                {quote.status === "draft" ? (
+                  <div style={{ position: "relative" }}>
+                    <button className="button button--primary" type="button" onClick={() => setShowSendMenu((v) => !v)} style={{ minWidth: 100 }}>
+                      Send ▾
+                    </button>
+                    {showSendMenu ? (
+                      <>
+                        <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowSendMenu(false)} />
+                        <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 220, overflow: "hidden" }}>
+                          <button type="button" onClick={async () => { setShowSendMenu(false); await updateStatus("sent"); }} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
+                            Share link
+                            <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Copy link & mark as sent</span>
                           </button>
-                          <button type="button" onClick={() => { setShowMore(false); downloadPdf(); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
+                          <button type="button" onClick={async () => { setShowSendMenu(false); await downloadPdf(); }} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
                             Download PDF
+                            <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Send via email or print</span>
                           </button>
-                        </>
-                      ) : null}
-                      <button type="button" onClick={() => { setShowMore(false); handleArchive(); }} style={{ display: "block", width: "100%", padding: "10px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, color: "#64748b" }}>
-                        Archive
-                      </button>
-                    </div>
-                  </>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                {validTransitions.includes("sent") && quote.status !== "draft" ? (
+                  <button className="button button--primary" type="button" onClick={() => updateStatus("sent")}>Mark as sent</button>
+                ) : null}
+
+                {validTransitions.includes("accepted") ? (
+                  <button className="button button--primary" type="button" onClick={() => setShowAcceptModal(true)}>Mark accepted</button>
+                ) : null}
+
+                {(validTransitions.includes("rejected") || validTransitions.includes("expired")) ? (
+                  <span style={{ width: 1, height: 24, background: "var(--border)", margin: "0 4px" }} />
+                ) : null}
+
+                {validTransitions.includes("rejected") ? (
+                  <button className="button button--secondary" type="button" onClick={() => updateStatus("rejected")} style={{ borderColor: "var(--danger)", color: "var(--danger)" }}>Mark rejected</button>
+                ) : null}
+
+                {validTransitions.includes("expired") ? (
+                  <button className="button button--ghost" type="button" onClick={() => updateStatus("expired")} style={{ color: "#64748b" }}>Mark expired</button>
+                ) : null}
+
+                {quote.status !== "rejected" && quote.status !== "expired" ? (
+                  <span style={{ width: 1, height: 24, background: "var(--border)", margin: "0 4px" }} />
+                ) : null}
+
+                {quote.status !== "draft" && quote.status !== "rejected" && quote.status !== "expired" ? (
+                  <button className="button button--secondary" type="button" disabled={pdfLoading} onClick={downloadPdf}>
+                    {pdfLoading ? "Preparing..." : "Download PDF"}
+                  </button>
+                ) : null}
+
+                {quote.status !== "draft" && quote.status !== "rejected" && quote.status !== "expired" ? (
+                  <button className="button button--ghost" type="button" onClick={() => {
+                    const url = `${window.location.origin}/q/${createdQuoteId}`;
+                    navigator.clipboard.writeText(url);
+                    setStatusError("Share link copied!");
+                    setTimeout(() => setStatusError(""), 2000);
+                  }}>Copy link</button>
+                ) : null}
+
+                {quote.status !== "rejected" && quote.status !== "expired" ? (
+                  <span style={{ width: 1, height: 24, background: "var(--border)", margin: "0 4px" }} />
+                ) : null}
+
+                {quote.status !== "rejected" && quote.status !== "expired" ? (
+                  <button className={`button ${quote.paid ? "button--secondary" : "button--ghost"}`} type="button"
+                    onClick={() => updateStatus(undefined, !quote.paid)}
+                    style={quote.paid ? { borderColor: "var(--success, #065f46)", color: "var(--success, #065f46)" } : {}}
+                  >
+                    {quote.paid ? "✓ Paid" : "Mark paid"}
+                  </button>
+                ) : null}
+
+                <span style={{ flex: 1 }} />
+
+                {(quote.status === "rejected" || quote.status === "expired" || quote.status === "accepted") ? (
+                  <button className="button button--ghost" type="button" onClick={handleArchive} style={{ fontSize: 12, color: "#94a3b8" }}>
+                    Archive
+                  </button>
                 ) : null}
               </div>
             </div>

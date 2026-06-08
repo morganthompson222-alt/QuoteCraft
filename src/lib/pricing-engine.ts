@@ -25,29 +25,67 @@ type UserRule = {
   task: string;
   unitPrice: number;
   unit: string;
+  baseUnits: number;
+  additionalPrice: number | null;
 };
 
 function parseUserRules(instructions: string): UserRule[] {
   const rules: UserRule[] = [];
   if (!instructions?.trim()) return rules;
 
-  const lines = instructions.split(/[\n.]/);
-  const patterns = [
+  const lines = instructions.split(/[\n.;]/);
+
+  // Pattern 1: tiered pricing — "£30 first m, £18 per additional meter"
+  const tieredPattern = /£(\d+(?:[.,]\d+)?)\s*(?:for\s+the\s+)?first\s*(?:(\d+)\s*)?(\w+(?:\s+\w+)?)(?:\s*(?:and|,)\s*)?£?(\d+(?:[.,]\d+)?)\s*(?:for\s+)?(?:every\s+)?(?:each\s+)?(?:additional\s+)?(?:\w+\s+)?(\w+(?:\s+\w+)?)/i;
+
+  // Pattern 2: base + additional — "£30 + £18 per additional m"
+  const basePlusPattern = /£(\d+(?:[.,]\d+)?)\s*\+\s*£(\d+(?:[.,]\d+)?)\s*(?:per\s+)?(?:additional\s+)?(\w+(?:\s+\w+)?)/i;
+
+  // Pattern 3: flat rate — "£30 per m", "I charge £30 per panel"
+  const flatRatePatterns = [
     /(?:i\s+)?(?:charge|cost|price|rate).*?£?(\d+[.,]?\d*)\s*(?:per|a|an|\/)\s*(\w+(?:\s+\w+)?)/i,
-    /(?:i\s+)?(?:charge|cost|price|rate).*?(\d+[.,]?\d*)/i,
     /£(\d+[.,]?\d*)\s*(?:per|a|an|\/)\s*(\w+(?:\s+\w+)?)/i,
     /(?:is|costs?|priced?\s+at)\s*£?(\d+[.,]?\d*)\s*(?:per|a|an|\/)?\s*(\w+(?:\s+\w+)?)?/i,
   ];
 
   for (const line of lines) {
     if (!line.trim()) continue;
-    for (const pattern of patterns) {
+
+    // Try tiered pricing first
+    const tieredMatch = line.match(tieredPattern);
+    if (tieredMatch) {
+      const basePrice = parseFloat(tieredMatch[1].replace(",", "."));
+      const baseCount = tieredMatch[2] ? parseInt(tieredMatch[2]) : 1;
+      const addPrice = parseFloat(tieredMatch[4].replace(",", "."));
+      const unit = (tieredMatch[3] || tieredMatch[5])?.trim()?.toLowerCase() ?? "unit";
+      const task = line.replace(tieredMatch[0], "").trim() || line.trim();
+      if (basePrice > 0 && addPrice > 0 && basePrice < 10000) {
+        rules.push({ task: task.toLowerCase(), unitPrice: basePrice, unit, baseUnits: baseCount, additionalPrice: addPrice });
+        continue;
+      }
+    }
+
+    // Try base+additional pattern
+    const bpMatch = line.match(basePlusPattern);
+    if (bpMatch) {
+      const basePrice = parseFloat(bpMatch[1].replace(",", "."));
+      const addPrice = parseFloat(bpMatch[2].replace(",", "."));
+      const unit = bpMatch[3]?.trim()?.toLowerCase() ?? "unit";
+      const task = line.replace(bpMatch[0], "").trim() || line.trim();
+      if (basePrice > 0 && addPrice > 0 && basePrice < 10000) {
+        rules.push({ task: task.toLowerCase(), unitPrice: basePrice, unit, baseUnits: 1, additionalPrice: addPrice });
+        continue;
+      }
+    }
+
+    // Fall back to flat rate patterns
+    for (const pattern of flatRatePatterns) {
       const match = line.match(pattern);
       if (match) {
         const unitPrice = parseFloat(match[1].replace(",", "."));
         const unit = match[2]?.trim()?.toLowerCase() ?? "unit";
         if (unitPrice > 0 && unitPrice < 10000) {
-          rules.push({ task: line.trim().toLowerCase(), unitPrice, unit });
+          rules.push({ task: line.trim().toLowerCase(), unitPrice, unit, baseUnits: 0, additionalPrice: null });
           break;
         }
       }
@@ -139,14 +177,44 @@ function priceStructuredTasks(tasks: ParsedTask[], userInstructions: string): Pr
   const sourceMap: Record<string, PricingSource> = {};
   let total = 0;
 
+  // Track tiered rules that have been partially used (base units already consumed)
+  const tieredUsage = new Map<string, number>();
+
   for (const { task, quantity } of tasks) {
     const rule = matchUserRule(task, rules);
     if (rule) {
-      const cost = quantity * rule.unitPrice;
+      let cost = 0;
+      let calcParts: string[] = [];
+
+      if (rule.additionalPrice !== null && rule.baseUnits > 0) {
+        // Tiered pricing
+        const alreadyUsed = tieredUsage.get(rule.task) ?? 0;
+        const remainingBase = Math.max(0, rule.baseUnits - alreadyUsed);
+        const baseQty = Math.min(quantity, remainingBase);
+        const addQty = Math.max(0, quantity - baseQty);
+
+        if (baseQty > 0) {
+          const baseCost = baseQty * rule.unitPrice;
+          cost += baseCost;
+          calcParts.push(`${baseQty} ${rule.unit} × £${rule.unitPrice}`);
+        }
+        if (addQty > 0) {
+          const addCost = addQty * rule.additionalPrice;
+          cost += addCost;
+          calcParts.push(`${addQty} ${rule.unit} × £${rule.additionalPrice}`);
+        }
+
+        tieredUsage.set(rule.task, alreadyUsed + quantity);
+      } else {
+        // Flat rate
+        cost = quantity * rule.unitPrice;
+        calcParts.push(`${quantity} ${rule.unit} × £${rule.unitPrice}`);
+      }
+
       breakdown.push({
         item: task,
         source: "user_rule",
-        calculation: `${quantity} ${rule.unit} × £${rule.unitPrice}`,
+        calculation: calcParts.join(" + "),
         unitPrice: rule.unitPrice,
         quantity,
         cost: Math.round(cost * 100) / 100,
