@@ -94,14 +94,14 @@ function parseUserRules(instructions: string): UserRule[] {
   return rules;
 }
 
-function matchUserRule(task: string, rules: UserRule[]): { unitPrice: number; unit: string } | null {
+function matchUserRule(task: string, rules: UserRule[]): UserRule | null {
   const taskLower = task.toLowerCase();
   for (const rule of rules) {
     const ruleWords = rule.task.split(/[\s,]+/);
     const taskWords = taskLower.split(/[\s,]+/);
     const overlap = ruleWords.filter(w => taskWords.includes(w)).length;
     if (overlap >= 2 || rule.task.includes(taskLower) || taskLower.includes(rule.task)) {
-      return { unitPrice: rule.unitPrice, unit: rule.unit };
+      return rule;
     }
   }
   return null;
