@@ -119,7 +119,6 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   function handleLogout() {
     localStorage.removeItem("jobstacker_token");
-    localStorage.removeItem("jobstacker_onboarded");
     document.cookie = "jobstacker_auth=; path=/; max-age=0";
     setLoggedIn(false);
     router.push("/");
