@@ -6,10 +6,10 @@ export default function LoginPage() {
       <div className="auth-page__inner">
         <div className="auth-page__intro">
           <p className="hero__eyebrow">JobStacker</p>
-          <h1>Sign in to keep quotes moving.</h1>
+          <h1>Welcome back. Keep stacking.</h1>
           <p>
-            Return to your workspace to manage customers, review quote drafts,
-            and prepare approval-ready PDFs.
+            Sign in to manage your customers, quotes, jobs, and calendar
+            — all in one place.
           </p>
         </div>
 
