@@ -172,39 +172,39 @@ export function FinanceHubPage() {
   async function handleAiAsk() {
     if (!aiQuestion.trim() || !summary) return;
     setAiLoading(true); setAiAnswer("");
-    const m = summary.metrics;
-    const q = aiQuestion.toLowerCase();
-    const topCat = Object.entries(summary.expenseCategories).sort((a, b) => b[1] - a[1])[0];
-    let answer = "";
 
-    if (q.includes("profit")) {
-      answer = `Your profit for this period is ${formatCurrency(m.profit)}. That's a ${m.profitMargin.toFixed(1)}% margin. `;
-      if (m.profitMargin < 15) answer += "Below typical 20-30% target — review expenses.";
-      else if (m.profitMargin > 30) answer += "Great margin.";
-    } else if (q.includes("best month")) {
-      const best = summary.chartData.sort((a, b) => b.revenue - a.revenue)[0];
-      answer = best ? `Best month: ${best.month} at ${formatCurrency(best.revenue)} revenue.` : "Not enough data.";
-    } else if (q.includes("service") || q.includes("most money")) {
-      answer = topCat ? `Top-grossing: ${topCat[0]} at ${formatCurrency(topCat[1])}.` : "Not enough data.";
-    } else if (q.includes("tax")) {
-      answer = `Estimated tax at ${taxRate}%: ${formatCurrency(m.estimatedTax)} (based on ${formatCurrency(m.profit)} profit).`;
-    } else if (q.includes("expense") && (q.includes("increasing") || q.includes("fastest"))) {
-      const cats = Object.entries(summary.expenseCategories).sort((a, b) => b[1] - a[1]);
-      answer = cats.length > 0 ? `Top expenses: ${cats.slice(0, 3).map(([n, v]) => `${n} (${formatCurrency(v)})`).join(", ")}` : "No expense data yet.";
-    } else if (q.includes("quote") || q.includes("average")) {
-      answer = `Average job value: ${formatCurrency(m.avgJobValue)} (${m.paidCount} paid jobs).`;
-    } else if (q.includes("health") || q.includes("score")) {
-      answer = `Health score: ${m.healthScore}/100. `;
-      if (m.healthScore >= 70) answer += "Looking strong.";
-      else if (m.healthScore >= 50) answer += "Doing well — focus on profit margin.";
-      else answer += "Room for improvement — track expenses and review costs.";
-    } else {
-      answer = `Snapshot:\nRevenue: ${formatCurrency(m.revenue)}\nProfit: ${formatCurrency(m.profit)} (${m.profitMargin.toFixed(1)}%)\nExpenses: ${formatCurrency(m.expenses)}\nEst. Tax: ${formatCurrency(m.estimatedTax)}\nJobs: ${m.paidCount}`;
-      answer += "\n\nAsk about: profit, best month, services, tax, expenses, quotes, or health score.";
+    const context = {
+      period,
+      taxRate,
+      metrics: summary.metrics,
+      chartData: summary.chartData.slice(-6),
+      expenseCategories: summary.expenseCategories,
+      costSync: costSync?.costBreakdown ?? [],
+      forecast: summary.forecast,
+      recentExpenses: expenses.slice(0, 10).map(e => ({
+        date: e.expense_date, amount: e.amount, category: e.category,
+        description: e.description, recurrence: e.recurrence,
+      })),
+    };
+
+    try {
+      const tk = localStorage.getItem("jobstacker_token");
+      const r = await fetch("/api/finance/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
+        body: JSON.stringify({ question: aiQuestion, context }),
+      });
+      if (r.ok) {
+        const d = await r.json();
+        setAiAnswer(d.answer);
+      } else {
+        setAiAnswer("Failed to get answer. Try rephrasing your question.");
+      }
+    } catch {
+      setAiAnswer("Network error. Please try again.");
+    } finally {
+      setAiLoading(false);
     }
-    answer += "\n\n*Estimates only. Consult your accountant.*";
-    setTimeout(() => setAiAnswer(answer), 600);
-    setTimeout(() => setAiLoading(false), 700);
   }
 
   const exportCSV = () => {
@@ -337,7 +337,7 @@ export function FinanceHubPage() {
                 </div>
               ) : null}
               <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 10 }}>
-                Ask about: profit, best month, services, tax, expenses, quotes, or health score.
+                Ask anything about your finances — powered by AI with your real data.
               </div>
             </div>
 
@@ -448,7 +448,12 @@ export function FinanceHubPage() {
                 {expRecurrence === "per_job" ? (
                   <div style={{ marginBottom: 16 }}>
                     <label style={sLabel}>Linked service</label>
-                    <input type="text" style={inputStyle} value={expLinkedService} onChange={e => setExpLinkedService(e.target.value)} placeholder='e.g. patio cleaning, fencing, tree work' />
+                    <input type="text" style={inputStyle} list="service-suggestions" value={expLinkedService} onChange={e => setExpLinkedService(e.target.value)} placeholder='e.g. patio cleaning, fencing, tree work' />
+                    <datalist id="service-suggestions">
+                      {expenses.filter(e => e.linked_service).map(e => (
+                        <option key={e.linked_service} value={e.linked_service!} />
+                      ))}
+                    </datalist>
                   </div>
                 ) : null}
                 <div style={{ marginBottom: 20 }}><label style={sLabel}>Description</label><input type="text" style={inputStyle} value={expDesc} onChange={e => setExpDesc(e.target.value)} placeholder="Optional" /></div>

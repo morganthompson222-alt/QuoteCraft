@@ -37,14 +37,21 @@ export async function GET(request: NextRequest) {
 
     for (const exp of recurring ?? []) {
       const service = (exp.linked_service as string).toLowerCase();
-      const matchCount = items.filter(item => item.includes(service) || service.includes(item)).length;
+      const serviceWords = service.split(/\s+/).filter(w => w.length > 2);
+      const matchCount = items.filter(item => {
+        const itemLower = item.toLowerCase();
+        for (const word of serviceWords) {
+          if (itemLower.includes(word)) return true;
+        }
+        return false;
+      }).length;
 
-      if (matchCount > 0) {
+      if (matchCount > 0 || serviceWords.length === 0) {
         costBreakdown.push({
           service: exp.linked_service as string,
           perJobCost: exp.amount as number,
-          jobCount: matchCount,
-          totalCost: (exp.amount as number) * matchCount,
+          jobCount: matchCount || items.length,
+          totalCost: (exp.amount as number) * (matchCount || items.length),
         });
       }
     }
