@@ -22,12 +22,12 @@ export default function InstallPage() {
         <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", padding: "28px 32px", marginBottom: 20 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
             <div style={{ width: 40, height: 40, borderRadius: 10, background: "#eefaf4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 700, color: "#1F6B4F" }}>1</div>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Chrome, Edge, or Brave (Mac & Windows)</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }} id="mac">Mac — Add to Dock</h2>
           </div>
           <ol style={{ paddingLeft: 20, color: "#334155", fontSize: 15, lineHeight: 2 }}>
-            <li>Open <strong style={{ color: "#1F6B4F" }}>JobStacker</strong> in your browser</li>
-            <li>Click the <strong>install icon</strong> in the address bar (looks like a monitor with a down arrow) — or open the browser menu → &quot;Install JobStacker…&quot;</li>
-            <li>Click <strong>Install</strong> — JobStacker opens in its own window, just like any desktop app</li>
+            <li>Open <strong style={{ color: "#1F6B4F" }}>JobStacker</strong> in Safari on your Mac</li>
+            <li>Go to <strong>File → Add to Dock…</strong> (or click Share → Add to Dock)</li>
+            <li>Name it <strong>JobStacker</strong> and click Add — it appears in your Dock like a native app</li>
           </ol>
         </div>
 
@@ -35,12 +35,12 @@ export default function InstallPage() {
         <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", padding: "28px 32px", marginBottom: 20 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
             <div style={{ width: 40, height: 40, borderRadius: 10, background: "#eefaf4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 700, color: "#1F6B4F" }}>2</div>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Safari — Add to Dock (Mac)</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }} id="windows">Windows — Install from Browser</h2>
           </div>
           <ol style={{ paddingLeft: 20, color: "#334155", fontSize: 15, lineHeight: 2 }}>
-            <li>Open <strong style={{ color: "#1F6B4F" }}>JobStacker</strong> in Safari</li>
-            <li>Go to <strong>File → Add to Dock…</strong> (or click the Share icon and select &quot;Add to Dock&quot;)</li>
-            <li>Name it &quot;JobStacker&quot; and click <strong>Add</strong> — it sits in your Dock like any Mac app</li>
+            <li>Open <strong style={{ color: "#1F6B4F" }}>JobStacker</strong> in Chrome or Edge on Windows</li>
+            <li>Click the <strong>install icon</strong> in the address bar → &quot;Install JobStacker&quot;</li>
+            <li>JobStacker opens in its own window — find it in your Start Menu like any app</li>
           </ol>
         </div>
 
