@@ -15,6 +15,8 @@ export async function POST(request: NextRequest) {
     const category = sanitizeString(body.category ?? "Other");
     const description = sanitizeOptionalString(body.description) ?? "";
     const receipt_url = sanitizeOptionalString(body.receipt_url);
+    const recurrence = sanitizeOptionalString(body.recurrence) ?? "one_time";
+    const linked_service = sanitizeOptionalString(body.linked_service) ?? "";
 
     if (isNaN(amount) || amount <= 0) throw new ApiError(400, "Valid expense amount required");
     if (!/^\d{4}-\d{2}-\d{2}$/.test(expense_date)) throw new ApiError(400, "Date must be YYYY-MM-DD");
@@ -26,6 +28,8 @@ export async function POST(request: NextRequest) {
       category,
       description,
       receipt_url,
+      recurrence,
+      linked_service: linked_service || null,
     }).select().single();
 
     if (error) throw new ApiError(400, error.message);

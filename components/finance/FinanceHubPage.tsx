@@ -18,6 +18,7 @@ type FinanceSummary = {
 
 type Expense = {
   id: string; expense_date: string; amount: number; category: string; description: string;
+  recurrence: string; linked_service: string | null;
 };
 
 const EXPENSE_CATEGORIES = [
@@ -113,6 +114,7 @@ export function FinanceHubPage() {
   const { formatCurrency } = useRegion();
   const [summary, setSummary] = useState<FinanceSummary | null>(null);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [costSync, setCostSync] = useState<{ costBreakdown: Array<{ service: string; perJobCost: number; jobCount: number; totalCost: number }>; totalRecurringCost: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("1");
   const [taxRate, setTaxRate] = useState(20);
@@ -122,6 +124,8 @@ export function FinanceHubPage() {
   const [expAmt, setExpAmt] = useState("");
   const [expCat, setExpCat] = useState("Materials");
   const [expDesc, setExpDesc] = useState("");
+  const [expRecurrence, setExpRecurrence] = useState("one_time");
+  const [expLinkedService, setExpLinkedService] = useState("");
   const [expSaving, setExpSaving] = useState(false);
 
   const [aiQuestion, setAiQuestion] = useState("");
@@ -135,12 +139,14 @@ export function FinanceHubPage() {
       try {
         const tk = localStorage.getItem("jobstacker_token");
         const headers: Record<string, string> = tk ? { Authorization: `Bearer ${tk}` } : {};
-        const [sumRes, expRes] = await Promise.all([
+        const [sumRes, expRes, syncRes] = await Promise.all([
           fetch(`/api/finance/summary?period=${period}&taxRate=${taxRate}`, { headers }),
           fetch("/api/finance/expenses/list", { headers }),
+          fetch("/api/finance/cost-sync", { headers }),
         ]);
         if (sumRes.ok && !cancelled) setSummary(await sumRes.json());
         if (expRes.ok) { const d = await expRes.json(); if (!cancelled) setExpenses(d.expenses ?? []); }
+        if (syncRes.ok && !cancelled) setCostSync(await syncRes.json());
       } catch { /* */ }
       finally { if (!cancelled) setLoading(false); }
     })();
@@ -157,9 +163,9 @@ export function FinanceHubPage() {
       if (tk) hdrs.Authorization = `Bearer ${tk}`;
       const r = await fetch("/api/finance/expenses/create", {
         method: "POST", headers: hdrs,
-        body: JSON.stringify({ expense_date: expDate, amount: amt, category: expCat, description: expDesc }),
+        body: JSON.stringify({ expense_date: expDate, amount: amt, category: expCat, description: expDesc, recurrence: expRecurrence, linked_service: expRecurrence === "per_job" ? expLinkedService : undefined }),
       });
-      if (r.ok) { setShowAddExpense(false); setExpAmt(""); setExpDesc(""); setPeriod("1"); }
+      if (r.ok) { setShowAddExpense(false); setExpAmt(""); setExpDesc(""); setExpRecurrence("one_time"); setExpLinkedService(""); setPeriod("1"); }
     } catch { /* */ } finally { setExpSaving(false); }
   }
 
@@ -355,6 +361,11 @@ export function FinanceHubPage() {
                       <span style={{ width: 84, fontWeight: 600, color: "#334155" }}>{e.expense_date}</span>
                       <span style={{ minWidth: 90, fontWeight: 600, background: "#f8fafc", color: "#64748b", borderRadius: 8, padding: "3px 10px", fontSize: 12, textAlign: "center" }}>{e.category}</span>
                       <span style={{ flex: 1, color: "#334155", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.description || "—"}</span>
+                      {e.recurrence && e.recurrence !== "one_time" ? (
+                        <span style={{ fontSize: 11, fontWeight: 600, background: GREEN_LIGHT, color: GREEN, borderRadius: 8, padding: "2px 8px", whiteSpace: "nowrap" }}>
+                          {e.recurrence === "per_job" ? `per job${e.linked_service ? `: ${e.linked_service}` : ""}` : e.recurrence}
+                        </span>
+                      ) : null}
                       <span style={{ fontWeight: 700, color: "#991b1b" }}>-{formatCurrency(e.amount)}</span>
                     </div>
                   ))
@@ -373,6 +384,25 @@ export function FinanceHubPage() {
                 ) : null}
               </div>
             </div>
+
+            {/* Recurring cost sync */}
+            {costSync && costSync.costBreakdown.length > 0 ? (
+              <div style={{ ...cardBase, marginBottom: 28 }}>
+                <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", margin: "0 0 4px" }}>Per-job cost estimates</h2>
+                <span style={{ fontSize: 13, color: "#94a3b8", display: "block", marginBottom: 16 }}>Based on completed & paid jobs matching your recurring expenses.</span>
+                {costSync.costBreakdown.map((c) => (
+                  <div key={c.service} style={{ padding: "10px 0", borderBottom: "1px solid #f1f5f9", display: "flex", alignItems: "center", gap: 16, fontSize: 14 }}>
+                    <span style={{ fontWeight: 600, color: "#334155", width: 160 }}>{c.service}</span>
+                    <span style={{ color: "#64748b", width: 100 }}>{formatCurrency(c.perJobCost)} × {c.jobCount} jobs</span>
+                    <span style={{ marginLeft: "auto", fontWeight: 700, color: "#991b1b" }}>{formatCurrency(c.totalCost)}</span>
+                  </div>
+                ))}
+                <div style={{ marginTop: 14, paddingTop: 12, borderTop: "2px solid #f1f5f9", display: "flex", justifyContent: "space-between", fontWeight: 700, fontSize: 15 }}>
+                  <span style={{ color: "#0f172a" }}>Total per-job costs</span>
+                  <span style={{ color: "#991b1b" }}>{formatCurrency(costSync.totalRecurringCost)}</span>
+                </div>
+              </div>
+            ) : null}
 
             {/* Growth row */}
             <div style={{ display: "flex", gap: 32, flexWrap: "wrap", padding: "22px 28px", borderRadius: 16, background: "#f8fafc", border: "1.5px solid #f1f5f9", marginBottom: 28 }}>
@@ -406,6 +436,21 @@ export function FinanceHubPage() {
                 <div style={{ marginBottom: 16 }}><label style={sLabel}>Date</label><input type="date" style={inputStyle} value={expDate} onChange={e => setExpDate(e.target.value)} /></div>
                 <div style={{ marginBottom: 16 }}><label style={sLabel}>Amount (£)</label><input type="number" style={inputStyle} value={expAmt} onChange={e => setExpAmt(e.target.value)} placeholder="0.00" step="0.01" min="0" /></div>
                 <div style={{ marginBottom: 16 }}><label style={sLabel}>Category</label><select style={{ ...inputStyle, background: "#fff" }} value={expCat} onChange={e => setExpCat(e.target.value)}>{EXPENSE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}</select></div>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={sLabel}>Recurrence</label>
+                  <select style={{ ...inputStyle, background: "#fff" }} value={expRecurrence} onChange={e => setExpRecurrence(e.target.value)}>
+                    <option value="one_time">One-time</option>
+                    <option value="per_job">Per job</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                </div>
+                {expRecurrence === "per_job" ? (
+                  <div style={{ marginBottom: 16 }}>
+                    <label style={sLabel}>Linked service</label>
+                    <input type="text" style={inputStyle} value={expLinkedService} onChange={e => setExpLinkedService(e.target.value)} placeholder='e.g. patio cleaning, fencing, tree work' />
+                  </div>
+                ) : null}
                 <div style={{ marginBottom: 20 }}><label style={sLabel}>Description</label><input type="text" style={inputStyle} value={expDesc} onChange={e => setExpDesc(e.target.value)} placeholder="Optional" /></div>
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
                   <button style={{ ...pillBase, background: "transparent", borderColor: "transparent" }} onClick={() => setShowAddExpense(false)}>Cancel</button>

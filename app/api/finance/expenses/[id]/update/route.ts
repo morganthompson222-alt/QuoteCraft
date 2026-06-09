@@ -22,6 +22,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if (body.category !== undefined) update.category = sanitizeString(body.category);
     if (body.description !== undefined) update.description = sanitizeOptionalString(body.description);
     if (body.receipt_url !== undefined) update.receipt_url = sanitizeOptionalString(body.receipt_url);
+    if (body.recurrence !== undefined) update.recurrence = sanitizeOptionalString(body.recurrence);
+    if (body.linked_service !== undefined) update.linked_service = sanitizeOptionalString(body.linked_service);
 
     if (Object.keys(update).length === 0) throw new ApiError(400, "No fields to update");
 

@@ -182,6 +182,8 @@ CREATE TABLE IF NOT EXISTS public.expenses (
 );
 ALTER TABLE public.expenses ENABLE ROW LEVEL SECURITY;
 CREATE POLICY expenses_self ON public.expenses FOR ALL USING (user_id = auth.uid());
+ALTER TABLE public.expenses ADD COLUMN IF NOT EXISTS recurrence TEXT DEFAULT 'one_time';
+ALTER TABLE public.expenses ADD COLUMN IF NOT EXISTS linked_service TEXT;
 ```
 
 ## Vercel Environment Variables
