@@ -279,7 +279,7 @@ export function ProfilePage() {
       name: d.name ?? "", companyName: d.companyName ?? "", phone: d.phone ?? "",
       address: d.address ?? "", city: d.city ?? "", state: d.state ?? "", zip: d.zip ?? "",
       defaultTaxRate: d.defaultTaxRate ?? 0, quotePrefix: d.quotePrefix ?? "Q-",
-      customAiInstructions: d.customAiInstructions ?? "",
+      customAiInstructions: d.customAiInstructions ?? "", costRates: d.costRates ?? "",
     });
     setIsEditing(false); setSaveError("");
   }
