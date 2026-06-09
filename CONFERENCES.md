@@ -154,6 +154,7 @@ ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS job_date DATE;
 ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS start_time TEXT;
 ALTER TABLE public.quotes ADD COLUMN IF NOT EXISTS end_time TEXT;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS custom_ai_instructions TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS cost_rates TEXT;
 CREATE TABLE IF NOT EXISTS public.notifications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,

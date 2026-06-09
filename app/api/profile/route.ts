@@ -43,6 +43,7 @@ export async function GET(request: NextRequest) {
       currencyCode: profile?.currency_code ?? "GBP",
       locale: profile?.locale ?? "en-GB",
       customAiInstructions: profile?.custom_ai_instructions ?? null,
+      costRates: profile?.cost_rates ?? null,
     });
   } catch (error) {
     return errorResponse(error);
@@ -101,6 +102,10 @@ export async function PUT(request: NextRequest) {
       profileUpdate.custom_ai_instructions = sanitizeOptionalString(body.customAiInstructions);
     }
 
+    if (body.costRates !== undefined) {
+      profileUpdate.cost_rates = sanitizeOptionalString(body.costRates);
+    }
+
     const hasUpdates = Object.keys(profileUpdate).length > 0 || nameUpdate !== undefined;
     if (!hasUpdates) {
       throw new ApiError(400, "No fields to update", "VALIDATION_ERROR");
@@ -148,6 +153,7 @@ export async function PUT(request: NextRequest) {
       currencyCode: updated?.currency_code ?? "GBP",
       locale: updated?.locale ?? "en-GB",
       customAiInstructions: updated?.custom_ai_instructions ?? null,
+      costRates: updated?.cost_rates ?? null,
     });
   } catch (error) {
     return errorResponse(error);

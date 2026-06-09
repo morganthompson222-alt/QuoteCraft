@@ -20,6 +20,7 @@ type Profile = {
   quotePrefix: string;
   planTier: string;
   customAiInstructions: string | null;
+  costRates: string | null;
 };
 
 const COLOUR_SWATCHES: Record<string, string> = {
@@ -111,7 +112,7 @@ export function ProfilePage() {
   const [state, setState] = useState<ProfileState>({ status: "loading" });
   const [form, setForm] = useState({
     name: "", companyName: "", phone: "", address: "", city: "", state: "", zip: "",
-    defaultTaxRate: 0, quotePrefix: "Q-", customAiInstructions: "",
+    defaultTaxRate: 0, quotePrefix: "Q-", customAiInstructions: "", costRates: "",
   });
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -145,6 +146,7 @@ export function ProfilePage() {
             address: data.address ?? "", city: data.city ?? "", state: data.state ?? "", zip: data.zip ?? "",
             defaultTaxRate: data.defaultTaxRate ?? 0, quotePrefix: data.quotePrefix ?? "Q-",
             customAiInstructions: data.customAiInstructions ?? "",
+            costRates: data.costRates ?? "",
           });
           setLogoUrl(data.logoUrl ?? null);
           setState({ status: "loaded", data });
@@ -193,6 +195,7 @@ export function ProfilePage() {
       const body: Record<string, string | number> = {};
       for (const [key, value] of Object.entries(form)) {
         if (key === "customAiInstructions") body[key] = typeof value === "string" ? value : "";
+        else if (key === "costRates") body[key] = typeof value === "string" ? value : "";
         else if (key === "defaultTaxRate" && value !== 0) body[key] = Number(value);
         else if (typeof value === "string" && value.trim()) body[key] = value.trim();
       }
@@ -475,6 +478,21 @@ export function ProfilePage() {
                 />
                 <span style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4, display: "block" }}>
                   AI will use these rates exactly. Keep it specific: item + price + unit (per hour, per sqm, etc).
+                </span>
+              </div>
+              <div className="field" style={{ gridColumn: "1 / -1" }}>
+                <label htmlFor="profile-costRates">Cost rates (materials & labour per unit)</label>
+                <textarea
+                  id="profile-costRates"
+                  value={form.costRates}
+                  onChange={(e) => setForm((prev) => ({ ...prev, costRates: e.target.value }))}
+                  className="bp-textarea"
+                  rows={4}
+                  placeholder={'e.g. Patio materials = £3/sqm\nPatio labour = £12/sqm\nFencing materials = £15/metre\nFencing labour = £25/metre'}
+                  style={{ minHeight: 80 }}
+                />
+                <span style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4, display: "block" }}>
+                  Define per-unit material and labour costs. AI will use these to estimate total job costs.
                 </span>
                 <div style={{ display: "flex", gap: 8, marginTop: 10, alignItems: "center", flexWrap: "wrap" }}>
                   <button
