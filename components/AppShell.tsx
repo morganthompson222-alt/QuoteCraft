@@ -151,50 +151,49 @@ export function AppShell({ children }: { children: ReactNode }) {
         </Link>
 
         <div className="app-shell__actions" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {loggedIn ? (
-            <>
-              {/* Download menu */}
-              <div style={{ position: "relative" }}>
-                <button
-                  className="button button--ghost"
-                  onClick={() => setShowDownload((v) => !v)}
-                  style={{ fontSize: 14, fontWeight: 700, minWidth: 32, color: "#64748b", letterSpacing: "0.1em" }}
-                  title="Download app"
-                >
-                  ···
-                </button>
-                {showDownload ? (
-                  <>
-                    <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowDownload(false)} />
-                    <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 6, background: "#fff", borderRadius: 12, boxShadow: "0 8px 32px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 220, overflow: "hidden", border: "1px solid #e5e7eb" }}>
-                      <div style={{ padding: "10px 16px", borderBottom: "1px solid #e5e7eb", fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-                        Download App
-                      </div>
-                      <a href="/install#mac" style={dropdownLink}>
-                        <span style={{ fontSize: 16 }}>🍎</span>
-                        <div>
-                          <div style={{ fontWeight: 600 }}>Download for Mac</div>
-                          <div style={{ fontSize: 12, color: "#94a3b8" }}>.dmg installer</div>
-                        </div>
-                      </a>
-                      <a href="/install#windows" style={dropdownLink}>
-                        <span style={{ fontSize: 16 }}>🪟</span>
-                        <div>
-                          <div style={{ fontWeight: 600 }}>Download for Windows</div>
-                          <div style={{ fontSize: 12, color: "#94a3b8" }}>.exe installer</div>
-                        </div>
-                      </a>
-                      <Link href="/install" style={{ ...dropdownLink, borderBottom: "none" }}>
-                        <span style={{ fontSize: 16 }}>📱</span>
-                        <div>
-                          <div style={{ fontWeight: 600 }}>All platforms</div>
-                          <div style={{ fontSize: 12, color: "#94a3b8" }}>Installation guide</div>
-                        </div>
-                      </Link>
+          {/* Download menu — always visible */}
+          <div style={{ position: "relative" }}>
+            <button
+              className="button button--ghost"
+              onClick={() => setShowDownload((v) => !v)}
+              style={{ fontSize: 13, fontWeight: 600, minWidth: 28, color: "#64748b" }}
+              title="Download app"
+            >
+              ⬇
+            </button>
+            {showDownload ? (
+              <>
+                <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowDownload(false)} />
+                <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 6, background: "#fff", borderRadius: 12, boxShadow: "0 8px 32px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 220, overflow: "hidden", border: "1px solid #e5e7eb" }}>
+                  <div style={{ padding: "10px 16px", borderBottom: "1px solid #e5e7eb", fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                    Download App
+                  </div>
+                  <a href="/install#mac" style={dropdownLink}>
+                    <span style={{ fontSize: 16 }}>🍎</span>
+                    <div>
+                      <div style={{ fontWeight: 600 }}>Download for Mac</div>
+                      <div style={{ fontSize: 12, color: "#94a3b8" }}>.dmg installer</div>
                     </div>
-                  </>
-                ) : null}
-              </div>
+                  </a>
+                  <a href="/install#windows" style={dropdownLink}>
+                    <span style={{ fontSize: 16 }}>🪟</span>
+                    <div>
+                      <div style={{ fontWeight: 600 }}>Download for Windows</div>
+                      <div style={{ fontSize: 12, color: "#94a3b8" }}>.exe installer</div>
+                    </div>
+                  </a>
+                  <Link href="/install" style={{ ...dropdownLink, borderBottom: "none" }}>
+                    <span style={{ fontSize: 16 }}>📱</span>
+                    <div>
+                      <div style={{ fontWeight: 600 }}>All platforms</div>
+                      <div style={{ fontSize: 12, color: "#94a3b8" }}>Installation guide</div>
+                    </div>
+                  </Link>
+                </div>
+              </>
+            ) : null}
+          </div>
+
           {loggedIn ? (
             <>
               <div style={{ position: "relative" }}>

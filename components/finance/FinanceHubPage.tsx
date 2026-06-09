@@ -115,6 +115,8 @@ export function FinanceHubPage() {
   const [summary, setSummary] = useState<FinanceSummary | null>(null);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [costSync, setCostSync] = useState<{ costBreakdown: Array<{ service: string; perJobCost: number; jobCount: number; totalCost: number }>; totalRecurringCost: number } | null>(null);
+  const [quotesData, setQuotesData] = useState<any[]>([]);
+  const [jobsData, setJobsData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("1");
   const [taxRate, setTaxRate] = useState(20);
@@ -139,14 +141,18 @@ export function FinanceHubPage() {
       try {
         const tk = localStorage.getItem("jobstacker_token");
         const headers: Record<string, string> = tk ? { Authorization: `Bearer ${tk}` } : {};
-        const [sumRes, expRes, syncRes] = await Promise.all([
+        const [sumRes, expRes, syncRes, quotesRes, jobsRes] = await Promise.all([
           fetch(`/api/finance/summary?period=${period}&taxRate=${taxRate}`, { headers }),
           fetch("/api/finance/expenses/list", { headers }),
           fetch("/api/finance/cost-sync", { headers }),
+          fetch("/api/quotes/list?limit=50", { headers }),
+          fetch("/api/jobs/list?include_archived=true", { headers }),
         ]);
         if (sumRes.ok && !cancelled) setSummary(await sumRes.json());
         if (expRes.ok) { const d = await expRes.json(); if (!cancelled) setExpenses(d.expenses ?? []); }
         if (syncRes.ok && !cancelled) setCostSync(await syncRes.json());
+        if (quotesRes.ok) { const d = await quotesRes.json(); if (!cancelled) setQuotesData(d.quotes ?? []); }
+        if (jobsRes.ok) { const d = await jobsRes.json(); if (!cancelled) setJobsData(d.jobs ?? []); }
       } catch { /* */ }
       finally { if (!cancelled) setLoading(false); }
     })();
@@ -184,6 +190,14 @@ export function FinanceHubPage() {
       recentExpenses: expenses.slice(0, 10).map(e => ({
         date: e.expense_date, amount: e.amount, category: e.category,
         description: e.description, recurrence: e.recurrence,
+      })),
+      quotes: quotesData.map((q: any) => ({
+        number: q.quoteNumber, customer: q.customerName, status: q.status,
+        total: q.total, paid: q.paid, created: q.createdAt,
+      })),
+      jobs: jobsData.filter((j: any) => !j.archived).slice(0, 20).map((j: any) => ({
+        title: j.job_title, customer: j.customer_name, status: j.status,
+        date: j.job_date, time: j.start_time,
       })),
     };
 
