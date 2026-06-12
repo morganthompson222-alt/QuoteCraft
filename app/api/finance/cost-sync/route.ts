@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       .eq("recurrence", "per_job")
       .not("linked_service", "is", null);
 
-    // Get all paid quotes with items
+    // Get all paid quotes with items (past 2 years)
     const { data: paidQuotes } = await supabase
       .from("quotes")
       .select("id, quote_items(description)")
@@ -28,30 +28,53 @@ export async function GET(request: NextRequest) {
     const items: string[] = [];
     for (const q of paidQuotes ?? []) {
       for (const item of (q.quote_items as any[]) ?? []) {
-        items.push((item.description ?? "").toLowerCase());
+        const desc = (item.description ?? "").toLowerCase().trim();
+        if (desc.length > 0) items.push(desc);
       }
     }
 
-    // Match recurring expenses to completed jobs
+    // Normalize a service description for matching (fuzzy stem-like)
+    function normalize(s: string): string {
+      return s.toLowerCase()
+        .replace(/[^a-z0-9\s]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function normalizeStem(s: string): string {
+      // Remove common suffixes to improve matching: patio cleaning → patio clean
+      return normalize(s).replace(/(ing|ings|ed|s|es)$/, "");
+    }
+
+    function matches(serviceWords: string[], item: string): boolean {
+      const normItem = normalize(item);
+      const stemItem = normalizeStem(item);
+      for (const word of serviceWords) {
+        const normWord = normalize(word);
+        const stemWord = normalizeStem(word);
+        // Check exact, normalized, and stemmed matches
+        if (normItem === normWord) return true;
+        if (stemItem.includes(stemWord) || stemWord.includes(stemItem)) return true;
+        if (normItem.includes(normWord) || normWord.includes(normItem)) return true;
+      }
+      return false;
+    }
+
     const costBreakdown: Array<{ service: string; perJobCost: number; jobCount: number; totalCost: number }> = [];
 
     for (const exp of recurring ?? []) {
       const service = (exp.linked_service as string).toLowerCase();
-      const serviceWords = service.split(/\s+/).filter(w => w.length > 2);
-      const matchCount = items.filter(item => {
-        const itemLower = item.toLowerCase();
-        for (const word of serviceWords) {
-          if (itemLower.includes(word)) return true;
-        }
-        return false;
-      }).length;
+      const serviceWords = service.split(/\s+/).filter(w => w.length > 1);
+      const matchCount = items.filter(item => matches(serviceWords, item)).length;
 
       if (matchCount > 0 || serviceWords.length === 0) {
+        const count = matchCount || items.length || 1;
+        const amount = Number(exp.amount ?? 0);
         costBreakdown.push({
           service: exp.linked_service as string,
-          perJobCost: exp.amount as number,
-          jobCount: matchCount || items.length,
-          totalCost: (exp.amount as number) * (matchCount || items.length),
+          perJobCost: amount,
+          jobCount: count,
+          totalCost: amount * count,
         });
       }
     }

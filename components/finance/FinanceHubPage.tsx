@@ -145,7 +145,7 @@ export function FinanceHubPage() {
           fetch(`/api/finance/summary?period=${period}&taxRate=${taxRate}`, { headers }),
           fetch("/api/finance/expenses/list", { headers }),
           fetch("/api/finance/cost-sync", { headers }),
-          fetch("/api/quotes/list?limit=50", { headers }),
+          fetch("/api/quotes/list?limit=500", { headers }),
           fetch("/api/jobs/list?include_archived=true", { headers }),
         ]);
         if (sumRes.ok && !cancelled) setSummary(await sumRes.json());
@@ -183,22 +183,25 @@ export function FinanceHubPage() {
       period,
       taxRate,
       metrics: summary.metrics,
-      chartData: summary.chartData.slice(-6),
+      chartData: summary.chartData,
       expenseCategories: summary.expenseCategories,
       costSync: costSync?.costBreakdown ?? [],
       forecast: summary.forecast,
-      recentExpenses: expenses.slice(0, 10).map(e => ({
+      expenses: expenses.map(e => ({
         date: e.expense_date, amount: e.amount, category: e.category,
-        description: e.description, recurrence: e.recurrence,
+        description: e.description, recurrence: e.recurrence, linkedService: e.linked_service,
       })),
       quotes: quotesData.map((q: any) => ({
         number: q.quoteNumber, customer: q.customerName, status: q.status,
         total: q.total, paid: q.paid, created: q.createdAt,
       })),
-      jobs: jobsData.filter((j: any) => !j.archived).slice(0, 20).map((j: any) => ({
+      jobs: jobsData.filter((j: any) => !j.archived).map((j: any) => ({
         title: j.job_title, customer: j.customer_name, status: j.status,
         date: j.job_date, time: j.start_time,
       })),
+      totalQuotes: quotesData.length,
+      totalJobs: jobsData.length,
+      totalExpenses: expenses.length,
     };
 
     try {
