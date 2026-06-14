@@ -168,14 +168,14 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <div style={{ padding: "10px 16px", borderBottom: "1px solid #e5e7eb", fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                     Download App
                   </div>
-                  <a href="/api/download/mac" style={dropdownLink}>
+                  <a href="https://files.catbox.moe/3k6f4o.dmg" style={dropdownLink}>
                     <span style={{ fontSize: 16 }}>🍎</span>
                     <div>
                       <div style={{ fontWeight: 600 }}>Download for Mac</div>
                       <div style={{ fontSize: 12, color: "#94a3b8" }}>.dmg installer</div>
                     </div>
                   </a>
-                  <a href="/api/download/win" style={dropdownLink}>
+                  <a href="/install#windows" style={dropdownLink}>
                     <span style={{ fontSize: 16 }}>🪟</span>
                     <div>
                       <div style={{ fontWeight: 600 }}>Download for Windows</div>
