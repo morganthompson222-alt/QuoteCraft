@@ -30,10 +30,10 @@ type BillingState =
 
 const plans: { tier: string; name: string; amount: number; period: string; features: string[]; highlight: boolean }[] = [
   { tier: "solo", name: "Solo", amount: 0, period: "forever", features: ["30 customers", "5 active quotes", "20 AI generations/mo", "PDF quotes", "Basic tracking"], highlight: false },
-  { tier: "solo_pro", name: "Solo Pro", amount: 9.99, period: "per month", features: ["100 customers", "15 active quotes", "60 AI gens/mo", "Job scheduling", ".ics export", "Templates"], highlight: true },
-  { tier: "business", name: "Business", amount: 29.99, period: "per month", features: ["500 customers", "50 active quotes", "150 AI gens/mo", "Full scheduling", "3 team members", "Revenue tracking"], highlight: false },
-  { tier: "growth", name: "Growth", amount: 69.99, period: "per month", features: ["2,000 customers", "150 active quotes", "400 AI gens/mo", "10 team members", "Advanced reporting", "Multi-calendar"], highlight: false },
-  { tier: "enterprise", name: "Enterprise", amount: 150, period: "+ per month", features: ["Unlimited everything", "Unlimited team", "API access", "SSO", "Custom integrations", "Dedicated support"], highlight: false },
+  { tier: "solo_pro", name: "Solo Pro", amount: 0, period: "until Sep 2026", features: ["Unlimited customers", "Unlimited quotes", "Unlimited AI gens/mo", "Job scheduling", ".ics export", "Templates", "Revenue dashboard"], highlight: true },
+  { tier: "business", name: "Business", amount: 0, period: "contact for info", features: ["500+ customers", "50+ active quotes", "150+ AI gens/mo", "Full scheduling", "3 team members", "Revenue tracking"], highlight: false },
+  { tier: "growth", name: "Growth", amount: 0, period: "contact for info", features: ["2000+ customers", "150+ active quotes", "400+ AI gens/mo", "10 team members", "Advanced reporting", "Multi-calendar"], highlight: false },
+  { tier: "enterprise", name: "Enterprise", amount: 0, period: "contact for info", features: ["Unlimited everything", "Unlimited team", "API access", "SSO", "Custom integrations", "Dedicated support"], highlight: false },
 ];
 
 async function readErrorMessage(response: Response) {
@@ -281,6 +281,14 @@ export function BillingPage() {
 
                   {isCurrent ? (
                     <span className="billing-plan__current-badge">Current plan</span>
+                  ) : plan.tier === "business" || plan.tier === "growth" || plan.tier === "enterprise" ? (
+                    <button
+                      className="button button--secondary billing-plan__button"
+                      type="button"
+                      onClick={() => window.open("mailto:business@jobstacker.app?subject=I'm interested in the " + plan.name + " plan", "_blank")}
+                    >
+                      Contact for info
+                    </button>
                   ) : isAbove ? (
                     <button
                       className={`button ${plan.highlight ? "button--primary" : "button--secondary"} billing-plan__button`}
