@@ -7,44 +7,56 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "electron .",
+    "prepack": "node scripts/generate-icon.mjs",
     "pack": "electron-builder --dir",
+    "predist": "node scripts/generate-icon.mjs",
     "dist": "electron-builder",
     "dist:mac": "electron-builder --mac",
     "dist:win": "electron-builder --win",
-    "dist:linux": "electron-builder --linux"
+    "dist:linux": "electron-builder --linux",
+    "dist:all": "electron-builder --mac --win --linux"
   },
   "build": {
     "appId": "com.jobstacker.app",
     "productName": "JobStacker",
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build"
     },
     "files": [
       "main.js",
-      "preload.js",
-      "package.json"
+      "preload.js"
     ],
+    "nodeGypRebuild": false,
+    "npmRebuild": false,
     "mac": {
-      "target": ["dmg"],
+      "target": [
+        "dmg"
+      ],
       "category": "public.app-category.business",
-      "icon": "build/icon.icns",
-      "artifactName": "JobStacker-${version}-mac.${ext}"
+      "icon": "icon.icns",
+      "artifactName": "JobStacker-mac.${ext}",
+      "identity": null
     },
     "win": {
-      "target": ["nsis"],
-      "icon": "build/icon.ico",
-      "artifactName": "JobStacker-${version}-win-setup.${ext}"
-    },
-    "linux": {
-      "target": ["AppImage"],
-      "category": "Office",
-      "artifactName": "JobStacker-${version}-linux.${ext}"
+      "target": [
+        "nsis"
+      ],
+      "icon": "icon.png",
+      "artifactName": "JobStacker-win-setup.${ext}"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Office",
+      "artifactName": "JobStacker-linux.${ext}"
     },
     "publish": {
       "provider": "github",
@@ -53,7 +65,8 @@
     }
   },
   "devDependencies": {
-    "electron": "^35.0.0",
-    "electron-builder": "^25.1.0"
+    "electron": "^42.4.0",
+    "electron-builder": "^26.15.3",
+    "sharp": "^0.35.1"
   }
 }

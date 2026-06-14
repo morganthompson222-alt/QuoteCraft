@@ -9,11 +9,11 @@
     "lint": "eslint . --ext .ts,.tsx --max-warnings=0",
     "seed": "npx tsx scripts/seed.ts",
     "db:migrate": "echo 'Run Supabase migrations via supabase/migrations/'",
-    "electron:dev": "ELECTRON_DEV=true electron electron/main.js",
-    "electron:build": "electron-builder --config electron/package.json",
-    "electron:build:mac": "electron-builder --config electron/package.json --mac",
-    "electron:build:win": "electron-builder --config electron/package.json --win",
-    "electron:build:all": "electron-builder --config electron/package.json --mac --win --linux"
+    "electron:dev": "ELECTRON_DEV=true npm run --prefix electron start",
+    "electron:build": "npm run --prefix electron dist",
+    "electron:build:mac": "npm run --prefix electron dist:mac",
+    "electron:build:win": "npm run --prefix electron dist:win",
+    "electron:build:all": "npm run --prefix electron dist:all"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

@@ -1,0 +1,90 @@
+name: Electron Desktop Builds
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. v1.0.0)"
+        required: true
+        default: "v1.0.0"
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            target: mac
+            suffix: mac.dmg
+          - os: ubuntu-latest
+            target: linux
+            suffix: linux.AppImage
+          - os: windows-latest
+            target: win
+            suffix: win-setup.exe
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Build Next.js app
+        run: npm run build
+
+      - name: Install Electron dependencies
+        working-directory: electron
+        run: npm ci
+
+      - name: Generate app icon
+        working-directory: electron
+        run: node scripts/generate-icon.mjs
+
+      - name: Convert to .icns (macOS only)
+        if: matrix.os == 'macos-latest'
+        working-directory: electron
+        run: iconutil -c icns build/icon.iconset -o build/icon.icns
+
+      - name: Build Electron app
+        working-directory: electron
+        run: npx electron-builder --${{ matrix.target }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: JobStacker-${{ matrix.suffix }}
+          path: electron/dist/JobStacker-${{ matrix.suffix }}
+          if-no-files-found: error
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            JobStacker-*.dmg
+            JobStacker-*.exe
+            JobStacker-*.AppImage
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
