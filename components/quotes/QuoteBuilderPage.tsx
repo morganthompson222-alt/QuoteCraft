@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRegion } from "../../hooks/useRegion";
 
@@ -191,7 +192,8 @@ export function QuoteBuilderPage() {
     return () => { isCurrent = false; };
   }, [mode, createdQuoteId]);
 
-  // Builder — load customers
+  // Builder — load customers & pre-fill from URL
+  const searchParams = useSearchParams();
   useEffect(() => {
     let isCurrent = true;
     async function loadCustomers() {
@@ -203,7 +205,14 @@ export function QuoteBuilderPage() {
         });
         if (response.ok) {
           const data = (await response.json()) as { customers: Customer[] };
-          if (isCurrent) setCustomers(data.customers);
+          if (isCurrent) {
+            setCustomers(data.customers);
+            // Pre-fill customerId from URL if present
+            const urlCustomerId = searchParams.get("customerId");
+            if (urlCustomerId && data.customers.some(c => c.id === urlCustomerId)) {
+              setCustomerId(urlCustomerId);
+            }
+          }
         }
       } catch {
       } finally {

@@ -297,15 +297,23 @@ export function CalendarPage() {
                 const key = toKey(day);
                 const isMonth = day.getMonth() === cursor.getMonth();
                 const isToday = sameDay(day, today);
-                const dayJobs = (jobsByDate[key] ?? []).filter((j) => j.status !== "completed" && j.status !== "cancelled");
+                const dayJobs = jobsByDate[key] ?? [];
                 const cellStyle = !isMonth ? CELL_OFF : isToday ? CELL_TODAY : CELL;
                 return (
                   <div style={cellStyle} key={key}>
                     <span style={isToday ? DATE_NUM_TODAY : DATE_NUM}>{day.getDate()}</span>
                     <div style={{ marginTop: 2, flex: 1, display: "flex", flexDirection: "column" }}>
                       {dayJobs.slice(0, 3).map((j) => {
-                        const bg = j.status === "in_progress" ? "#fef3c7" : GREEN_LIGHT;
-                        const fg = j.status === "in_progress" ? "#92400e" : "#145c3c";
+                        const bg =
+                          j.status === "completed" ? "#d1fae5" :
+                          j.status === "cancelled" ? "#fee2e2" :
+                          j.status === "in_progress" ? "#fef3c7" :
+                          GREEN_LIGHT;
+                        const fg =
+                          j.status === "completed" ? "#065f46" :
+                          j.status === "cancelled" ? "#991b1b" :
+                          j.status === "in_progress" ? "#92400e" :
+                          "#145c3c";
                         return (
                           <button key={j.id} style={{ ...JOB_CHIP, background: bg, color: fg }} onClick={() => setSelectedJob(j)}>
                             {j.start_time.slice(0, 5)} {j.job_title}{j.customer_name ? ` — ${j.customer_name}` : ""}

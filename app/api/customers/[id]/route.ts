@@ -33,6 +33,14 @@ export async function GET(
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
+    // Fetch jobs for this customer
+    const { data: jobs } = await supabase
+      .from("jobs")
+      .select("id, job_title, status, job_date, start_time, end_time, location, quote_id")
+      .eq("customer_id", id)
+      .eq("user_id", user.id)
+      .order("job_date", { ascending: false });
+
     return NextResponse.json({
       id: customer.id,
       email: customer.email,
@@ -51,6 +59,16 @@ export async function GET(
         status: q.status as string,
         total: Number(q.total),
         createdAt: q.created_at as string,
+      })),
+      jobs: (jobs ?? []).map((j: Record<string, unknown>) => ({
+        id: j.id as string,
+        jobTitle: j.job_title as string,
+        status: j.status as string,
+        jobDate: j.job_date as string,
+        startTime: j.start_time as string,
+        endTime: j.end_time as string,
+        location: j.location as string | null,
+        quoteId: j.quote_id as string | null,
       })),
     });
   } catch (error) {
