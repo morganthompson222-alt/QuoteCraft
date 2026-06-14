@@ -8,7 +8,12 @@
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx --max-warnings=0",
     "seed": "npx tsx scripts/seed.ts",
-    "db:migrate": "echo 'Run Supabase migrations via supabase/migrations/'"
+    "db:migrate": "echo 'Run Supabase migrations via supabase/migrations/'",
+    "electron:dev": "ELECTRON_DEV=true electron electron/main.js",
+    "electron:build": "electron-builder --config electron/package.json",
+    "electron:build:mac": "electron-builder --config electron/package.json --mac",
+    "electron:build:win": "electron-builder --config electron/package.json --win",
+    "electron:build:all": "electron-builder --config electron/package.json --mac --win --linux"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
@@ -28,6 +33,8 @@
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.60.1",
     "@typescript-eslint/parser": "^8.60.1",
+    "electron": "^42.4.0",
+    "electron-builder": "^26.15.3",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.7",
     "tsx": "^4.22.4",

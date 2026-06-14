@@ -36,7 +36,7 @@ export function CustomerListPage() {
   const { toast } = useToast();
 
   const query = useMemo(() => {
-    const p = new URLSearchParams({ page: "1", limit: "100" });
+    const p = new URLSearchParams({ page: "1", limit: "500" });
     if (search.trim()) p.set("search", search.trim());
     return p.toString();
   }, [search]);
