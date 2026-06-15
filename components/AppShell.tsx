@@ -31,18 +31,18 @@ function NotificationDropdown({ onClose }: { onClose: () => void }) {
   }, []);
   return (
     <div onClick={onClose}>
-      <div style={{ padding: "12px 16px", borderBottom: "1px solid #e5e7eb", fontWeight: 700, fontSize: 14 }}>Notifications</div>
-      {ld ? <div style={{ padding: 20, textAlign: "center", color: "#94a3b8", fontSize: 13 }}>Loading...</div>
-      : items.length === 0 ? <div style={{ padding: 20, textAlign: "center", color: "#94a3b8", fontSize: 13 }}>No notifications</div>
+      <div style={{ padding: "12px 16px", borderBottom: "1px solid var(--border)", fontWeight: 700, fontSize: 14 }}>Notifications</div>
+      {ld ? <div style={{ padding: 20, textAlign: "center", color: "var(--text-soft)", fontSize: 13 }}>Loading...</div>
+      : items.length === 0 ? <div style={{ padding: 20, textAlign: "center", color: "var(--text-soft)", fontSize: 13 }}>No notifications</div>
       : items.map((n) => (
         <div key={n.id}
           role="button"
           tabIndex={0}
           onClick={() => { if (n.type.startsWith("quote")) window.open(`/quotes/${n.quote_id ?? ""}`); }}
           onKeyDown={(e) => { if (e.key === "Enter" && n.type.startsWith("quote")) window.open(`/quotes/${n.quote_id ?? ""}`); }}
-          style={{ padding: "10px 16px", borderBottom: "1px solid #e5e7eb", cursor: "pointer", background: n.read ? "transparent" : "#eefaf4", fontSize: 13, color: "#334155" }}>
+          style={{ padding: "10px 16px", borderBottom: "1px solid var(--border)", cursor: "pointer", background: n.read ? "transparent" : "var(--brand-soft)", fontSize: 13, color: "var(--text)" }}>
           <div style={{ fontWeight: n.read ? 400 : 600 }}>{n.message}</div>
-          <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 2 }}>{new Date(n.created_at).toLocaleString()}</div>
+          <div style={{ fontSize: 11, color: "var(--text-soft)", marginTop: 2 }}>{new Date(n.created_at).toLocaleString()}</div>
         </div>
       ))}
     </div>
@@ -133,8 +133,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const dropdownLink: React.CSSProperties = {
     display: "flex", alignItems: "center", gap: 12,
-    padding: "12px 16px", borderBottom: "1px solid #f1f5f9",
-    textDecoration: "none", color: "#0f172a", fontSize: 14,
+    padding: "12px 16px", borderBottom: "1px solid var(--border)",
+    textDecoration: "none", color: "var(--text)", fontSize: 14,
     cursor: "pointer", transition: "background 0.1s",
   };
 
@@ -156,7 +156,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <button
               className="button button--ghost"
               onClick={() => setShowDownload((v) => !v)}
-              style={{ fontSize: 13, fontWeight: 600, minWidth: 28, color: "#64748b" }}
+              style={{ fontSize: 13, fontWeight: 600, minWidth: 28, color: "var(--text-muted)" }}
               title="Download app"
             >
               ⬇
@@ -164,29 +164,29 @@ export function AppShell({ children }: { children: ReactNode }) {
             {showDownload ? (
               <>
                 <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowDownload(false)} />
-                <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 6, background: "#fff", borderRadius: 12, boxShadow: "0 8px 32px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 220, overflow: "hidden", border: "1px solid #e5e7eb" }}>
-                  <div style={{ padding: "10px 16px", borderBottom: "1px solid #e5e7eb", fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 6, background: "var(--surface-overlay)", borderRadius: 12, boxShadow: "var(--shadow)", zIndex: 20, minWidth: 220, overflow: "hidden", border: "1px solid var(--border)" }}>
+                  <div style={{ padding: "10px 16px", borderBottom: "1px solid var(--border)", fontSize: 12, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                     Download App
                   </div>
                   <a href="https://files.catbox.moe/3k6f4o.dmg" style={dropdownLink}>
                     <span style={{ fontSize: 16 }}>🍎</span>
                     <div>
                       <div style={{ fontWeight: 600 }}>Download for Mac</div>
-                      <div style={{ fontSize: 12, color: "#94a3b8" }}>.dmg installer</div>
+                      <div style={{ fontSize: 12, color: "var(--text-soft)" }}>.dmg installer</div>
                     </div>
                   </a>
                   <a href="/install#windows" style={dropdownLink}>
                     <span style={{ fontSize: 16 }}>🪟</span>
                     <div>
                       <div style={{ fontWeight: 600 }}>Download for Windows</div>
-                      <div style={{ fontSize: 12, color: "#94a3b8" }}>.exe installer</div>
+                      <div style={{ fontSize: 12, color: "var(--text-soft)" }}>.exe installer</div>
                     </div>
                   </a>
                   <Link href="/install" style={{ ...dropdownLink, borderBottom: "none" }}>
                     <span style={{ fontSize: 16 }}>📱</span>
                     <div>
                       <div style={{ fontWeight: 600 }}>All platforms</div>
-                      <div style={{ fontSize: 12, color: "#94a3b8" }}>Installation guide</div>
+                      <div style={{ fontSize: 12, color: "var(--text-soft)" }}>Installation guide</div>
                     </div>
                   </Link>
                 </div>
@@ -215,7 +215,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   {unreadCount > 0 ? (
                     <span style={{
                       position: "absolute", top: 4, right: 2,
-                      background: "#b91c1c", color: "#fff", borderRadius: "50%",
+                      background: "var(--danger)", color: "#fff", borderRadius: "50%",
                       width: 18, height: 18, fontSize: 11, fontWeight: 700,
                       display: "inline-flex", alignItems: "center", justifyContent: "center",
                     }}>
@@ -225,8 +225,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                 </button>
                 {showNotifs ? (
                   <div style={{
-                    position: "absolute", top: 44, right: 0, width: 300, background: "#fff",
-                    borderRadius: 10, boxShadow: "0 10px 40px rgba(0,0,0,0.12)", zIndex: 100,
+                    position: "absolute", top: 44, right: 0, width: 300, background: "var(--surface-overlay)",
+                    borderRadius: 10, boxShadow: "var(--shadow)", zIndex: 100,
                     maxHeight: 300, overflow: "auto", fontSize: 13,
                   }}>
                     <NotificationDropdown onClose={() => setShowNotifs(false)} />

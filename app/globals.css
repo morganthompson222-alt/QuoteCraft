@@ -16,6 +16,36 @@
   --warning: #92400e;
   --warning-soft: #fef3c7;
   --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  --topbar-bg: #ffffff;
+  --topbar-border: #e5e7eb;
+  --sidebar-bg: #ffffff;
+  --surface-overlay: #ffffff;
+  --surface-hover: #f8fafc;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #0b1121;
+  --surface: #141d30;
+  --surface-muted: #1e293b;
+  --border: #1e293b;
+  --border-strong: #334155;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-soft: #64748b;
+  --brand: #10b981;
+  --brand-strong: #34d399;
+  --brand-soft: #064e3b;
+  --danger: #f87171;
+  --danger-soft: #7f1d1d;
+  --warning: #fbbf24;
+  --warning-soft: #78350f;
+  --shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
+  --topbar-bg: #0b1121;
+  --topbar-border: #1e293b;
+  --sidebar-bg: #0d1325;
+  --surface-overlay: #141d30;
+  --surface-hover: #1e293b;
 }
 
 * {
@@ -65,9 +95,12 @@ button {
   justify-content: space-between;
   gap: 20px;
   border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--topbar-bg);
   padding: 0 20px;
-  backdrop-filter: blur(14px);
+}
+
+.dark .app-shell__topbar {
+  background: var(--topbar-bg);
 }
 
 .app-shell__brand {
@@ -105,7 +138,7 @@ button {
 
 .app-shell__sidebar {
   border-right: 1px solid var(--border);
-  background: #fff;
+  background: var(--sidebar-bg);
   padding: 20px 14px;
 }
 
@@ -179,7 +212,7 @@ button {
 
 .button--secondary {
   border: 1px solid var(--border);
-  background: #fff;
+  background: var(--surface);
   color: var(--text);
 }
 
