@@ -9,3 +9,4 @@ dist/
 electron/dist/
 electron/node_modules/
 public/JobStacker-mac.dmg
+electron/
