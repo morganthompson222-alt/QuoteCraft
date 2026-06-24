@@ -270,6 +270,12 @@ Rules:
 - Return ONLY valid JSON array, no markdown, no explanation
 - Use UK English terms
 
+Common terminology mappings (interpret these as the actual service types):
+- "patio expense" = patio cleaning
+- "patio expenses" = patio cleaning
+- "clean patio" = patio cleaning
+- "wash drive" = driveway cleaning
+
 Example input: "cleaning 6x4 patio, power wash, weed removal, moss removal, resand"
 Example output: [{"task":"patio cleaning","quantity":24,"unit":"sqm"},{"task":"power washing","quantity":24,"unit":"sqm"},{"task":"weed removal","quantity":24,"unit":"sqm"},{"task":"moss removal","quantity":24,"unit":"sqm"},{"task":"resanding","quantity":24,"unit":"sqm"}]`;
 }

@@ -14,7 +14,7 @@ export type MarketEntry = {
 
 export const MARKET_DATA: MarketEntry[] = [
   // Patio & Driveway
-  { service: "patio_cleaning", aliases: ["patio wash", "jet wash patio", "pressure wash patio", "power wash patio", "cleaning patio"], unit: "sqm", minPrice: 2.50, maxPrice: 8, avgPrice: 4.50, region: "UK", category: "exterior_cleaning" },
+  { service: "patio_cleaning", aliases: ["patio wash", "jet wash patio", "pressure wash patio", "power wash patio", "cleaning patio", "patio expense", "patio expenses"], unit: "sqm", minPrice: 2.50, maxPrice: 8, avgPrice: 4.50, region: "UK", category: "exterior_cleaning" },
   { service: "driveway_cleaning", aliases: ["drive wash", "jet wash drive", "block paving clean"], unit: "sqm", minPrice: 2, maxPrice: 7, avgPrice: 4, region: "UK", category: "exterior_cleaning" },
   { service: "resanding", aliases: ["re-sand", "sand joints", "repoint paving", "resand patio"], unit: "sqm", minPrice: 2, maxPrice: 5, avgPrice: 3.50, region: "UK", category: "paving" },
 

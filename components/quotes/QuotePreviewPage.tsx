@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRegion } from "../../hooks/useRegion";
 import { JobModal } from "../jobs/JobModal";
 
@@ -99,6 +99,22 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
   const [showMarkSentAfterPdf, setShowMarkSentAfterPdf] = useState(false);
   const [showJobModal, setShowJobModal] = useState(false);
   const [showAcceptModal, setShowAcceptModal] = useState(false);
+  const statusRef = useRef<string | null>(null);
+
+  // Keep a ref of current status so the polling interval can read it without stale closures
+  useEffect(() => {
+    if (state.status === "success") statusRef.current = state.data.status;
+  }, [state]);
+
+  // Poll for customer-side status changes (accept/reject via public page)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (statusRef.current === "sent") {
+        setRefreshKey((k) => k + 1);
+      }
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const [schedDate, setSchedDate] = useState("");
   const [schedStart, setSchedStart] = useState("09:00");
