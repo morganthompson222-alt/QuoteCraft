@@ -14,7 +14,7 @@ export async function middleware(request: NextRequest) {
 
   // Landing page is always public
   if (pathname === "/") {
-    return NextResponse.next();
+    return NextResponse.next({ request });
   }
 
   let supabaseResponse = NextResponse.next({ request });

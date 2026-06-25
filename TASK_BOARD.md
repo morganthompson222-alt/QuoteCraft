@@ -402,7 +402,7 @@ DESC: Calendar view exceeds screen width on desktop and mobile. Reduce job previ
 
 ### TASK: T-016 — Date format follows country setting
 OWNER: Agent A
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: region/localisation API from Agent B
 DESC: DD/MM/YYYY for UK, MM/DD/YYYY for US. Audit the entire app for hardcoded date formats and replace with locale-aware formatting using the user's country setting.
 
