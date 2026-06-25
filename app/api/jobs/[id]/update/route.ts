@@ -24,6 +24,11 @@ export async function PATCH(
     if (body.location !== undefined) update.location = sanitizeOptionalString(body.location);
     if (body.notes !== undefined) update.notes = sanitizeOptionalString(body.notes);
     if (body.end_time !== undefined) update.end_time = sanitizeOptionalString(body.end_time);
+    if (body.end_date !== undefined) {
+      const d = sanitizeOptionalString(body.end_date);
+      if (d && !/^\d{4}-\d{2}-\d{2}$/.test(d)) throw new ApiError(400, "End date must be YYYY-MM-DD", "VALIDATION_ERROR");
+      update.end_date = d;
+    }
 
     if (body.job_date !== undefined) {
       const d = sanitizeString(body.job_date);

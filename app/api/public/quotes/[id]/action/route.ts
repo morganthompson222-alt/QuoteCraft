@@ -11,7 +11,7 @@ export async function POST(
     const body = await _request.json();
     const action = body.action as string;
 
-    if (!action || !["accepted", "rejected"].includes(action)) {
+    if (!action || !["accepted", "rejected", "request_new_quote"].includes(action)) {
       return NextResponse.json({ error: { message: "Invalid action", statusCode: 400 } }, { status: 400 });
     }
 
@@ -23,6 +23,21 @@ export async function POST(
 
     if (fetchErr || !quote) {
       return NextResponse.json({ error: { message: "Quote not found", statusCode: 404 } }, { status: 404 });
+    }
+
+    // Handle "request new quote" for expired quotes
+    if (action === "request_new_quote") {
+      if (quote.status !== "expired") {
+        return NextResponse.json({ error: { message: "Only expired quotes can request a new quote", statusCode: 400 } }, { status: 400 });
+      }
+      const customerName = (quote.customers as { name?: string })?.name ?? "";
+      await admin.from("notifications").insert({
+        user_id: quote.user_id,
+        type: "quote_requested",
+        quote_id: id,
+        message: `${customerName} is requesting a new quote for #${quote.quote_number} (previously expired)`,
+      });
+      return NextResponse.json({ status: "requested" });
     }
 
     if (quote.status !== "sent") {

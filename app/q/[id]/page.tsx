@@ -68,6 +68,25 @@ export default function QuoteViewPage() {
   const isActionable = quote.status === "sent";
   const isAccepted = quote.status === "accepted";
   const isRejected = quote.status === "rejected";
+  const isExpired = quote.status === "expired";
+
+  async function handleRequestNewQuote() {
+    setActing(true); setActError("");
+    try {
+      const r = await fetch(`/api/public/quotes/${id}/action`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "request_new_quote" }),
+      });
+      if (!r.ok) {
+        const j = await r.json().catch(() => ({}));
+        throw new Error(j?.error?.message ?? "Failed");
+      }
+      setActError("Request sent! The trader will get in touch.");
+    } catch (x) {
+      setActError(x instanceof Error ? x.message : "Failed");
+    } finally { setActing(false); }
+  }
 
   return (
     <div style={{ maxWidth: 640, margin: "0 auto", padding: "40px 24px", fontFamily: "system-ui, -apple-system, sans-serif" }}>
@@ -96,6 +115,10 @@ export default function QuoteViewPage() {
       ) : isRejected ? (
         <div style={{ background: "#fee2e2", borderRadius: 8, padding: "14px 18px", marginBottom: 20, color: "#991b1b", fontWeight: 600, fontSize: 14 }}>
           ✗ You have declined this quote.
+        </div>
+      ) : isExpired ? (
+        <div style={{ background: "#f1f5f9", borderRadius: 8, padding: "14px 18px", marginBottom: 20, color: "#475569", fontWeight: 600, fontSize: 14 }}>
+          ⏱ This quote has expired and is no longer valid.
         </div>
       ) : null}
 
@@ -183,6 +206,18 @@ export default function QuoteViewPage() {
             }}
           >
             {acting ? "..." : "Decline"}
+          </button>
+        </div>
+      ) : null}
+
+      {isExpired ? (
+        <div style={{ display: "flex", gap: 12 }}>
+          <button
+            onClick={handleRequestNewQuote}
+            disabled={acting}
+            style={{ flex: 1, padding: "14px 24px", borderRadius: 8, fontSize: 16, fontWeight: 700, border: "none", cursor: "pointer", background: GREEN, color: "#fff" }}
+          >
+            {acting ? "Sending..." : "Request a new quote"}
           </button>
         </div>
       ) : null}

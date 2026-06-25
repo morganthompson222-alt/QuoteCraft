@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
     const job_date = sanitizeString(body.job_date);
     const start_time = sanitizeString(body.start_time);
     const end_time = sanitizeOptionalString(body.end_time);
+    const end_date = sanitizeOptionalString(body.end_date);
     const location = sanitizeOptionalString(body.location);
     const notes = sanitizeOptionalString(body.notes);
 
@@ -41,6 +42,7 @@ export async function POST(request: NextRequest) {
         job_date,
         start_time,
         end_time,
+        end_date,
         location,
         notes,
       })

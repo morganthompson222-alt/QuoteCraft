@@ -121,7 +121,7 @@ function generateId() {
 }
 
 export function QuoteBuilderPage() {
-  const { formatCurrency, formatDate } = useRegion();
+  const { formatCurrency, formatDate, taxLabel } = useRegion();
   const [mode, setMode] = useState<"builder" | "view">("builder");
   const [createdQuoteId, setCreatedQuoteId] = useState<string | null>(null);
 
@@ -638,7 +638,7 @@ export function QuoteBuilderPage() {
                 </div>
                 {quote.taxRate > 0 ? (
                   <div className="qp-preview__totals-row">
-                    <span>Tax ({quote.taxRate}%)</span>
+                    <span>{taxLabel} ({quote.taxRate}%)</span>
                     <span>{formatCurrency(quote.taxAmount)}</span>
                   </div>
                 ) : null}

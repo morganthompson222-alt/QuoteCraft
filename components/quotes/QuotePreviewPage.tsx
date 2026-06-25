@@ -86,7 +86,7 @@ type QuotePreviewPageProps = {
 };
 
 export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
-  const { formatCurrency, formatDate } = useRegion();
+  const { formatCurrency, formatDate, taxLabel } = useRegion();
   const [state, setState] = useState<PreviewState>({ status: "loading" });
   const [refreshKey, setRefreshKey] = useState(0);
   const [statusError, setStatusError] = useState("");
@@ -591,7 +591,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
               </div>
               {quote.taxRate > 0 ? (
                 <div className="qp-preview__totals-row">
-                  <span>Tax ({quote.taxRate}%)</span>
+                  <span>{taxLabel} ({quote.taxRate}%)</span>
                   <span>{formatCurrency(quote.taxAmount)}</span>
                 </div>
               ) : null}

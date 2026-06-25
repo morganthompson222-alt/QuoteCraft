@@ -92,7 +92,7 @@ export async function GET(
       phone: (profile as any)?.phone,
       email: user?.email,
       quoteNumber,
-      status: quote.status,
+      status: "sent",
       logoImage,
       logoDims: logoDims ? { ...logoDims } : undefined,
     });

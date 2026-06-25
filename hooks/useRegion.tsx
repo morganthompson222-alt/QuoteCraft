@@ -9,6 +9,7 @@ type RegionContextValue = {
   formatCurrency: (amount: number) => string;
   formatDate: (value: Date | string) => string;
   postalLabel: string;
+  taxLabel: string;
 } | null;
 
 const RegionContext = createContext<RegionContextValue>(null);
@@ -21,12 +22,12 @@ type RegionData = {
   locale?: string;
 };
 
-const regionMeta: Record<string, { currencyCode: string; locale: string; postalLabel: string }> = {
-  UK: { currencyCode: "GBP", locale: "en-GB", postalLabel: "Postcode" },
-  US: { currencyCode: "USD", locale: "en-US", postalLabel: "ZIP code" },
-  CA: { currencyCode: "CAD", locale: "en-CA", postalLabel: "Postal code" },
-  AU: { currencyCode: "AUD", locale: "en-AU", postalLabel: "Postcode" },
-  EU: { currencyCode: "EUR", locale: "en-IE", postalLabel: "Postcode" },
+const regionMeta: Record<string, { currencyCode: string; locale: string; postalLabel: string; taxLabel: string }> = {
+  UK: { currencyCode: "GBP", locale: "en-GB", postalLabel: "Postcode", taxLabel: "VAT" },
+  US: { currencyCode: "USD", locale: "en-US", postalLabel: "ZIP code", taxLabel: "Sales Tax" },
+  CA: { currencyCode: "CAD", locale: "en-CA", postalLabel: "Postal code", taxLabel: "GST/HST" },
+  AU: { currencyCode: "AUD", locale: "en-AU", postalLabel: "Postcode", taxLabel: "GST" },
+  EU: { currencyCode: "EUR", locale: "en-IE", postalLabel: "Postcode", taxLabel: "VAT" },
 };
 
 function buildFormatter(regionCode: string) {
@@ -56,6 +57,7 @@ function buildFormatter(regionCode: string) {
       }
     },
     postalLabel: meta.postalLabel,
+    taxLabel: meta.taxLabel,
   };
 }
 

@@ -22,9 +22,9 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const customerId = sanitizeString(body.customerId);
-    const taxRate = sanitizeNumber(body.taxRate ?? 0, 0, 100);
     const notes = sanitizeOptionalString(body.notes);
     const imageUrl = sanitizeOptionalString(body.imageUrl);
+    const taxRateParam = sanitizeOptionalString(body.taxRate);
 
     const items: Array<{
       description: string;
@@ -51,13 +51,16 @@ export async function POST(request: NextRequest) {
 
     const { data: profile } = await admin
       .from("profiles")
-      .select("quote_prefix, next_quote_number")
+      .select("quote_prefix, next_quote_number, default_tax_rate")
       .eq("id", user.id)
       .single();
 
     if (!profile) throw new ApiError(500, "Profile not found");
 
     const currentNum = profile.next_quote_number;
+    const taxRate = taxRateParam !== null
+      ? sanitizeNumber(taxRateParam, 0, 100)
+      : sanitizeNumber(profile.default_tax_rate ?? 0, 0, 100);
     const quoteNumber = `${profile.quote_prefix}${String(currentNum).padStart(4, "0")}`;
 
     // Increment counter (best-effort; UNIQUE constraint on quotes prevents duplicates)
