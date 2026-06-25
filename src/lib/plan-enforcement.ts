@@ -86,7 +86,7 @@ export async function enforcePlanLimit(
       if (!plan.scheduleJobs) {
         throw new ApiError(
           403,
-          "Job scheduling is available on Solo Pro and above. Upgrade to schedule jobs.",
+          "Job scheduling is available on all plans. Your current plan does not support this feature.",
           "PLAN_LIMIT_REACHED",
         );
       }

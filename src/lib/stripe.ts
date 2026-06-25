@@ -25,7 +25,7 @@ export const PLANS = {
     maxCustomers: 30,
     maxActiveQuotes: 5,
     aiGenerationsPerMonth: 20,
-    scheduleJobs: false,
+    scheduleJobs: true,
     calendarExport: false,
     maxTeamMembers: 0,
   },

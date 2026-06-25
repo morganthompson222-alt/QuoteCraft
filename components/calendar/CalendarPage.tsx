@@ -222,7 +222,7 @@ export function CalendarPage() {
   counts.archived = jobs.filter((j) => j.archived).length;
 
   // Styles
-  const PAGE: React.CSSProperties = { padding: "32px 24px", maxWidth: 960, margin: "0 auto" };
+  const PAGE: React.CSSProperties = { padding: "32px 24px", maxWidth: 960, margin: "0 auto", overflowX: "hidden" };
   const HEADER: React.CSSProperties = { display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 24 };
   const EYEBROW: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: "#64748b", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 4 };
   const HEADING: React.CSSProperties = { fontSize: 26, fontWeight: 800, margin: 0, color: "#0f172a" };
