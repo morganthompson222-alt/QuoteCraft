@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Modal } from "./Modal";
+import { useRegion } from "../hooks/useRegion";
 
 type OnboardingWizardProps = {
   open: boolean;
@@ -35,7 +36,7 @@ const steps = [
     id: "profile",
     title: "Set up your company profile",
     description:
-      "Add your company name, phone, and address so quotes look professional when you send them.",
+      "Add your company details so they appear on every quote PDF you send to customers.",
     action: { label: "Go to settings", href: "/settings" },
   },
   {
@@ -51,9 +52,21 @@ export function OnboardingWizard({
   onComplete,
   onDismiss,
 }: OnboardingWizardProps) {
+  const { postalLabel } = useRegion();
   const [currentStep, setCurrentStep] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [companyForm, setCompanyForm] = useState({
+    companyName: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
+
   const step = steps[currentStep];
   const isLast = currentStep === steps.length - 1;
+  const isProfileStep = step.id === "profile";
 
   function handleNext() {
     if (isLast) {
@@ -65,6 +78,32 @@ export function OnboardingWizard({
 
   function handleSkip() {
     onDismiss();
+  }
+
+  async function handleSaveProfile() {
+    setSaving(true);
+    try {
+      const token = window.localStorage.getItem("jobstacker_token");
+      const body: Record<string, string> = {};
+      for (const [key, value] of Object.entries(companyForm)) {
+        if (value.trim()) body[key] = value.trim();
+      }
+      if (Object.keys(body).length > 0) {
+        await fetch("/api/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify(body),
+        });
+      }
+      handleNext();
+    } catch {
+      handleNext();
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (!open) return null;
@@ -84,9 +123,108 @@ export function OnboardingWizard({
         <div className="onboarding__body">
           <h2 className="onboarding__title">{step.title}</h2>
           <p className="onboarding__desc">{step.description}</p>
+
+          {isProfileStep ? (
+            <div style={{ marginTop: 20 }}>
+              <div className="field" style={{ marginBottom: 12 }}>
+                <label htmlFor="wiz-company">Company name</label>
+                <input
+                  id="wiz-company"
+                  type="text"
+                  autoComplete="organization"
+                  value={companyForm.companyName}
+                  onChange={(e) => setCompanyForm((p) => ({ ...p, companyName: e.target.value }))}
+                  className="line-items__input"
+                  style={{ minHeight: 42 }}
+                  placeholder="Your business name"
+                />
+              </div>
+              <div className="field" style={{ marginBottom: 12 }}>
+                <label htmlFor="wiz-phone">Phone</label>
+                <input
+                  id="wiz-phone"
+                  type="tel"
+                  autoComplete="tel"
+                  value={companyForm.phone}
+                  onChange={(e) => setCompanyForm((p) => ({ ...p, phone: e.target.value }))}
+                  className="line-items__input"
+                  style={{ minHeight: 42 }}
+                />
+              </div>
+              <div className="field" style={{ marginBottom: 12 }}>
+                <label htmlFor="wiz-address">Address</label>
+                <input
+                  id="wiz-address"
+                  type="text"
+                  autoComplete="street-address"
+                  value={companyForm.address}
+                  onChange={(e) => setCompanyForm((p) => ({ ...p, address: e.target.value }))}
+                  className="line-items__input"
+                  style={{ minHeight: 42 }}
+                />
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div className="field">
+                  <label htmlFor="wiz-city">City</label>
+                  <input
+                    id="wiz-city"
+                    type="text"
+                    autoComplete="address-level2"
+                    value={companyForm.city}
+                    onChange={(e) => setCompanyForm((p) => ({ ...p, city: e.target.value }))}
+                    className="line-items__input"
+                    style={{ minHeight: 42 }}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="wiz-state">State/Province</label>
+                  <input
+                    id="wiz-state"
+                    type="text"
+                    autoComplete="address-level1"
+                    value={companyForm.state}
+                    onChange={(e) => setCompanyForm((p) => ({ ...p, state: e.target.value }))}
+                    className="line-items__input"
+                    style={{ minHeight: 42 }}
+                  />
+                </div>
+              </div>
+              <div className="field" style={{ marginBottom: 12 }}>
+                <label htmlFor="wiz-zip">{postalLabel}</label>
+                <input
+                  id="wiz-zip"
+                  type="text"
+                  autoComplete="postal-code"
+                  value={companyForm.zip}
+                  onChange={(e) => setCompanyForm((p) => ({ ...p, zip: e.target.value }))}
+                  className="line-items__input"
+                  style={{ minHeight: 42 }}
+                />
+              </div>
+            </div>
+          ) : null}
         </div>
 
-        {"action" in step && step.action ? (
+        {isProfileStep ? (
+          <>
+            <button
+              className="button button--primary"
+              type="button"
+              onClick={handleSaveProfile}
+              disabled={saving}
+              style={{ width: "100%", justifyContent: "center" }}
+            >
+              {saving ? "Saving..." : "Save & continue"}
+            </button>
+            <button
+              className="onboarding__skip"
+              type="button"
+              onClick={handleNext}
+            >
+              Skip for now
+            </button>
+          </>
+        ) : "action" in step && step.action ? (
           <Link
             className="button button--primary"
             href={step.action.href}
@@ -115,13 +253,15 @@ export function OnboardingWizard({
           </button>
         )}
 
-        <button
-          className="onboarding__skip"
-          type="button"
-          onClick={handleSkip}
-        >
-          Skip setup
-        </button>
+        {!isProfileStep ? (
+          <button
+            className="onboarding__skip"
+            type="button"
+            onClick={handleSkip}
+          >
+            Skip setup
+          </button>
+        ) : null}
       </div>
     </Modal>
   );

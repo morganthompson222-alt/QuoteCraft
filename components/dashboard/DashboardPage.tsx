@@ -130,8 +130,10 @@ export function DashboardPage() {
   useEffect(() => {
     if (state.status === "success") {
       const dismissed = window.localStorage.getItem("jobstacker_onboarding_dismissed");
-      if (isEmpty && !dismissed) {
+      const firstLogin = window.localStorage.getItem("jobstacker_first_login") === "1";
+      if (!dismissed && (isEmpty || firstLogin)) {
         setShowOnboarding(true);
+        window.localStorage.removeItem("jobstacker_first_login");
       }
     }
   }, [state.status, isEmpty]);
