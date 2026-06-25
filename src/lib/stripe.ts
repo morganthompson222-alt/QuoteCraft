@@ -3,7 +3,7 @@ import Stripe from "stripe";
 function getStripeInstance(): Stripe | null {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) return null;
-  return new Stripe(key, { apiVersion: "2025-05-27.dahlia" as const });
+  return new Stripe(key, { apiVersion: "2026-05-27.dahlia" as const });
 }
 
 let _stripe: Stripe | null = null;

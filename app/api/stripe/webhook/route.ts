@@ -37,7 +37,9 @@ export async function POST(request: NextRequest) {
       const subscriptionId = session.subscription as string;
 
       if (userId && subscriptionId) {
-        const subscription = (await stripe().subscriptions.retrieve(
+        const s = stripe();
+        if (!s) break;
+        const subscription = (await s.subscriptions.retrieve(
           subscriptionId,
         )) as unknown as Record<string, unknown>;
 
