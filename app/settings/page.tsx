@@ -2,6 +2,7 @@ import { ProfilePage } from "../../components/settings/ProfilePage";
 import { BillingPage } from "../../components/settings/BillingPage";
 import { DeleteAccountSection } from "../../components/settings/DeleteAccountSection";
 import { ThemeToggle } from "../../components/settings/ThemeToggle";
+import { MarketingEmails } from "../../components/settings/MarketingEmails";
 
 export default function SettingsRoute() {
   return (
@@ -17,6 +18,7 @@ export default function SettingsRoute() {
       <div className="settings-sections">
         <ProfilePage />
         <ThemeToggle />
+        <MarketingEmails />
         <BillingPage />
         <DeleteAccountSection />
       </div>
