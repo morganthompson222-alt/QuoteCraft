@@ -64,15 +64,19 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [showDownload, setShowDownload] = useState(false);
   const [showMobileNav, setShowMobileNav] = useState(false);
 
+  // Tour trigger: runs on mount and on every pathname change (e.g. after /setup → /dashboard)
   useEffect(() => {
-    const hasToken = !!localStorage.getItem("jobstacker_token");
     const tourDone = isTourDone();
     const forceTour = globalThis.location?.search.includes("tour=1");
     if (forceTour) resetTour();
-    setLoggedIn(hasToken);
-    if (hasToken && (!tourDone || forceTour) && !isMarketing) {
+    if (!isMarketing && (forceTour || !tourDone)) {
       setShowTour(true);
     }
+  }, [pathname, isMarketing]);
+
+  useEffect(() => {
+    const hasToken = !!localStorage.getItem("jobstacker_token");
+    setLoggedIn(hasToken);
 
     if (isMarketing) return;
 
@@ -119,7 +123,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       } catch { /* ok */ }
     })();
     return () => { isCurrent = false; clearInterval(ival); };
-  }, [isMarketing]);
+  }, [isMarketing, pathname]);
 
   function handleLogout() {
     localStorage.removeItem("jobstacker_token");
