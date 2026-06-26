@@ -488,9 +488,13 @@ export function QuoteBuilderPage() {
                       <>
                         <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowSendMenu(false)} />
                         <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 220, overflow: "hidden" }}>
-                          <button type="button" onClick={async () => { setShowSendMenu(false); await updateStatus("sent"); }} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
+                          <button type="button" onClick={async () => {
+                            setShowSendMenu(false);
+                            try { await navigator.clipboard.writeText(`${window.location.origin}/q/${createdQuoteId}`); } catch {}
+                            await updateStatus("sent");
+                          }} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
                             Share link
-                            <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Copy link & mark as sent</span>
+                            <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Link copied & quote sent</span>
                           </button>
                           <button type="button" onClick={async () => { setShowSendMenu(false); await downloadPdf(); }} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
                             Download PDF
