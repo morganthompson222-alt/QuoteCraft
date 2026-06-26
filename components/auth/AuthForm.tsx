@@ -114,9 +114,9 @@ export function AuthForm({ mode }: AuthFormProps) {
       const data = (await response.json()) as AuthResponse;
       window.localStorage.setItem("jobstacker_token", data.token);
       window.localStorage.setItem("jobstacker_region", region);
-      window.localStorage.setItem("jobstacker_first_login", "1");
+      window.dispatchEvent(new CustomEvent("authchange"));
       document.cookie = "jobstacker_auth=true; path=/; max-age=604800; SameSite=Lax; Secure";
-      window.location.assign("/dashboard");
+      window.location.assign(isSignup ? "/setup" : "/dashboard");
     } catch (error) {
       setApiError(
         error instanceof Error

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { OnboardingTour } from "./onboarding/OnboardingTour";
-import { GuidedTour } from "./onboarding/GuidedTour";
+import { GuidedTour, isTourDone, markTourDone, resetTour } from "./onboarding/GuidedTour";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard" },
@@ -66,10 +66,11 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const hasToken = !!localStorage.getItem("jobstacker_token");
-    const onboarded = localStorage.getItem("jobstacker_onboarded");
+    const tourDone = isTourDone();
     const forceTour = globalThis.location?.search.includes("tour=1");
+    if (forceTour) resetTour();
     setLoggedIn(hasToken);
-    if (hasToken && (!onboarded || forceTour) && !isMarketing) {
+    if (hasToken && (!tourDone || forceTour) && !isMarketing) {
       setShowTour(true);
     }
 
@@ -128,7 +129,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   function handleTourDone() {
-    localStorage.setItem("jobstacker_onboarded", "true");
+    markTourDone();
     setShowTour(false);
   }
 

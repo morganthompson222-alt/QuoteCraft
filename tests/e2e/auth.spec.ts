@@ -118,19 +118,6 @@ test.describe("Auth flow", () => {
       });
     });
 
-    await page.route("**/api/dashboard/summary", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          customerCount: 0,
-          openQuotesCount: 0,
-          recentQuotes: [],
-          recentCustomers: [],
-        }),
-      });
-    });
-
     await page.goto("/signup");
     await expect(page.getByRole("heading", { name: "Create your workspace" })).toBeVisible();
 
@@ -140,8 +127,8 @@ test.describe("Auth flow", () => {
     await page.getByLabel(/I agree to the/).check();
     await page.getByRole("button", { name: "Create account" }).click();
 
-    await page.waitForURL("/dashboard");
-    await expect(page.getByRole("heading", { name: "Workspace overview" })).toBeVisible();
+    await page.waitForURL("/setup");
+    await expect(page.getByText("Setup your workspace")).toBeVisible();
   });
 
   test("signup shows error for duplicate email", async ({ page }) => {
