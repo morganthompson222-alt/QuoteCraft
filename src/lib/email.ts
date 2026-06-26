@@ -1,7 +1,5 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY ?? "");
-
 type SendQuoteEmailParams = {
   to: string;
   companyName: string;
@@ -89,6 +87,7 @@ export async function sendQuoteEmail(
   }
 
   try {
+    const resend = new Resend(apiKey);
     await resend.emails.send({
       from: `JobStacker <${fromEmail}>`,
       to: params.to,
