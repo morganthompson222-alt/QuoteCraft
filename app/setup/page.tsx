@@ -59,7 +59,10 @@ export default function SetupPage() {
     } catch { /* ok */ }
     setSaving(false);
     if (step < 2) { setStep((s) => s + 1); }
-    else { router.push("/dashboard"); }
+    else {
+      localStorage.setItem("jobstacker_start_tour", "1");
+      router.push("/dashboard");
+    }
   }
 
   return (

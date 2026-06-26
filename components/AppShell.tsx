@@ -64,12 +64,18 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [showDownload, setShowDownload] = useState(false);
   const [showMobileNav, setShowMobileNav] = useState(false);
 
-  // Tour trigger: runs on mount and on every pathname change (e.g. after /setup → /dashboard)
+  // Tour trigger: auto on first login (except /setup), ?tour=1, or setup-completion flag
   useEffect(() => {
-    const tourDone = isTourDone();
+    if (isMarketing) return;
     const forceTour = globalThis.location?.search.includes("tour=1");
     if (forceTour) resetTour();
-    if (!isMarketing && pathname !== "/setup" && (forceTour || !tourDone)) {
+    const startTour = localStorage.getItem("jobstacker_start_tour") === "1";
+    if (startTour) {
+      setShowTour(true);
+      localStorage.removeItem("jobstacker_start_tour");
+      return;
+    }
+    if (forceTour || (!isTourDone() && pathname !== "/setup")) {
       setShowTour(true);
     }
   }, [pathname, isMarketing]);
