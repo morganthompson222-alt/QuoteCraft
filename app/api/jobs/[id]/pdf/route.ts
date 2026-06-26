@@ -73,12 +73,14 @@ export async function GET(
     // Title
     page.drawText("JOB SHEET", { x: 50, y, size: 18, font: boldFont, color: rgb(0.12, 0.42, 0.31) });
     y += 12;
-    page.drawText(job.job_title as string, { x: 50, y, size: 14, font: boldFont, color: rgb(0.1, 0.1, 0.1) });
+    const jobTitle = (job.job_title as string) || "";
+    const truncatedTitle = jobTitle.length > 50 ? jobTitle.slice(0, 47) + "..." : jobTitle;
+    page.drawText(truncatedTitle, { x: 50, y, size: 14, font: boldFont, color: rgb(0.1, 0.1, 0.1) });
     y += 24;
 
     // Job details
-    const detailRows: [string, string][] = [
-      ["Customer", (job.customer_name as string) || "—"],
+    const customerName = (job.customer_name as string) || "—";
+    const truncatedCustomer = customerName.length > 40 ? customerName.slice(0, 37) + "..." : customerName;
       ["Date", job.job_date as string],
       ["Time", `${job.start_time as string}${job.end_time ? ` – ${job.end_time}` : ""}`],
       ["Status", (job.status as string).charAt(0).toUpperCase() + (job.status as string).slice(1)],
@@ -98,16 +100,23 @@ export async function GET(
     y += 8;
 
     // Linked quote
-    const quotes = job.quotes;
-    if (quotes && !Array.isArray(quotes)) {
-      const q = quotes as { quote_number?: string; total?: number };
+    let linkedQuote = null;
+    if (Array.isArray(job.quotes) && job.quotes.length > 0) {
+      linkedQuote = job.quotes[0];
+    } else if (job.quotes && !Array.isArray(job.quotes)) {
+      linkedQuote = job.quotes;
+    }
+
+    if (linkedQuote) {
+      const q = linkedQuote as { quote_number?: string; total?: number };
       page.drawLine({ start: { x: 50, y }, end: { x: width - 50, y }, thickness: 0.5, color: rgb(0.9, 0.9, 0.9) });
       y += 14;
       page.drawText("Linked Quote", { x: 50, y, size: 11, font: boldFont, color: rgb(0.3, 0.3, 0.3) });
       y += 16;
       page.drawText(`Quote #${q.quote_number ?? "—"}`, { x: 50, y, size: 10, font, color: rgb(0.1, 0.1, 0.1) });
       if (q.total) {
-        page.drawText(`Total: £${Number(q.total).toFixed(2)}`, { x: 200, y, size: 10, font, color: rgb(0.1, 0.1, 0.1) });
+        const totalText = `Total: ${Number(q.total).toLocaleString("en", { style: "currency", currency: "GBP", minimumFractionDigits: 2 })}`;
+        page.drawText(totalText, { x: 200, y, size: 10, font, color: rgb(0.1, 0.1, 0.1) });
       }
       y += 18;
     }
