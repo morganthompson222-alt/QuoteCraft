@@ -123,50 +123,59 @@ export function GuidedTour({ onDone }: { onDone: () => void }) {
   if (!current) return null;
 
   const t = target;
-  const cx = typeof window !== "undefined" ? window.innerWidth / 2 : 0;
-  const cy = typeof window !== "undefined" ? window.innerHeight / 2 : 0;
+  const ww = typeof window !== "undefined" ? window.innerWidth : 400;
+  const wh = typeof window !== "undefined" ? window.innerHeight : 600;
+  const tooltipW = Math.min(340, ww - 20);
+  const tooltipH = 240;
+
+  // Position tooltip: below target if space, otherwise above, centered if neither fits
+  let tooltipLeft = Math.max(10, Math.min(ww / 2 - tooltipW / 2, ww - tooltipW - 10));
+  let tooltipTop: number;
+  if (t && t.bottom + tooltipH + 20 < wh) {
+    tooltipTop = t.bottom + 16; // below
+  } else if (t && t.top - tooltipH - 20 > 0) {
+    tooltipTop = t.top - tooltipH - 16; // above
+  } else {
+    tooltipTop = Math.max(20, (wh - tooltipH) / 2); // center
+  }
+  tooltipTop = Math.max(12, Math.min(tooltipTop, wh - tooltipH - 12));
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 3000, pointerEvents: "none" }}>
-      {/* Full-screen dim overlay with cutout */}
+    <div style={{ position: "fixed", inset: 0, zIndex: 3000 }}>
+      {/* Blocking overlay: prevents clicks on anything behind */}
       {t ? (
         <>
-          {/* Top bar */}
-          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: t.top, background: "rgba(0,0,0,0.45)" }} />
-          {/* Left bar */}
-          <div style={{ position: "absolute", top: t.top, left: 0, width: t.left, height: t.height, background: "rgba(0,0,0,0.45)" }} />
-          {/* Right bar */}
-          <div style={{ position: "absolute", top: t.top, left: t.right, right: 0, height: t.height, background: "rgba(0,0,0,0.45)" }} />
-          {/* Bottom bar */}
-          <div style={{ position: "absolute", top: t.bottom, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.45)" }} />
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: t.top, background: "rgba(0,0,0,0.5)" }} />
+          <div style={{ position: "absolute", top: t.top, left: 0, width: t.left, height: t.height, background: "rgba(0,0,0,0.5)" }} />
+          <div style={{ position: "absolute", top: t.top, left: t.right, right: 0, height: t.height, background: "rgba(0,0,0,0.5)" }} />
+          <div style={{ position: "absolute", top: t.bottom, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)" }} />
         </>
       ) : (
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.45)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)" }} />
       )}
 
-      {/* Tooltip */}
+      {/* Tooltip — only interactive area */}
       {ready ? (
         <div
           style={{
-            position: "absolute",
-            left: Math.max(12, Math.min(cx - 180, (typeof window !== "undefined" ? window.innerWidth : 400) - 372)),
-            top: t ? Math.min(t.bottom + 16, (typeof window !== "undefined" ? window.innerHeight : 600) - 240) : cy - 80,
-            width: Math.min(360, (typeof window !== "undefined" ? window.innerWidth : 400) - 24),
+            position: "fixed",
+            left: tooltipLeft,
+            top: tooltipTop,
+            width: tooltipW,
             background: "#fff",
             borderRadius: 12,
-            boxShadow: "0 16px 48px rgba(0,0,0,0.25)",
-            padding: "20px 24px",
-            pointerEvents: "auto",
+            boxShadow: "0 16px 48px rgba(0,0,0,0.3)",
+            padding: ww < 400 ? "16px" : "20px 24px",
             zIndex: 3001,
           }}
         >
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#1F6B4F", marginBottom: 4 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "#1F6B4F", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>
             Step {step + 1} of {STEPS.length}
           </div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: "#0f172a", marginBottom: 8 }}>
+          <div style={{ fontSize: ww < 400 ? 16 : 18, fontWeight: 800, color: "#0f172a", marginBottom: 8 }}>
             {current.title}
           </div>
-          <div style={{ fontSize: 14, color: "#475569", lineHeight: 1.6, marginBottom: 20 }}>
+          <div style={{ fontSize: ww < 400 ? 13 : 14, color: "#475569", lineHeight: 1.6, marginBottom: 20 }}>
             {current.text}
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -182,12 +191,12 @@ export function GuidedTour({ onDone }: { onDone: () => void }) {
             <div style={{ display: "flex", gap: 6 }}>
               <button onClick={skip}
                 style={{ padding: "8px 14px", borderRadius: 6, fontSize: 13, fontWeight: 600,
-                  border: "none", background: "#f1f5f9", color: "#64748b", cursor: "pointer" }}>
+                  border: "none", background: "#f1f5f9", color: "#64748b", cursor: "pointer", minHeight: 36 }}>
                 Skip
               </button>
               <button onClick={next}
                 style={{ padding: "8px 20px", borderRadius: 6, fontSize: 14, fontWeight: 700,
-                  border: "none", background: "#1F6B4F", color: "#fff", cursor: "pointer" }}>
+                  border: "none", background: "#1F6B4F", color: "#fff", cursor: "pointer", minHeight: 36 }}>
                 {isLast ? "Done" : "Next"}
               </button>
             </div>
