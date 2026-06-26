@@ -234,6 +234,27 @@ export function ProfilePage() {
     }
   }
 
+  async function handleCleanupCatalogue() {
+    if (!catalogueText.trim()) return;
+    setCleanupLoading(true);
+    try {
+      const tk = localStorage.getItem("jobstacker_token");
+      const r = await fetch("/api/ai/cleanup-instructions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
+        body: JSON.stringify({ instructions: catalogueText }),
+      });
+      if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error(j?.error?.message ?? "Failed"); }
+      const d = await r.json();
+      setCatalogueText(d.cleaned);
+      toast("Catalogue cleaned up.", "success");
+    } catch (x) {
+      setSaveError(x instanceof Error ? x.message : "Failed to clean");
+    } finally {
+      setCleanupLoading(false);
+    }
+  }
+
   async function handleGenerateCatalogue() {
     setCatalogueLoading(true);
     setCatalogueText("");
@@ -508,14 +529,25 @@ export function ProfilePage() {
                     {catalogueLoading ? "Generating..." : "Generate service catalogue"}
                   </button>
                 </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                  <label htmlFor="profile-catalogue">Catalogue content</label>
+                  {catalogueText ? (
+                      <button type="button" onClick={handleCleanupCatalogue}
+                      disabled={cleanupLoading}
+                      style={{ padding: "4px 10px", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: "pointer", border: "1px solid var(--border)", background: "#fff", color: "#1F6B4F", opacity: cleanupLoading ? 0.5 : 1 }}>
+                      {cleanupLoading ? "Cleaning..." : "Clean Up ✨"}
+                    </button>
+                  ) : null}
+                </div>
                 {catalogueText ? (
-                  <div style={{
-                    marginTop: 12, padding: "14px 18px", background: "#f8fafc", border: "1px solid var(--border)",
-                    borderRadius: 8, whiteSpace: "pre-wrap", fontSize: 13, color: "#334155", lineHeight: 1.7,
-                    maxHeight: 300, overflow: "auto", marginBottom: 12,
-                  }}>
-                    {catalogueText}
-                  </div>
+                  <textarea
+                    id="profile-catalogue"
+                    value={catalogueText}
+                    onChange={(e) => setCatalogueText(e.target.value)}
+                    className="bp-textarea"
+                    rows={10}
+                    style={{ minHeight: 120, marginTop: 4, whiteSpace: "pre-wrap" }}
+                  />
                 ) : null}
                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end", marginTop: 8 }}>
                   <div>
