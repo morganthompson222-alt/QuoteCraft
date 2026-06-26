@@ -232,7 +232,6 @@ export function JobListPage({ view }: { view: "active" | "completed" }) {
         {sorted.length} job{sorted.length !== 1 ? "s" : ""} {isCompleted ? "completed" : "scheduled"}
         {!isCompleted ? " · Completed jobs move here after 24 hours" : " · View the full calendar for more details"}
       </div>
-      </div>
 
       {selectedJob ? (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => setSelectedJob(null)}>
@@ -255,7 +254,7 @@ export function JobListPage({ view }: { view: "active" | "completed" }) {
                   <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #e5e7eb" }}>
                     <span style={{ fontSize: 13, color: "#64748b" }}>{l}</span>
                     {l === "Status" ? (
-                      <span style={{ fontSize: 14, fontWeight: 600, background: sc.bg, color: sc.fg, padding: "2px 10px", borderRadius: 12, fontSize: 12, fontWeight: 600, textTransform: "capitalize" }}>{sc.label}</span>
+                      <span style={{ fontSize: 12, fontWeight: 600, background: sc.bg, color: sc.fg, padding: "2px 10px", borderRadius: 12, textTransform: "capitalize" }}>{sc.label}</span>
                     ) : (
                       <span style={{ fontSize: 14, fontWeight: 600, color: "#0f172a" }}>{v}</span>
                     )}
@@ -263,17 +262,16 @@ export function JobListPage({ view }: { view: "active" | "completed" }) {
                 );
               })}
             </div>
-            <div style={{ display: "flex", gap: 8, padding: "0 24px 20px", justifyContent: "space-between" }}>
-              <div style={{ display: "flex", gap: 8 }}>
-                {selectedJob.quote_id ? (
-                  <button style={{ padding: "8px 16px", borderRadius: 6, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", background: "#d1fae5", color: "#065f46" }}
-                    onClick={() => router.push(`/quotes/${selectedJob.quote_id}`)}>View quote</button>
-                ) : null}
-              </div>
+            <div style={{ display: "flex", gap: 8, padding: "0 24px 20px" }}>
+              {selectedJob.quote_id ? (
+                <button style={{ padding: "8px 16px", borderRadius: 6, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", background: "#d1fae5", color: "#065f46" }}
+                  onClick={() => router.push(`/quotes/${selectedJob.quote_id}`)}>View quote</button>
+              ) : null}
             </div>
           </div>
         </div>
       ) : null}
+
     </section>
   );
 }
