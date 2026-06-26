@@ -94,7 +94,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="JobStacker" />
-        <meta name="google-site-verification" content="d7a50f110b5dcfc0" />
+        <meta name="google-site-verification" content="AWnsXGxv6EkcNOo08HXZjZcH0WFBFzjt6cAsHjR_Nds" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
