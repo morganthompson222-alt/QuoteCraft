@@ -56,7 +56,7 @@ const inputStyle: React.CSSProperties = {
   fontSize: 14, outline: "none", boxSizing: "border-box", background: "#fff",
 };
 
-function StatCard({ value, label, color, bg }: { value: string; label: string; color?: string; bg?: string }) {
+function StatCard({ value, fullValue, label, color, bg }: { value: string; fullValue?: string; label: string; color?: string; bg?: string }) {
   return (
     <div style={{
       padding: "28px 24px", borderRadius: 16,
@@ -64,14 +64,34 @@ function StatCard({ value, label, color, bg }: { value: string; label: string; c
       boxShadow: bg ? "none" : "0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
       border: bg ? `1.5px solid ${bg === GREEN_LIGHT ? "#a7f3d0" : BORDER}` : "1px solid #f1f5f9",
     }}>
-      <div style={{ fontSize: 32, fontWeight: 800, color: color ?? "#0f172a", letterSpacing: "-0.02em", marginBottom: 2 }}>{value}</div>
+      <div style={{ fontSize: value.length > 8 ? 24 : 32, fontWeight: 800, color: color ?? "#0f172a", letterSpacing: "-0.02em", marginBottom: 2 }} title={fullValue ?? value}>{value}</div>
       <div style={{ fontSize: 13, fontWeight: 500, color: "#94a3b8", marginTop: 6 }}>{label}</div>
     </div>
   );
 }
 
+function niceMax(maxVal: number): number {
+  if (maxVal <= 0) return 1;
+  const magnitude = Math.pow(10, Math.floor(Math.log10(maxVal)));
+  const normalized = maxVal / magnitude;
+  if (normalized <= 1) return magnitude;
+  if (normalized <= 2) return 2 * magnitude;
+  if (normalized <= 5) return 5 * magnitude;
+  return 10 * magnitude;
+}
+
+function formatCurrencyShort(amount: number, fmt: (n: number) => string): string {
+  if (Math.abs(amount) >= 1_000_000) {
+    return `${fmt(amount / 1_000_000)}M`;
+  }
+  if (Math.abs(amount) >= 1_000) {
+    return `${fmt(amount / 1_000)}K`;
+  }
+  return fmt(amount);
+}
+
 function BarChart({ data, maxVal }: { data: Array<{ month: string; revenue: number; expenses: number; profit: number }>; maxVal: number }) {
-  const max = Math.max(maxVal, 1);
+  const max = niceMax(maxVal);
   return (
     <div style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 180, padding: "16px 0 0" }}>
       {data.map((d) => {
@@ -292,12 +312,12 @@ export function FinanceHubPage() {
           <>
             {/* Metric cards */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 20, marginBottom: 28 }}>
-              <StatCard value={formatCurrency(summary.metrics.revenue)} label="Revenue" color={GREEN} bg={GREEN_LIGHT} />
-              <StatCard value={formatCurrency(summary.metrics.profit)} label={`Profit (${summary.metrics.profitMargin.toFixed(1)}%)`} color={summary.metrics.profit >= 0 ? "#065f46" : "#991b1b"} />
-              <StatCard value={formatCurrency(summary.metrics.expenses)} label="Expenses" />
-              <StatCard value={formatCurrency(summary.metrics.estimatedTax)} label={`Est. tax (${taxRate}%)`} />
-              <StatCard value={formatCurrency(summary.metrics.outstandingValue)} label="Outstanding" />
-              <StatCard value={formatCurrency(summary.metrics.avgJobValue)} label="Avg job value" />
+              <StatCard value={formatCurrencyShort(summary.metrics.revenue, formatCurrency)} fullValue={formatCurrency(summary.metrics.revenue)} label="Revenue" color={GREEN} bg={GREEN_LIGHT} />
+              <StatCard value={formatCurrencyShort(summary.metrics.profit, formatCurrency)} fullValue={formatCurrency(summary.metrics.profit)} label={`Profit (${summary.metrics.profitMargin.toFixed(1)}%)`} color={summary.metrics.profit >= 0 ? "#065f46" : "#991b1b"} />
+              <StatCard value={formatCurrencyShort(summary.metrics.expenses, formatCurrency)} fullValue={formatCurrency(summary.metrics.expenses)} label="Expenses" />
+              <StatCard value={formatCurrencyShort(summary.metrics.estimatedTax, formatCurrency)} fullValue={formatCurrency(summary.metrics.estimatedTax)} label={`Est. tax (${taxRate}%)`} />
+              <StatCard value={formatCurrencyShort(summary.metrics.outstandingValue, formatCurrency)} fullValue={formatCurrency(summary.metrics.outstandingValue)} label="Outstanding" />
+              <StatCard value={formatCurrencyShort(summary.metrics.avgJobValue, formatCurrency)} fullValue={formatCurrency(summary.metrics.avgJobValue)} label="Avg job value" />
             </div>
 
             {/* Chart + side cards */}
