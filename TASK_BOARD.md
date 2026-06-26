@@ -285,7 +285,7 @@ DEPENDENCIES: CountrySelect component
 
 ### TASK: Build locale-aware address fields component
 OWNER: Agent A
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: locale config
 
 ### TASK: Global currency display audit — remove all hardcoded "$"
@@ -300,12 +300,12 @@ DEPENDENCIES: locale config
 
 ### TASK: Add tax label awareness (VAT/GST/Sales Tax)
 OWNER: Agent A
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: locale config
 
 ### TASK: Update E2E tests for multi-region scenarios
 OWNER: Agent A
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: all above
 
 ---
@@ -316,51 +316,54 @@ Per Global Region & Localisation Standard — no hardcoded US defaults.
 
 ### TASK: DB migration 005 — add region, currency, locale fields to profiles
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 
 ### TASK: Create server-side locale config utility (lib/locale.ts)
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 
 ### TASK: Create formatCurrency, formatDate, validatePostalCode utilities
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: locale config
 
 ### TASK: Update profile GET/PUT API with region fields
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: migration
 
 ### TASK: Update signup API to accept region
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: migration
 
 ### TASK: Update quote responses with currencyCode
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: locale config
 
 ### TASK: Pass locale context to AI prompt for region-aware quoting
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: locale config
 
 ### TASK: Update SCHEMA.md with region fields and locale docs
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: all above
 
 ---
 
 ## Batch A-2026-06-08 (Frontend: Bug Fixes & UI Polish)
+STATUS: All Agent A tasks ASSIGNED
+
+Agent A tasks: #1, #2, #3, #6, #12, #14, #16, #17, #18, #19, #21, #24, #27, #29
 
 ### TASK: T-001 — Fix landing page redirect bug
 OWNER: Agent A
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Unauthenticated users sometimes skip the marketing page and go straight to login. Fix middleware/redirect logic so `/` always renders the marketing page for visitors with no session.
 
@@ -469,105 +472,108 @@ DESC: Revenue overview is stuck on May. Default to the current calendar month an
 ---
 
 ## Batch B-2026-06-08 (Backend: Bug Fixes, PDFs & APIs)
+STATUS: All Agent B tasks COMPLETE
+
+Agent B tasks: #4, #5, #7, #8, #9, #10, #11, #13, #15, #20, #22, #23, #25, #26, #28
 
 ### TASK: T-004 — Expired quotes: update public link + request new quote
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Public `/q/[id]` page: show "Expired" status, remove accept/decline buttons, add a "Request a New Quote" button that creates a notification for the trader.
 
 ### TASK: T-005 — Unarchive quotes + reboot expired quotes
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Add PATCH endpoint for unarchiving quotes. Add reboot endpoint for expired quotes that reactivates the quote, resets status to draft, regenerates the share link, and makes it accessible again.
 
 ### TASK: T-007 — Quote PDF layout: fix overlapping text and spacing
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Full redesign of the quote PDF template. Fix text overlapping, improve spacing between sections, ensure a professional layout suitable for sending to customers.
 
 ### TASK: T-008 — Quote PDF shows "Sent" status not "Draft"
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: When generating/downloading a quote PDF, the status label in the PDF should always display as "Sent" regardless of the internal quote state.
 
 ### TASK: T-009 — Customer accept/reject: real-time sync + prominent notifications
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Ensure quote status syncs in real time when a customer accepts/rejects via public link. Add toast/popup notifications on action. Add a dedicated Notifications page endpoint with full accept/reject history.
 
 ### TASK: T-010 — Multi-day jobs: start and end on different dates
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Add `end_date` field to jobs table. Update job creation/update API to accept separate start and end dates. Update calendar and scheduling logic to handle multi-day spans.
 
 ### TASK: T-011 — Job scheduling available on all plans
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Remove plan-tier gating on job scheduling. Free and 3-month plans must have scheduling access. Update plan enforcement to not block scheduling features.
 
 ### TASK: T-013-API — Mass-select quotes: bulk archive + status update endpoints
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Add bulk PATCH/POST endpoints for archiving multiple quotes and updating statuses on multiple quotes at once. Handle validation and error reporting per-item.
 
 ### TASK: T-015 — Mark job status directly from Jobs page + Calendar
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Add inline status update API that can be called from both the Jobs page and Calendar views without navigating to a separate page.
 
 ### TASK: T-020 — AI finance: enable for all accounts with plan-based limits
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: AI finance currently only works on one account. Enable for all users. Implement usage limits based on plan tier (limited queries on free, full access on paid).
 
 ### TASK: T-022-API — Onboarding: service catalogue setup API
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Create API for storing user services (name, unit type, charge per unit, cost per unit). Create endpoint that returns service details for quote auto-calculation (total charge, total cost, profit).
 
 ### TASK: T-023-API — Onboarding: default tax rate API
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: T-022-API
 DESC: Add default tax rate to profile API. Ensure it auto-applies as a separate line item on all new quotes created via the API.
 
 ### TASK: T-025-API — Account creation: company info storage + logo upload
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Create API for storing company info (name, address, contact). Add logo upload endpoint (3.5MB limit). Ensure logos render on all quote PDFs and catalogue PDFs.
 
 ### TASK: T-026 — Service catalogue: use all generated info in PDF export
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: The catalogue PDF currently omits data that is visible during the generate flow. Update the PDF template to include all generated information.
 
 ### TASK: T-027-API — Service catalogue: cleanup formatter endpoint
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Create a cleanup/formatter API that takes raw catalogue text and returns well-structured, readable content optimised for PDF export.
 
 ### TASK: T-028 — Service catalogue PDF: fix overlapping elements
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: none
 DESC: Audit and fix the catalogue PDF template. Ensure all sections, text blocks, images, and layout elements are properly spaced with no overlap.
 
 ### TASK: T-032 — Uploaded logos appear on catalogue PDFs
 OWNER: Agent B
-STATUS: ASSIGNED
+STATUS: DONE
 DEPENDENCIES: T-025-API
 DESC: Ensure company logos uploaded via the account creation flow render on all service catalogue PDF exports, same as quote PDFs.

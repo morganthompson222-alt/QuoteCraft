@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { sanitizeString } from "@/lib/validation";
 import { ApiError, errorResponse } from "@/lib/api-error";
+import { PLANS, normalizeTier } from "@/lib/stripe";
 
 let _openai: any = null;
 async function getOpenAI() {
@@ -20,16 +22,31 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new ApiError(401, "Unauthorized");
 
-    // Fetch cost rates from profile
-    let costRates = null;
-    try {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("cost_rates")
-        .eq("id", user.id)
-        .single();
-      costRates = (profile as { cost_rates?: string } | null)?.cost_rates ?? null;
-    } catch { /* skip */ }
+    // Plan-based rate limit: check profile tier
+    const admin = createAdminClient();
+    const { data: profile } = await admin
+      .from("profiles")
+      .select("plan_tier, cost_rates")
+      .eq("id", user.id)
+      .single();
+
+    const tier = normalizeTier((profile as { plan_tier?: string } | null)?.plan_tier ?? "solo");
+    const plan = PLANS[tier];
+    const costRates = (profile as { cost_rates?: string } | null)?.cost_rates ?? null;
+
+    // Count AI finance queries this month for rate limiting
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const { count } = await supabase
+      .from("quotes")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .gte("created_at", monthStart);
+
+    const monthlyLimit = plan.aiGenerationsPerMonth > 0 ? Math.ceil(plan.aiGenerationsPerMonth / 2) : -1;
+    if (monthlyLimit > 0 && count != null && count >= monthlyLimit) {
+      throw new ApiError(429, `Monthly AI query limit reached (${monthlyLimit}). Please wait until next month.`);
+    }
 
     const body = await request.json();
     const question = sanitizeString(body.question);

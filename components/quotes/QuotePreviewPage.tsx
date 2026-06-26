@@ -91,6 +91,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
   const [refreshKey, setRefreshKey] = useState(0);
   const [statusError, setStatusError] = useState("");
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
   const [planTier, setPlanTier] = useState("solo");
   const [reminderLoading, setReminderLoading] = useState(false);
   const [receiptLoading, setReceiptLoading] = useState(false);
@@ -336,6 +337,33 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
     }
   }
 
+  async function handleSendEmail() {
+    setShowSendMenu(false);
+    setEmailLoading(true);
+    try {
+      const token = window.localStorage.getItem("jobstacker_token");
+      const response = await fetch(`/api/quotes/${quoteId}/send-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      });
+      if (!response.ok) {
+        const err = await readErrorMessage(response);
+        throw new Error(err);
+      }
+      setStatusError("Quote sent by email!");
+      setTimeout(() => setStatusError(""), 3000);
+      if (state.status === "success" && state.data.status === "draft") {
+        await updateStatus("sent");
+        setRefreshKey((k) => k + 1);
+      }
+    } catch (error) {
+      setStatusError(error instanceof Error ? error.message : "Failed to send email");
+      setTimeout(() => setStatusError(""), 4000);
+    } finally {
+      setEmailLoading(false);
+    }
+  }
+
   async function handleArchive() {
     try {
       const token = window.localStorage.getItem("jobstacker_token");
@@ -405,13 +433,17 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
                     <>
                       <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowSendMenu(false)} />
                       <div style={{ position: "absolute", top: "100%", left: 0, marginTop: 4, background: "#fff", borderRadius: 8, boxShadow: "0 8px 24px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 220, overflow: "hidden" }}>
-                        <button type="button" onClick={handleSendLink} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a", borderBottom: "1px solid var(--border)" }}>
-                          Share link
-                          <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Copy link & mark as sent</span>
+                        <button type="button" onClick={handleSendEmail} disabled={emailLoading} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "var(--text)", borderBottom: "1px solid var(--border)", opacity: emailLoading ? 0.6 : 1 }}>
+                          {emailLoading ? "Sending..." : "Send by email"}
+                          <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "var(--text-muted)", marginTop: 1 }}>Send quote as email to customer</span>
                         </button>
-                        <button type="button" onClick={handleSendPdf} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "#0f172a" }}>
+                        <button type="button" onClick={handleSendLink} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "var(--text)", borderBottom: "1px solid var(--border)" }}>
+                          Share link
+                          <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "var(--text-muted)", marginTop: 1 }}>Copy link & mark as sent</span>
+                        </button>
+                        <button type="button" onClick={handleSendPdf} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "var(--text)" }}>
                           Download PDF
-                          <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Send via email or print</span>
+                          <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "var(--text-muted)", marginTop: 1 }}>Send via email or print</span>
                         </button>
                       </div>
                     </>
