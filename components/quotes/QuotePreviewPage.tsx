@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRegion } from "../../hooks/useRegion";
+import { useToast } from "../Toast";
 import { JobModal } from "../jobs/JobModal";
 
 type QuoteItem = {
@@ -87,6 +88,7 @@ type QuotePreviewPageProps = {
 
 export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
   const { formatCurrency, formatDate, taxLabel } = useRegion();
+  const { toast } = useToast();
   const [state, setState] = useState<PreviewState>({ status: "loading" });
   const [refreshKey, setRefreshKey] = useState(0);
   const [statusError, setStatusError] = useState("");
@@ -319,11 +321,9 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
     const url = `${window.location.origin}/q/${quoteId}`;
     try {
       await navigator.clipboard.writeText(url);
-      setStatusError("Link copied! Marking as sent...");
-      setTimeout(() => setStatusError(""), 2000);
+      toast("Link copied! Marking as sent...", "success");
     } catch {
-      setStatusError("Failed to copy link");
-      setTimeout(() => setStatusError(""), 2000);
+      toast("Failed to copy link", "error");
     }
     await updateStatus("sent");
     setRefreshKey((k) => k + 1);
@@ -492,9 +492,9 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
               {quote.status !== "draft" && quote.status !== "rejected" && quote.status !== "expired" ? (
                 <button className="button button--ghost" type="button" onClick={() => {
                   const url = `${window.location.origin}/q/${quoteId}`;
-                  navigator.clipboard.writeText(url);
-                  setStatusError("Share link copied!");
-                  setTimeout(() => setStatusError(""), 2000);
+                  navigator.clipboard.writeText(url).then(() => {
+                    toast("Share link copied!", "success");
+                  });
                 }}>Copy link</button>
               ) : null}
 
