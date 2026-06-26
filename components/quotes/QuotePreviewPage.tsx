@@ -55,7 +55,7 @@ const statusTransitions: Record<string, string[]> = {
   sent: ["accepted", "rejected", "expired"],
   accepted: [],
   rejected: [],
-  expired: [],
+  expired: ["reboot"],
 };
 
 function statusLabel(status: string) {
@@ -475,6 +475,18 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
 
               {validTransitions.includes("expired") ? (
                 <button className="button button--ghost" type="button" onClick={() => updateStatus("expired")} style={{ color: "#64748b" }}>Mark expired</button>
+              ) : null}
+
+              {validTransitions.includes("reboot") ? (
+                <button className="button button--primary" type="button" onClick={async () => {
+                  const tk = localStorage.getItem("jobstacker_token");
+                  const r = await fetch(`/api/quotes/${quoteId}/status`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
+                    body: JSON.stringify({ status: "sent" }),
+                  });
+                  if (r.ok) setRefreshKey((k) => k + 1);
+                }} style={{ background: "#1F6B4F", color: "#fff" }}>Reboot quote</button>
               ) : null}
 
               {/* Divider */}

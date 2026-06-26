@@ -153,18 +153,19 @@ export function QuoteListPage() {
     }
   }
 
-  async function handleArchiveQuote(quoteId: string) {
+  async function handleArchiveQuote(quoteId: string, currentlyArchived: boolean) {
     try {
       const token = window.localStorage.getItem("jobstacker_token");
       const r = await fetch(`/api/quotes/${quoteId}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-        body: JSON.stringify({ archived: true }),
+        body: JSON.stringify({ archived: !currentlyArchived }),
       });
       if (!r.ok) throw new Error(await readErrorMessage(r));
+      toast(currentlyArchived ? "Quote unarchived." : "Quote archived.", "success");
       setRefreshKey((k) => k + 1);
     } catch {
-      // silently fail
+      toast("Failed to update archive status.", "error");
     }
   }
 

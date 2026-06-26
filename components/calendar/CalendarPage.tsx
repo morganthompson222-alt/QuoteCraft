@@ -230,9 +230,9 @@ export function CalendarPage() {
   const NAV_BTN: React.CSSProperties = { width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", border: `1px solid ${BORDER}`, borderRadius: 8, background: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer", color: "#334155" };
   const NAV_LABEL: React.CSSProperties = { fontSize: 16, fontWeight: 800, minWidth: 220, textAlign: "center", color: "#0f172a" };
   const TODAY_BTN: React.CSSProperties = { height: 36, padding: "0 14px", border: `1px solid ${BORDER}`, borderRadius: 8, background: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", color: "#334155" };
-  const GRID: React.CSSProperties = { display: "grid", gridTemplateColumns: "repeat(7, 1fr)", borderLeft: `1px solid ${BORDER}`, borderTop: `1px solid ${BORDER}` };
+  const GRID: React.CSSProperties = { display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gridAutoRows: "1fr", height: "calc(100vh - 180px)", overflow: "hidden", borderLeft: `1px solid ${BORDER}`, borderTop: `1px solid ${BORDER}` };
   const DAY_HEADER: React.CSSProperties = { padding: "10px 0", textAlign: "center", fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}` };
-  const CELL: React.CSSProperties = { minHeight: 100, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, padding: 6, display: "flex", flexDirection: "column", background: "#fff" };
+  const CELL: React.CSSProperties = { borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, padding: 4, display: "flex", flexDirection: "column", background: "#fff", overflow: "hidden", minHeight: 0 };
   const CELL_OFF: React.CSSProperties = { ...CELL, background: "#fafafa", opacity: 0.45 };
   const CELL_TODAY: React.CSSProperties = { ...CELL, background: GREEN_LIGHT };
   const DATE_NUM: React.CSSProperties = { fontSize: 13, fontWeight: 700, color: "#334155", lineHeight: 1 };
