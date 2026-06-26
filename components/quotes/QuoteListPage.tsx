@@ -290,7 +290,7 @@ export function QuoteListPage() {
                     className="button button--ghost"
                     type="button"
                     style={{ fontSize: 12, minHeight: 32, padding: "0 10px", color: "#64748b" }}
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleArchiveQuote(quote.id); }}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleArchiveQuote(quote.id, false); }}
                   >
                     Archive
                   </button>
