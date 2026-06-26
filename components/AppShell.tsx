@@ -62,6 +62,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifs, setShowNotifs] = useState(false);
   const [showDownload, setShowDownload] = useState(false);
+  const [showMobileNav, setShowMobileNav] = useState(false);
 
   useEffect(() => {
     const hasToken = !!localStorage.getItem("jobstacker_token");
@@ -151,6 +152,20 @@ export function AppShell({ children }: { children: ReactNode }) {
         </Link>
 
         <div className="app-shell__actions" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {/* Hamburger menu for mobile */}
+          {!isMarketing && loggedIn ? (
+            <button
+              className="app-shell__hamburger"
+              onClick={() => setShowMobileNav((v) => !v)}
+              aria-label={showMobileNav ? "Close navigation" : "Open navigation"}
+              style={{
+                display: "none", background: "none", border: "none", fontSize: 24,
+                cursor: "pointer", color: "var(--text)", padding: 8,
+              }}
+            >
+              {showMobileNav ? "✕" : "☰"}
+            </button>
+          ) : null}
           {/* Download menu — always visible */}
           <div style={{ position: "relative" }}>
             <button
@@ -280,6 +295,48 @@ export function AppShell({ children }: { children: ReactNode }) {
               </div>
             ) : null}
           </aside>
+        ) : null}
+
+        {/* Mobile navigation overlay */}
+        {!isMarketing && showMobileNav ? (
+          <>
+            <div
+              className="app-shell__backdrop"
+              onClick={() => setShowMobileNav(false)}
+              style={{
+                position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)",
+                zIndex: 200, display: "none",
+              }}
+            />
+            <nav className="app-shell__mobile-nav" style={{
+              position: "fixed", top: 56, left: 0, bottom: 0, width: 280,
+              background: "var(--surface)", zIndex: 210, overflow: "auto",
+              display: "none", boxShadow: "4px 0 24px rgba(0,0,0,0.1)",
+              padding: "12px 0",
+            }}>
+              {navItems.map((item) => {
+                const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                return (
+                  <Link key={item.href} href={item.href}
+                    onClick={() => setShowMobileNav(false)}
+                    style={{
+                      display: "block", padding: "14px 20px", fontSize: 16, fontWeight: 600,
+                      textDecoration: "none", color: isActive ? "var(--brand)" : "var(--text)",
+                      background: isActive ? "var(--brand-soft)" : "transparent",
+                      borderLeft: isActive ? "3px solid var(--brand)" : "3px solid transparent",
+                    }}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+              {planName ? (
+                <div style={{ padding: "14px 20px", borderTop: "1px solid var(--border)", marginTop: 8, fontSize: 13, color: "var(--text-muted)" }}>
+                  {planName}
+                </div>
+              ) : null}
+            </nav>
+          </>
         ) : null}
 
         <main className="app-shell__main">{children}</main>

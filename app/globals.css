@@ -2314,3 +2314,151 @@ button {
     gap: 32px;
   }
 }
+
+/* ===== MOBILE-FIRST RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  html { font-size: 15px; }
+  body { -webkit-text-size-adjust: 100%; }
+
+  /* -- App Shell -- */
+  .app-shell__hamburger { display: inline-flex !important; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
+  .app-shell__backdrop { display: block !important; }
+  .app-shell__mobile-nav { display: block !important; }
+  .app-shell__sidebar { display: none; }
+  .app-shell__main { padding: 16px 12px !important; }
+  .app-shell__body { flex-direction: column; }
+  .app-shell__actions .button--ghost:not(.app-shell__hamburger) { display: none; }
+  .app-shell__actions .button--primary { font-size: 12px; padding: 6px 12px; }
+  .app-shell__brand span:last-child { font-size: 16px; }
+  .app-shell { padding-top: 56px; }
+
+  /* -- Workspace pages -- */
+  .workspace-page__header { flex-direction: column; align-items: flex-start !important; gap: 8px; }
+  .workspace-page__header h1 { font-size: 20px; }
+  .workspace-page__header .button { width: 100%; }
+  .workspace-page__eyebrow { font-size: 11px; }
+
+  /* -- Auth pages -- */
+  .auth-page { flex-direction: column; padding: 20px 16px !important; }
+  .auth-page__intro { display: none; }
+  .auth-card { width: 100% !important; max-width: 100% !important; padding: 20px 16px; }
+  .auth-card__title { font-size: 20px; }
+  .auth-form { width: 100%; }
+  .auth-form input { min-height: 48px; font-size: 16px; }
+  .auth-form__button { min-height: 48px; font-size: 16px; }
+  .field input, .field select { min-height: 48px; font-size: 16px; }
+  .field__checkbox input { width: 20px; height: 20px; }
+  .field__checkbox { font-size: 14px; align-items: flex-start; }
+  .field label { font-size: 14px; }
+
+  /* -- Tables / Data grids -- */
+  .table-card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-skeleton { height: 30px !important; }
+  .dash-table { font-size: 12px; }
+  .dash-table__head span, .dash-table__row span { padding: 8px 6px; }
+  .dash-table__head span:nth-child(4), .dash-table__head span:nth-child(5),
+  .dash-table__row span:nth-child(4), .dash-table__row span:nth-child(5) { display: none; }
+
+  .detail-list { grid-template-columns: 1fr; }
+  .detail-list__row { flex-direction: column; gap: 2px; padding: 10px 0; }
+  .detail-list__row dt { font-size: 11px; }
+  .detail-list__row dd { font-size: 14px; }
+
+  /* -- Modals -- */
+  .modal-dialog { width: 95% !important; max-width: 95% !important; margin: 24px auto; }
+  .modal-dialog__content { padding: 20px 16px !important; }
+  .modal-dialog__title { font-size: 18px; }
+  .modal-dialog__fields { grid-template-columns: 1fr !important; }
+  .modal-dialog__form input { min-height: 48px; font-size: 16px; }
+  .modal-dialog__actions { flex-direction: column; gap: 8px; }
+  .modal-dialog__actions .button { width: 100%; min-height: 44px; }
+
+  /* -- Quotes -- */
+  .qp-actions { flex-wrap: wrap; gap: 6px; }
+  .qp-actions .button { min-height: 44px; font-size: 13px; }
+  .qp-preview { padding: 16px; }
+  .qp-preview__header { flex-direction: column; gap: 8px; }
+  .qp-preview__number { font-size: 20px; }
+  .qp-preview__totals-row { font-size: 13px; }
+  .qp-preview__customer-info { flex-direction: column; }
+
+  .billing-plans { grid-template-columns: 1fr !important; }
+  .billing-plan { padding: 20px 16px; }
+
+  .profile-edit-fields { grid-template-columns: 1fr !important; }
+
+  /* -- Inside pages -- */
+  .page { padding: 0 16px !important; }
+  .page__inner { padding: 24px 0 !important; }
+  .workspace-page { padding: 0; }
+  .workspace-page .table-card { margin: 0 -12px; border-radius: 0; }
+  .workspace-page__header { padding: 0 4px; }
+
+  .stat-cards { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+  .stat-card { padding: 16px !important; }
+  .stat-card__value { font-size: 22px !important; }
+  .stat-card__label { font-size: 11px; }
+
+  .search-bar { flex-wrap: wrap; }
+  .search-bar input { width: 100% !important; min-height: 44px; font-size: 16px; }
+  .search-bar .button { min-height: 44px; }
+
+  .status-filter { width: 100%; }
+  .status-filter select { width: 100%; min-height: 44px; }
+
+  /* -- Calendar -- */
+  .cal-grid { font-size: 11px; }
+  .cal-cell { min-height: 60px; padding: 4px; }
+  .cal-cell__num { font-size: 11px; }
+  .cal-cell--today .cal-cell__num { width: 20px; height: 20px; font-size: 11px; }
+  .cal-job { font-size: 9px; padding: 1px 3px; }
+  .cal-grid__day { font-size: 9px; padding: 6px 4px; }
+
+  /* -- Jobs page -- */
+  .jobs-list table, .jobs-list thead, .jobs-list tbody, .jobs-list th, .jobs-list td, .jobs-list tr { display: block; }
+  .jobs-list td { padding: 8px 0; border: none; }
+
+  /* -- Finance -- */
+  .finance-stats { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+
+  /* -- Hero / Landing -- */
+  .hero { flex-direction: column; gap: 24px; text-align: center; }
+  .hero h1 { font-size: 24px; line-height: 1.3; }
+  .hero__copy { font-size: 14px; }
+  .hero__actions { justify-content: center; }
+  .hero__actions .button { min-height: 48px; font-size: 16px; }
+  .hero__metrics { justify-content: center; }
+
+  .quote-preview-card { width: 100%; }
+
+  /* -- Forms -- */
+  .field input, .field select, .field textarea { font-size: 16px; min-height: 44px; }
+  .field label { font-size: 14px; margin-bottom: 4px; }
+
+  /* -- Buttons -- */
+  .button { min-height: 44px; font-size: 14px; padding: 8px 16px; }
+
+  /* -- Spacing -- */
+  .app-shell__main section { margin-bottom: 16px; }
+
+  /* -- Nav - Log out in mobile menu -- */
+  .app-shell__mobile-nav a:last-child { border-bottom: none; }
+}
+
+@media (max-width: 430px) {
+  .stat-cards { grid-template-columns: 1fr !important; }
+  .finance-stats { grid-template-columns: 1fr !important; }
+  .dash-table__head span:nth-child(3),
+  .dash-table__row span:nth-child(3) { display: none; }
+  .hero h1 { font-size: 20px; }
+}
+
+@media (max-width: 360px) {
+  html { font-size: 14px; }
+  .app-shell__main { padding: 12px 8px !important; }
+  .modal-dialog { width: 100% !important; border-radius: 0; }
+  .cal-cell { min-height: 50px; }
+  .cal-grid__day { font-size: 8px; padding: 4px 2px; }
+  .billing-plan { padding: 16px 12px; }
+}
