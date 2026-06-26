@@ -69,7 +69,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     const tourDone = isTourDone();
     const forceTour = globalThis.location?.search.includes("tour=1");
     if (forceTour) resetTour();
-    if (!isMarketing && (forceTour || !tourDone)) {
+    if (!isMarketing && pathname !== "/setup" && (forceTour || !tourDone)) {
       setShowTour(true);
     }
   }, [pathname, isMarketing]);
