@@ -584,6 +584,8 @@ button {
   border-top: 1px solid var(--border, #e5e7eb);
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  overflow: hidden;
+  min-width: 0;
 }
 
 .cal-grid__day {
@@ -604,6 +606,8 @@ button {
   display: flex;
   flex-direction: column;
   min-height: 100px;
+  min-width: 0;
+  overflow: hidden;
   padding: 8px;
 }
 
