@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 type Job = {
@@ -26,10 +27,12 @@ const STATUS_COLORS: Record<string, { bg: string; fg: string; label: string }> =
 };
 
 export function JobListPage({ view }: { view: "active" | "completed" }) {
+  const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   const isCompleted = view === "completed";
 
@@ -183,10 +186,11 @@ export function JobListPage({ view }: { view: "active" | "completed" }) {
             return (
               <div
                 key={j.id}
+                onClick={() => setSelectedJob(j)}
                 style={{
                   display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
                   borderBottom: `1px solid ${BORDER}`, fontSize: 13, background: "#fff",
-                  cursor: "default",
+                  cursor: "pointer",
                 }}
               >
                 <span style={{ width: 100, fontWeight: 700, color: "#334155" }}>{j.job_date}</span>
@@ -228,6 +232,48 @@ export function JobListPage({ view }: { view: "active" | "completed" }) {
         {sorted.length} job{sorted.length !== 1 ? "s" : ""} {isCompleted ? "completed" : "scheduled"}
         {!isCompleted ? " · Completed jobs move here after 24 hours" : " · View the full calendar for more details"}
       </div>
+      </div>
+
+      {selectedJob ? (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => setSelectedJob(null)}>
+          <div style={{ background: "#fff", borderRadius: 12, width: "100%", maxWidth: 420, boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px 0" }}>
+              <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{selectedJob.job_title}</h2>
+              <button style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", color: "#64748b" }} onClick={() => setSelectedJob(null)}>&times;</button>
+            </div>
+            <div style={{ padding: "16px 24px" }}>
+              {[
+                ["Customer", selectedJob.customer_name || "—"],
+                ["Date", selectedJob.job_date],
+                ["Time", `${selectedJob.start_time}${selectedJob.end_time ? ` – ${selectedJob.end_time}` : ""}`],
+                ["Status", selectedJob.status],
+                ...(selectedJob.location ? [["Location", selectedJob.location]] : []),
+                ...(selectedJob.notes ? [["Notes", selectedJob.notes]] : []),
+              ].map(([l, v]) => {
+                const sc = STATUS_COLORS[selectedJob.status] ?? { bg: "#f1f5f9", fg: "#334155", label: selectedJob.status };
+                return (
+                  <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #e5e7eb" }}>
+                    <span style={{ fontSize: 13, color: "#64748b" }}>{l}</span>
+                    {l === "Status" ? (
+                      <span style={{ fontSize: 14, fontWeight: 600, background: sc.bg, color: sc.fg, padding: "2px 10px", borderRadius: 12, fontSize: 12, fontWeight: 600, textTransform: "capitalize" }}>{sc.label}</span>
+                    ) : (
+                      <span style={{ fontSize: 14, fontWeight: 600, color: "#0f172a" }}>{v}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ display: "flex", gap: 8, padding: "0 24px 20px", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", gap: 8 }}>
+                {selectedJob.quote_id ? (
+                  <button style={{ padding: "8px 16px", borderRadius: 6, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", background: "#d1fae5", color: "#065f46" }}
+                    onClick={() => router.push(`/quotes/${selectedJob.quote_id}`)}>View quote</button>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

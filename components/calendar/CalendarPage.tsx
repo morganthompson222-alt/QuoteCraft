@@ -346,6 +346,17 @@ export function CalendarPage() {
                 </div>
               ) : (
                 <div style={TBODY}>
+                  {(() => {
+                    const now = new Date();
+                    const nextJob = sorted.find((j) => new Date(j.job_date) >= new Date(now.getFullYear(), now.getMonth(), now.getDate()) && (j.status === "scheduled" || j.status === "in_progress"));
+                    return nextJob ? (
+                      <div style={{ background: "#eff6ff", borderRadius: 8, padding: "12px 16px", marginBottom: 12, borderLeft: "4px solid #3b82f6", display: "flex", alignItems: "center", gap: 12 }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: "#3b82f6" }}>▶ Your Next Job</span>
+                        <span style={{ flex: 1, fontSize: 14, fontWeight: 600, color: "#1e40af", cursor: "pointer" }} onClick={() => setSelectedJob(nextJob)}>{nextJob.job_title}</span>
+                        <span style={{ fontSize: 13, color: "#64748b" }}>{nextJob.job_date} {nextJob.start_time?.slice(0, 5)}</span>
+                      </div>
+                    ) : null;
+                  })()}
                   <div style={THEAD}>
                     <span style={{ width: 100 }}>Date</span>
                     <span style={{ width: 55 }}>Time</span>
@@ -358,13 +369,14 @@ export function CalendarPage() {
                     const sc = STATUS_COLORS[j.status] ?? { bg: "#f1f5f9", fg: "#334155", label: j.status };
                     const canArchive = (j.status === "completed" || j.status === "cancelled") && !j.archived;
                     return (
-                      <div key={j.id} style={TROW}
+                      <div key={j.id} style={{ ...TROW, cursor: "pointer" }}
                         onMouseEnter={(e) => (e.currentTarget.style.background = "#f8fafc")}
                         onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}
+                        onClick={() => setSelectedJob(j)}
                       >
                         <span style={{ width: 100, fontWeight: 700, color: "#334155" }}>{j.job_date}</span>
                         <span style={{ width: 55, color: "#64748b" }}>{j.start_time?.slice(0, 5)}</span>
-                        <span onClick={(e) => { e.stopPropagation(); setSelectedJob(j); }} style={{ flex: 1, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "pointer" }}>{j.job_title}</span>
+                        <span style={{ flex: 1, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{j.job_title}</span>
                         <span style={{ width: 140, color: "#64748b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{j.customer_name || "—"}</span>
                         <span style={{ width: 110, textAlign: "center" }}>
                           <select
