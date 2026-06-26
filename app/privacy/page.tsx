@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — JobStacker",
+  title: "Privacy Policy",
+  description:
+    "JobStacker's privacy policy. How we collect, use, and protect your data when you use our quote and job management software for tradespeople.",
+  alternates: { canonical: "https://jobstacker.app/privacy" },
 };
 
 export default function PrivacyPage() {

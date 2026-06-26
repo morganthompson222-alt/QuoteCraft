@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import { AuthForm } from "../../components/auth/AuthForm";
+
+export const metadata: Metadata = {
+  title: "Sign Up — Free Quote & Job Management",
+  description:
+    "Start stacking jobs, quotes, and clients with JobStacker. The all-in-one quote and job management app for tradespeople. Free to start.",
+  alternates: { canonical: "https://jobstacker.app/signup" },
+};
 
 export default function SignupPage() {
   return (

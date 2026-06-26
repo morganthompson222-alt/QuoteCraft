@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — JobStacker",
+  title: "Terms of Service",
+  description:
+    "JobStacker's terms and conditions for using our quote and job management software for tradespeople.",
+  alternates: { canonical: "https://jobstacker.app/terms" },
 };
 
 export default function TermsPage() {

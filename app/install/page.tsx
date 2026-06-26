@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Install JobStacker",
+  title: "Install JobStacker — Desktop & Mobile",
+  description:
+    "Install JobStacker on your Mac, Windows, iPhone, or Android device. Access your quote and job management workspace as a native app in seconds.",
+  alternates: { canonical: "https://jobstacker.app/install" },
 };
 
 export default function InstallPage() {

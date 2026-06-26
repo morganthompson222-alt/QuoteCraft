@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import { AuthForm } from "../../components/auth/AuthForm";
+
+export const metadata: Metadata = {
+  title: "Log In",
+  description:
+    "Sign in to JobStacker to manage your quotes, jobs, customers, and calendar. The all-in-one workspace for tradespeople.",
+  alternates: { canonical: "https://jobstacker.app/login" },
+};
 
 export default function LoginPage() {
   return (
