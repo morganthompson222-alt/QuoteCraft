@@ -26,7 +26,26 @@ export default function SetupPage() {
       if (step === 0) {
         for (const [k, v] of Object.entries(company)) { if (v.trim()) body[k] = v.trim(); }
       }
-      if (step === 1 && services.trim()) body.customAiInstructions = services.trim();
+      if (step === 1 && services.trim()) {
+        try {
+          const tk = localStorage.getItem("jobstacker_token");
+          const r = await fetch("/api/ai/cleanup-instructions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
+            body: JSON.stringify({ instructions: services }),
+          });
+          if (r.ok) {
+            const d = await r.json();
+            const cleaned = d.cleaned ?? services;
+            setServices(cleaned);
+            body.customAiInstructions = cleaned;
+          } else {
+            body.customAiInstructions = services;
+          }
+        } catch {
+          body.customAiInstructions = services;
+        }
+      }
       if (step === 2 && taxRate > 0 && taxRate <= 100) body.defaultTaxRate = taxRate;
 
       if (Object.keys(body).length > 0) {
