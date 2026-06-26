@@ -24,6 +24,8 @@ const STEPS: TourStep[] = [
 ];
 
 const TOUR_KEY = "jobstacker_tour_done";
+const TOUR_VERSION_KEY = "jobstacker_tour_version";
+const CURRENT_VERSION = 2;
 
 export function GuidedTour({ onDone }: { onDone: () => void }) {
   const [step, setStep] = useState(0);
@@ -209,13 +211,15 @@ export function GuidedTour({ onDone }: { onDone: () => void }) {
 
 export function isTourDone(): boolean {
   if (typeof window === "undefined") return false;
-  return localStorage.getItem(TOUR_KEY) === "true";
+  return localStorage.getItem(TOUR_VERSION_KEY) === String(CURRENT_VERSION);
 }
 
 export function markTourDone(): void {
   localStorage.setItem(TOUR_KEY, "true");
+  localStorage.setItem(TOUR_VERSION_KEY, String(CURRENT_VERSION));
 }
 
 export function resetTour(): void {
   localStorage.removeItem(TOUR_KEY);
+  localStorage.removeItem(TOUR_VERSION_KEY);
 }
