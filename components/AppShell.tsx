@@ -49,12 +49,13 @@ function NotificationDropdown({ onClose }: { onClose: () => void }) {
   );
 }
 
-const marketingRoutes = new Set(["/", "/login", "/signup"]);
+const marketingRoutes = new Set(["/", "/login", "/signup", "/blog", "/privacy", "/terms", "/install"]);
+const marketingPrefixes = ["/crm-for-", "/quote-software", "/invoice-software", "/job-management-software", "/scheduling-software", "/crm-software", "/client-management-software", "/customer-management-software", "/lead-management-software", "/trade-crm", "/business-management-software", "/field-service-management", "/work-order-software", "/job-tracking-software", "/jobber-alternative", "/tradify-alternative", "/housecall-pro-alternative"];
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const isMarketing = marketingRoutes.has(pathname);
+  const isMarketing = marketingRoutes.has(pathname) || marketingPrefixes.some((p) => pathname.startsWith(p));
   const [planTier, setPlanTier] = useState<string | null>(null);
   const [planName, setPlanName] = useState<string | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -263,6 +264,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             </>
           ) : (
             <>
+              <Link className="button button--ghost" href="/blog" style={{ fontSize: 13, fontWeight: 600, color: "var(--text-muted)", textDecoration: "none", padding: "8px 14px" }}>
+                Articles
+              </Link>
               <Link className="button button--ghost" href="/login">
                 Log in
               </Link>

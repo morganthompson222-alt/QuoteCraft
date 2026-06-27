@@ -323,6 +323,40 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ═══════════════════ BLOG ═══════════════════ */}
+      <section style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 32px", background: "#fff", borderTop: `1px solid ${BORDER}` }}>
+        <div style={{ maxWidth: 900, width: "100%", textAlign: "center" }}>
+          <SectionBadge text="Articles" />
+          <SectionHeading>Advice for running a better trade business.</SectionHeading>
+          <SectionBody>
+            Practical guides written for tradespeople — covering leads, quoting, business growth, and day-to-day admin.
+          </SectionBody>
+          <div style={{ display: "grid", gap: 16, textAlign: "left", maxWidth: 700, margin: "0 auto 32px" }}>
+            {[
+              { title: "How Electricians Can Get More Leads", cat: "Leads", slug: "how-electricians-can-get-more-leads" },
+              { title: "How to Price Electrical Work", cat: "Quoting", slug: "how-to-price-electrical-work" },
+              { title: "Best Apps for Tradespeople", cat: "Business Growth", slug: "best-apps-for-tradespeople" },
+            ].map((post) => (
+              <Link key={post.slug} href={`/blog/${post.slug}`} style={{
+                display: "flex", alignItems: "center", gap: 16, padding: "16px 20px",
+                background: "#f8fafc", borderRadius: 10, border: `1px solid ${BORDER}`,
+                textDecoration: "none", transition: "border-color 0.15s",
+              }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: GREEN, background: GREEN_LIGHT, padding: "4px 10px", borderRadius: 8, whiteSpace: "nowrap" }}>{post.cat}</span>
+                <span style={{ flex: 1, fontSize: 15, fontWeight: 600, color: DARK }}>{post.title}</span>
+                <span style={{ color: MUTED, fontSize: 18 }}>&rarr;</span>
+              </Link>
+            ))}
+          </div>
+          <Link href="/blog" style={{
+            display: "inline-flex", padding: "14px 32px", color: GREEN, border: `2px solid ${GREEN}`,
+            fontSize: 15, fontWeight: 700, borderRadius: 10, textDecoration: "none",
+          }}>
+            View all articles &rarr;
+          </Link>
+        </div>
+      </section>
+
       {/* ═══════════════════ BOTTOM CTA ═══════════════════ */}
       <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 32px", background: DARK, position: "relative" }}>
         <div style={{ textAlign: "center", maxWidth: 640 }}>
