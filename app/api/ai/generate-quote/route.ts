@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { sanitizeString } from "@/lib/validation";
 import { ApiError, errorResponse } from "@/lib/api-error";
 import { enforcePlanLimit } from "@/lib/plan-enforcement";
-import { calculateQuote, calculateFromAITasks, getPricingPrompt } from "@/lib/pricing-engine";
+import { calculateFromCatalogue, parseJobIntoTasks, parseServicesFromProfile } from "@/lib/pricing-engine";
 import { REGIONS } from "@/lib/localization";
 
 let _openai: OpenAI | null = null;
@@ -114,64 +114,67 @@ export async function POST(request: NextRequest) {
     const input = sanitizeString(body.input);
     if (input.length < 3) throw new ApiError(400, "Input must be at least 3 characters");
 
-    // Fetch custom instructions, region, and cost rates
+    // Fetch structured services, custom instructions, and region
     let customInstructions = "";
     let regionCode = "UK";
     let currencyCode = "GBP";
     let costRates = "";
+    let taxRate = 0;
     try {
       const { data: profile } = await supabase
-        .from("profiles").select("custom_ai_instructions, region_code, currency_code, cost_rates")
+        .from("profiles").select("custom_ai_instructions, region_code, currency_code, cost_rates, default_tax_rate")
         .eq("id", user.id).single();
       if (profile) {
         customInstructions = (profile as { custom_ai_instructions?: string }).custom_ai_instructions ?? "";
         regionCode = (profile as { region_code?: string }).region_code ?? "UK";
         currencyCode = (profile as { currency_code?: string }).currency_code ?? "GBP";
         costRates = (profile as { cost_rates?: string }).cost_rates ?? "";
+        taxRate = Number((profile as { default_tax_rate?: number }).default_tax_rate ?? 0);
       }
     } catch { /* skip */ }
 
-    const hasInstructions = customInstructions.trim().length > 0;
+    const services = parseServicesFromProfile(costRates);
 
-    // If user has custom instructions, use the rules engine
-    if (hasInstructions) {
-      let result;
-      try {
-        const pricingPrompt = getPricingPrompt(customInstructions);
-        const parseResult = await parseJobWithAI(input, pricingPrompt, getOpenAI);
-        if (parseResult) {
-          const tasks = JSON.parse(parseResult);
-          if (Array.isArray(tasks) && tasks.length > 0) {
-            result = calculateFromAITasks(
-              tasks as Array<{ task: string; quantity?: number; unit?: string }>,
-              customInstructions,
-            );
-          }
-        }
-      } catch { /* AI parsing failed */ }
-
-      if (!result) result = calculateQuote(input, customInstructions);
+    // If structured services exist, use the catalogue engine
+    if (services.length > 0) {
+      const overheads = [
+        { name: "Fuel", amount: 8, per: "job" as const },
+        { name: "Equipment Wear", amount: 3, per: "job" as const },
+      ];
+      const tasks = parseJobIntoTasks(input);
+      let result = calculateFromCatalogue(tasks, services, overheads, taxRate > 0 ? taxRate : 20);
 
       if (result.status === "success") {
         const rateLimit = checkRateLimit(user.id);
         return NextResponse.json({
           description: input.substring(0, 50),
-          materials: result.breakdown.map(b => ({
-            name: b.item, quantity: b.quantity, unitPrice: Math.round(b.unitPrice * 100) / 100,
+          materials: result.items.map(it => ({
+            name: it.serviceName, quantity: it.quantity,
+            unitPrice: it.unitCharge, unit: it.unit,
+            cost: it.unitCost, profit: it.profit, margin: it.marginPct,
           })),
           labourCost: 0,
-          total: result.total,
-          sourceMap: result.sourceMap,
-          breakdown: result.breakdown,
-          pricingSource: "rules_engine",
-        }, { headers: { "X-RateLimit-Limit": String(rateLimit.limit), "X-RateLimit-Remaining": String(rateLimit.remaining), "X-RateLimit-Reset": String(rateLimit.reset) } });
+          total: result.grandTotal,
+          subtotal: result.subtotal,
+          overheads: result.overheads,
+          taxAmount: result.taxAmount,
+          taxRate: result.taxRate,
+          profit: result.totalProfit,
+          costBreakdown: result.items,
+          pricingSource: "structured_catalogue",
+        }, {
+          headers: {
+            "X-RateLimit-Limit": String(rateLimit.limit),
+            "X-RateLimit-Remaining": String(rateLimit.remaining),
+            "X-RateLimit-Reset": String(rateLimit.reset),
+          },
+        });
       }
 
-      // Missing data — tell user what's missing
-      return NextResponse.json(result, { status: 400 });
+      return NextResponse.json({ status: "missing", missingItem: result.missingItem, message: `No catalogue entry found for "${result.missingItem}"` }, { status: 400 });
     }
 
-    // No custom instructions — use AI estimation
+    // No structured services — use AI estimation
     const rateLimit = checkRateLimit(user.id);
     const regionName = REGIONS[regionCode]?.name ?? "United Kingdom";
     const result = await estimateWithAI(input, regionName, currencyCode, costRates);
@@ -196,18 +199,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function parseJobWithAI(input: string, pricingPrompt: string, getAI: typeof getOpenAI): Promise<string | null> {
-  const openai = await getAI();
-  const response = await openai.chat.completions.create({
-    model: process.env.AI_MODEL ?? (process.env.GROQ_API_KEY ? "llama-3.3-70b-versatile" : "gpt-4o-mini"),
-    messages: [
-      { role: "system", content: pricingPrompt },
-      { role: "user", content: `Parse this job: "${input}"` },
-    ],
-    temperature: 0.1,
-    max_tokens: 400,
-  });
-  const content = response.choices[0]?.message?.content;
-  if (!content) return null;
-  return content.replace(/```(?:json)?\n?/g, "").trim();
-}

@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { sanitizeString, sanitizeOptionalString, sanitizeNumber } from "@/lib/validation";
+import { sanitizeString, sanitizeNumber } from "@/lib/validation";
 import { ApiError, errorResponse } from "@/lib/api-error";
 
-// GET — list all services for the user
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient(request);
@@ -12,28 +11,36 @@ export async function GET(request: NextRequest) {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("cost_rates")
+      .select("cost_rates, default_tax_rate")
       .eq("id", user.id)
       .single();
 
-    const raw = (profile as { cost_rates?: string } | null)?.cost_rates ?? "";
+    const p = profile as Record<string, unknown>;
+    const raw = (p?.cost_rates as string) ?? "";
     const services = raw.split("\n").filter(l => l.trim()).map(line => {
       const parts = line.split("|");
       return {
-        name: parts[0] ?? line.trim(),
-        unitType: parts[1] ?? "item",
-        chargePerUnit: parseFloat(parts[2]) || 0,
-        costPerUnit: parseFloat(parts[3]) || 0,
+        name: parts[0]?.trim() ?? "",
+        category: parts[1]?.trim() ?? "",
+        unit: parts[2]?.trim() ?? "job",
+        charge: parseFloat(parts[3]) || 0,
+        cost: parseFloat(parts[4]) || 0,
       };
-    });
+    }).filter(s => s.name && s.charge > 0);
 
-    return NextResponse.json({ services });
+    return NextResponse.json({
+      services,
+      taxRate: Number(p?.default_tax_rate ?? 0),
+      overheads: [
+        { name: "Fuel", amount: 8, per: "job" },
+        { name: "Equipment Wear", amount: 3, per: "job" },
+      ],
+    });
   } catch (error) {
     return errorResponse(error);
   }
 }
 
-// PUT — save services (replaces all)
 export async function PUT(request: NextRequest) {
   try {
     const supabase = await createServerSupabaseClient(request);
@@ -41,11 +48,10 @@ export async function PUT(request: NextRequest) {
     if (!user) throw new ApiError(401, "Unauthorized");
 
     const body = await request.json();
-    const services = body.services as Array<{ name: string; unitType: string; chargePerUnit: number; costPerUnit: number }>;
+    const services = (body.services ?? []) as Array<{ name: string; category: string; unit: string; charge: number; cost: number }>;
 
-    // Store as pipe-delimited lines
     const raw = services.map(s =>
-      `${sanitizeString(s.name)}|${sanitizeString(s.unitType)}|${sanitizeNumber(s.chargePerUnit, 0)}|${sanitizeNumber(s.costPerUnit, 0)}`
+      `${sanitizeString(s.name)}|${sanitizeString(s.category)}|${sanitizeString(s.unit)}|${sanitizeNumber(s.charge, 0)}|${sanitizeNumber(s.cost, 0)}`
     ).join("\n");
 
     await supabase

@@ -19,7 +19,7 @@ function drawHeader(page: any, font: any, boldFont: any, width: number, height: 
   y -= 6;
   page.drawText(`Quote #${config.quoteNumber}`, { x: 50, y, size: 16, font: boldFont, color: rgb(0.3, 0.3, 0.3) });
   y -= 10;
-  page.drawText(`Status: ${config.status.toUpperCase()}`, { x: 50, y, size: 11, font, color: rgb(0.5, 0.5, 0.5) });
+  page.drawText("Status: SENT", { x: 50, y, size: 11, font, color: rgb(0.5, 0.5, 0.5) });
   y -= 20;
   page.drawLine({ start: { x: 50, y }, end: { x: width - 50, y }, thickness: 1, color: rgb(0.8, 0.8, 0.8) });
   return y - 25;
