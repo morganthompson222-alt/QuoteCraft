@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { blogPosts } from "../src/lib/blog-posts";
 
 const baseUrl = "https://jobstacker.app";
 const lastModified = new Date();
@@ -12,6 +13,7 @@ const core: Route[] = [
   { path: "/install", priority: 0.7, changeFreq: "monthly" },
   { path: "/privacy", priority: 0.3, changeFreq: "yearly" },
   { path: "/terms", priority: 0.3, changeFreq: "yearly" },
+  { path: "/blog", priority: 0.9, changeFreq: "weekly" },
 ];
 
 const features: Route[] = [
@@ -61,7 +63,13 @@ const comparisons: Route[] = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [...core, ...features, ...trades, ...comparisons].map((route) => ({
+  const blogRoutes: Route[] = blogPosts.map((post) => ({
+    path: `/blog/${post.slug}`,
+    priority: 0.7,
+    changeFreq: "monthly" as const,
+  }));
+
+  return [...core, ...features, ...trades, ...comparisons, ...blogRoutes].map((route) => ({
     url: `${baseUrl}${route.path}`,
     lastModified,
     changeFrequency: route.changeFreq,

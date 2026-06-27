@@ -354,6 +354,7 @@ export default function LandingPage() {
           <Link href="/terms" style={{ fontSize: 14, color: "#94a3b8", textDecoration: "none" }}>Terms</Link>
           <Link href="/privacy" style={{ fontSize: 14, color: "#94a3b8", textDecoration: "none" }}>Privacy</Link>
           <Link href="/install" style={{ fontSize: 14, color: "#94a3b8", textDecoration: "none" }}>Install App</Link>
+          <Link href="/blog" style={{ fontSize: 14, color: "#94a3b8", textDecoration: "none" }}>Articles</Link>
           <Link href="/login" style={{ fontSize: 14, color: "#94a3b8", textDecoration: "none" }}>Log in</Link>
         </div>
       </footer>

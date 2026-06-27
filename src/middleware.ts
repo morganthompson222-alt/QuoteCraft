@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
 const publicPaths = [
-  "/login", "/signup", "/setup", "/q",
+  "/login", "/signup", "/setup", "/q", "/blog",
   "/api/auth/login", "/api/auth/signup", "/api/health",
   "/privacy", "/terms", "/install",
   "/robots.txt", "/sitemap.xml",
