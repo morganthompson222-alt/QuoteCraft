@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
+const PRIMARY_DOMAIN = "jobstacker.app";
+
 const publicPaths = [
   "/login", "/signup", "/setup", "/q", "/blog",
   "/api/auth/login", "/api/auth/signup", "/api/health",
@@ -15,7 +17,15 @@ const publicPaths = [
 ];
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, hostname } = request.nextUrl;
+
+  // 301 redirect old domain to primary domain
+  if (hostname !== PRIMARY_DOMAIN && hostname !== "localhost") {
+    const url = new URL(pathname, `https://${PRIMARY_DOMAIN}`);
+    url.search = request.nextUrl.search;
+    return NextResponse.redirect(url, { status: 301 });
+  }
+
   const isPublic = publicPaths.some((p) => pathname.startsWith(p));
   const isApi = pathname.startsWith("/api");
 
