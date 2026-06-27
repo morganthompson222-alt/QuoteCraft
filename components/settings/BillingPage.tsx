@@ -285,7 +285,7 @@ export function BillingPage() {
                     <button
                       className="button button--secondary billing-plan__button"
                       type="button"
-                      onClick={() => window.open("mailto:business@jobstacker.app?subject=I'm interested in the " + plan.name + " plan", "_blank")}
+                      onClick={() => window.open("mailto:billing@jobstacker.app?subject=I'm interested in the " + plan.name + " plan", "_blank")}
                     >
                       Contact for info
                     </button>

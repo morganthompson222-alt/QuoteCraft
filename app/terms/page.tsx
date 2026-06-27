@@ -174,7 +174,7 @@ export default function TermsPage() {
           <h3>19.4 No Partnership</h3>
           <p>Nothing in these Terms creates a partnership, joint venture, agency, franchise, or employment relationship between you and JobStacker.</p>
           <h3>19.5 Contact</h3>
-          <p>Questions about these Terms should be directed to us at: legal@jobstacker.app (or the contact address provided in your account settings). We aim to respond to all enquiries within 5 business days.</p>
+          <p>Questions about these Terms should be directed to us at: hello@jobstacker.app (or the contact address provided in your account settings). We aim to respond to all enquiries within 5 business days.</p>
 
           <div className="legal-footer" style={{ marginTop: 48, borderTop: "1px solid var(--border)", paddingTop: 24, color: "var(--text-muted)", fontSize: 13 }}>
             &copy; JobStacker. All rights reserved.
