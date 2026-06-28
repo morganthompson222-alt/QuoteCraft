@@ -4,12 +4,12 @@ import Link from "next/link";
 import { useState, useMemo } from "react";
 import { blogPosts, type BlogCategory } from "../../src/lib/blog-posts";
 
-const categories: { label: string; value: BlogCategory | "All" }[] = [
+const categories: { label: string; value: BlogCategory | "All"; pillarSlug?: string }[] = [
   { label: "All articles", value: "All" },
-  { label: "Leads", value: "Leads" },
-  { label: "Quoting", value: "Quoting" },
-  { label: "Business Growth", value: "Business Growth" },
-  { label: "Administration", value: "Administration" },
+  { label: "Leads", value: "Leads", pillarSlug: "/leads-for-tradespeople" },
+  { label: "Quoting", value: "Quoting", pillarSlug: "/quoting-guide-for-tradespeople" },
+  { label: "Business Growth", value: "Business Growth", pillarSlug: "/grow-trade-business" },
+  { label: "Administration", value: "Administration", pillarSlug: "/trade-business-administration" },
 ];
 
 const sortOptions = [
@@ -137,6 +137,24 @@ export default function BlogPage() {
           ))}
         </select>
       </div>
+
+      {/* Pillar page link */}
+      {category !== "All" ? (
+        (() => {
+          const cat = categories.find((c) => c.value === category);
+          if (cat?.pillarSlug) {
+            return (
+              <div style={{ marginBottom: 24, padding: "12px 20", background: "var(--surface-muted)", borderRadius: 10, border: "1px solid var(--border)", fontSize: 14, color: "var(--text-muted)" }}>
+                Looking for a complete guide?{" "}
+                <Link href={cat.pillarSlug} style={{ color: "var(--brand)", fontWeight: 600, textDecoration: "none" }}>
+                  Read the full {cat.label} guide &rarr;
+                </Link>
+              </div>
+            );
+          }
+          return null;
+        })()
+      ) : null}
 
       {/* Results */}
       {filtered.length === 0 ? (

@@ -14,6 +14,10 @@ const publicPaths = [
   "/lead-management-software", "/trade-crm", "/business-management-software",
   "/field-service-management", "/work-order-software", "/job-tracking-software",
   "/jobber-alternative", "/tradify-alternative", "/housecall-pro-alternative",
+  "/leads-for-tradespeople", "/quoting-guide-for-tradespeople",
+  "/grow-trade-business", "/trade-business-administration",
+  "/electrician-lead-management-software", "/plumbing-crm-uk",
+  "/trade-business-management-app",
 ];
 
 export async function middleware(request: NextRequest) {

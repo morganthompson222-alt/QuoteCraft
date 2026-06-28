@@ -62,6 +62,19 @@ const comparisons: Route[] = [
   { path: "/housecall-pro-alternative", priority: 0.7, changeFreq: "monthly" },
 ];
 
+const pillars: Route[] = [
+  { path: "/leads-for-tradespeople", priority: 0.9, changeFreq: "weekly" },
+  { path: "/quoting-guide-for-tradespeople", priority: 0.9, changeFreq: "weekly" },
+  { path: "/grow-trade-business", priority: 0.9, changeFreq: "weekly" },
+  { path: "/trade-business-administration", priority: 0.9, changeFreq: "weekly" },
+];
+
+const overlap: Route[] = [
+  { path: "/electrician-lead-management-software", priority: 0.8, changeFreq: "monthly" },
+  { path: "/plumbing-crm-uk", priority: 0.8, changeFreq: "monthly" },
+  { path: "/trade-business-management-app", priority: 0.8, changeFreq: "monthly" },
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const blogRoutes: Route[] = blogPosts.map((post) => ({
     path: `/blog/${post.slug}`,
@@ -69,7 +82,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFreq: "monthly" as const,
   }));
 
-  return [...core, ...features, ...trades, ...comparisons, ...blogRoutes].map((route) => ({
+  return [...core, ...features, ...trades, ...comparisons, ...pillars, ...overlap, ...blogRoutes].map((route) => ({
     url: `${baseUrl}${route.path}`,
     lastModified,
     changeFrequency: route.changeFreq,

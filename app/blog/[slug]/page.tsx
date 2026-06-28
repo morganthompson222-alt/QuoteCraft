@@ -39,6 +39,12 @@ export default async function BlogPostPage({ params }: Props) {
         &larr; All articles
       </Link>
 
+      {post.pillarSlug ? (
+        <div style={{ marginBottom: 24, padding: "12px 16px", background: "#d1fae5", borderRadius: 8, border: "1px solid #a7f3d0", fontSize: 14, color: "#065f46" }}>
+          Part of the <Link href={`/${post.pillarSlug}`} style={{ fontWeight: 700, color: "#047857", textDecoration: "none" }}>{post.category} guide</Link> &rarr; read the full guide for a complete overview.
+        </div>
+      ) : null}
+
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
         <span
           style={{

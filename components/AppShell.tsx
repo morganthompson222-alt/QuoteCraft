@@ -49,7 +49,7 @@ function NotificationDropdown({ onClose }: { onClose: () => void }) {
   );
 }
 
-const marketingRoutes = new Set(["/", "/login", "/signup", "/blog", "/privacy", "/terms", "/install"]);
+const marketingRoutes = new Set(["/", "/login", "/signup", "/blog", "/privacy", "/terms", "/install", "/leads-for-tradespeople", "/quoting-guide-for-tradespeople", "/grow-trade-business", "/trade-business-administration", "/electrician-lead-management-software", "/plumbing-crm-uk", "/trade-business-management-app"]);
 const marketingPrefixes = ["/crm-for-", "/quote-software", "/invoice-software", "/job-management-software", "/scheduling-software", "/crm-software", "/client-management-software", "/customer-management-software", "/lead-management-software", "/trade-crm", "/business-management-software", "/field-service-management", "/work-order-software", "/job-tracking-software", "/jobber-alternative", "/tradify-alternative", "/housecall-pro-alternative"];
 
 export function AppShell({ children }: { children: ReactNode }) {
