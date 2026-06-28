@@ -88,6 +88,14 @@ function catalogueToSections(text:string):{heading:string;items:{service:string;
 }
 
 export async function GET(request: NextRequest) {
+  return handleRequest(request, false);
+}
+
+export async function POST(request: NextRequest) {
+  return handleRequest(request, true);
+}
+
+async function handleRequest(request: NextRequest, isPost: boolean) {
   const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim().replace(/^["']|["']$/g, "").replace(/\n|\r/g, "");
   const anonKey = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "").trim().replace(/^["']|["']$/g, "").replace(/\n|\r/g, "");
   try {
@@ -109,9 +117,19 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     let template = (searchParams.get("template") ?? "modern") as TemplateId;
-    const colour = searchParams.get("colour") ?? "1F6B4F";
+    let colour = searchParams.get("colour") ?? "1F6B4F";
+    let providedText = searchParams.get("text") ?? "";
+
+    // If POST, read params from JSON body
+    if (isPost) {
+      try {
+        const body = await request.clone().json();
+        template = (body.template ?? template) as TemplateId;
+        colour = body.colour ?? colour;
+        providedText = body.text ?? providedText;
+      } catch { /* fall back to GET params */ }
+    }
     if (!TEMPLATES.includes(template)) template = "modern";
-    // Free/Solo tier only gets modern template
     if (tier === "solo" && template !== "modern") {
       return NextResponse.json({ error: { message: "Only the Modern template is available on your plan. Upgrade for more.", statusCode: 403 } }, { status: 403 });
     }
@@ -119,7 +137,8 @@ export async function GET(request: NextRequest) {
     const needsWatermark = WATERMARK_TIERS.includes(tier);
     const [cr, cg, cb] = COLOURS[colour] ?? COLOURS["1F6B4F"];
 
-    const catalogueText = await generateCatalogueText(userData.user.id, supabase);
+    // Use user-provided text, or generate from history
+    const catalogueText = providedText || await generateCatalogueText(userData.user.id, supabase);
     const sections = catalogueToSections(catalogueText);
 
     const pdfDoc = await PDFDocument.create();

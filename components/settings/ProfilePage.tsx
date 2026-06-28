@@ -126,6 +126,7 @@ export function ProfilePage() {
   const [catalogueText, setCatalogueText] = useState("");
   const [catalogueTemplate, setCatalogueTemplate] = useState("modern");
   const [catalogueColour, setCatalogueColour] = useState("1F6B4F");
+  const [formatLoading, setFormatLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -277,8 +278,15 @@ export function ProfilePage() {
   async function handleDownloadCatalogue() {
     try {
       const tk = localStorage.getItem("jobstacker_token");
-      const url = `/api/ai/service-catalogue/pdf?template=${catalogueTemplate}&colour=${catalogueColour}`;
-      const r = await fetch(url, { headers: tk ? { Authorization: `Bearer ${tk}` } : {} });
+      const r = await fetch("/api/ai/service-catalogue/pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
+        body: JSON.stringify({
+          template: catalogueTemplate,
+          colour: catalogueColour,
+          text: catalogueText,
+        }),
+      });
       if (!r.ok) {
         const j = await r.json().catch(() => ({}));
         throw new Error(j?.error?.message ?? "Failed");
@@ -424,8 +432,31 @@ export function ProfilePage() {
                     </button>
                   ) : (
                     <div>
-                      <div style={{ whiteSpace: "pre-wrap", fontSize: 13, color: "#334155", lineHeight: 1.7, marginBottom: 12 }}>
-                        {catalogueText}
+                      <textarea
+                        value={catalogueText}
+                        onChange={(e) => setCatalogueText(e.target.value)}
+                        style={{ width: "100%", minHeight: 120, padding: "10px 12px", border: "1px solid var(--border)", borderRadius: 8, fontSize: 13, lineHeight: 1.7, color: "#334155", resize: "vertical", fontFamily: "inherit", boxSizing: "border-box" }}
+                      />
+                      <div style={{ display: "flex", gap: 6, marginTop: 6, marginBottom: 12, flexWrap: "wrap" }}>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            setFormatLoading(true);
+                            try {
+                              const tk = localStorage.getItem("jobstacker_token");
+                              const r = await fetch("/api/ai/cleanup-instructions", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
+                                body: JSON.stringify({ instructions: catalogueText }),
+                              });
+                              if (r.ok) { const d = await r.json(); setCatalogueText(d.cleaned); toast("Format updated.", "success"); }
+                            } catch { /* */ } finally { setFormatLoading(false); }
+                          }}
+                          disabled={formatLoading || !catalogueText.trim()}
+                          style={{ padding: "5px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: "pointer", border: "1px solid var(--border)", background: "#fff", color: "#1F6B4F", opacity: formatLoading ? 0.5 : 1 }}
+                        >
+                          {formatLoading ? "Formatting..." : "AI Format ✨"}
+                        </button>
                       </div>
                       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "flex-end" }}>
                         <div>
