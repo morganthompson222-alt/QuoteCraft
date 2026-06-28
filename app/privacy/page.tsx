@@ -14,7 +14,7 @@ export default function PrivacyPage() {
         <p className="hero__eyebrow">Legal</p>
         <h1 style={{ fontSize: 34, margin: "0 0 8px" }}>Privacy Policy</h1>
         <p style={{ color: "var(--text-muted)", fontSize: 14, marginBottom: 32 }}>
-          Effective date: 6 June 2026
+          Effective date: 28 June 2026
         </p>
 
         <div className="legal-content">
@@ -43,15 +43,20 @@ export default function PrivacyPage() {
           <h3>2.1 Account and Profile Data</h3>
           <p>When you register and set up your profile, we collect: name and email address; hashed password (stored and managed by Supabase Auth &mdash; we never have access to your plaintext password); business name, telephone number, and business address; region and country (used to determine currency and tax labelling); and company logo (optional, for PDF branding).</p>
           <h3>2.2 Quote and Job Data</h3>
-          <p>The Service stores all data you enter to create and manage quotes and jobs, including: quote line items, descriptions, pricing, tax rates, and totals; job scheduling information (date, time, location, notes); and quote status and payment tracking information.</p>
+          <p>The Service stores all data you enter to create and manage quotes, jobs, and finances, including: quote line items, descriptions, pricing, tax rates, and totals; job scheduling information (date, time, location, notes); job status and payment tracking information; expense records (recurring and one-off) including amounts, recurrence frequency, and linked services; cost rates for materials and labour; and revenue, profit, and financial health metrics derived from your data.</p>
           <h3>2.3 Customer Data You Enter</h3>
           <p>You may enter personal data about your customers into the Service, including their name, email address, telephone number, and address. You are the data controller in respect of this data. We process it on your behalf as your data processor, solely to provide the Service to you.</p>
           <h3>2.4 Subscription and Billing Data</h3>
           <p>We receive limited billing information via our payment processor, Stripe. This includes your Stripe customer ID, subscription plan tier, subscription status, and billing period dates. We do not store your payment card details; these are handled entirely by Stripe.</p>
           <h3>2.5 Technical and Usage Data</h3>
-          <p>We collect limited technical data, including authentication tokens, your region preference, and onboarding status, stored locally in your browser. Our servers log request metadata (HTTP method, path, response status, duration) for operational purposes. We do not use analytics or advertising tracking tools; no cookies beyond authentication cookies are set.</p>
+          <p>We collect limited technical data, including authentication tokens, your region preference, and onboarding status, stored locally in your browser. Our servers log request metadata (HTTP method, path, response status, duration) for operational purposes. We do not use advertising tracking tools and no cookies beyond authentication cookies are set. Where you have enabled Google Analytics 4 via the optional <code>NEXT_PUBLIC_GA_MEASUREMENT_ID</code> configuration, anonymised usage data (page views, session duration, browser type) is collected by Google Analytics. This feature is entirely optional and is controlled by the Service operator; it is disabled by default.</p>
           <h3>2.6 AI Feature Data</h3>
-          <p>When you use the AI quote generation feature (available on paid plans), the natural language description of work that you type is transmitted to a third-party AI provider (currently Groq and/or OpenAI) to generate a structured quote. We do not transmit your customers&rsquo; names, contact details, or other personal data to AI providers. See clause 6.3 for further details.</p>
+          <p>When you use the AI-assisted features (available on paid plans), the following data is transmitted to third-party AI providers (currently Groq and/or OpenAI):</p>
+          <ul>
+            <li><strong>AI Quote Generation:</strong> the natural language description of work you type is transmitted to generate a structured quote. We do not transmit your customers&rsquo; names, contact details, or other personal data to AI providers.</li>
+            <li><strong>AI Finance Assistance:</strong> when you ask a question about your financial data, relevant non-personal financial context (such as revenue totals, expense descriptions, and job status summaries) is transmitted to generate a response.</li>
+          </ul>
+          <p>See clause 6.3 for further details on AI provider data processing.</p>
 
           <h2>3. Purposes and Lawful Basis for Processing</h2>
           <p>We only process personal data where we have a lawful basis for doing so under UK GDPR Article 6. The table below sets out our main processing activities and their lawful basis.</p>
@@ -89,9 +94,10 @@ export default function PrivacyPage() {
           <p>We use the following browser-based storage mechanisms:</p>
           <ul>
             <li>Authentication session cookie (&ldquo;supabase-auth-token&rdquo;) &mdash; set by our server-side middleware to maintain your session. This cookie is necessary for the Service to function.</li>
-            <li>localStorage items &mdash; we store your authentication token, region preference, and onboarding status flags locally in your browser. These are functional and strictly necessary to provide the Service.</li>
+            <li>localStorage items &mdash; we store your authentication token, region preference, theme preference, and onboarding status flags locally in your browser. These are functional and strictly necessary to provide the Service.</li>
+            <li>Google Analytics cookies &mdash; if the optional GA4 feature is enabled, Google Analytics sets first-party cookies to distinguish unique users and throttle request rate. This feature is disabled by default and is controlled by the Service operator.</li>
           </ul>
-          <p>We do not use analytics cookies, advertising cookies, or any third-party tracking scripts. No non-essential cookies are set. Because only strictly necessary cookies and storage are used, a consent banner is not required under PECR. However, you may clear browser storage at any time via your browser settings, which will require you to log in again.</p>
+          <p>We do not use advertising cookies or any third-party tracking scripts. Because only strictly necessary cookies and storage are used (with the optional GA4 feature disabled by default), a consent banner is not required under PECR. You may clear browser storage at any time via your browser settings, which will require you to log in again.</p>
 
           <h2>5. Data Storage and Retention</h2>
           <h3>5.1 Where Data is Stored</h3>
@@ -113,17 +119,25 @@ export default function PrivacyPage() {
           <p>Supabase provides our database and authentication infrastructure. All user account data, customer data, quotes, and jobs are stored with Supabase. Data is stored in the United States. We have entered or will enter into a Data Processing Agreement with Supabase that includes Standard Contractual Clauses (SCCs) as required by UK GDPR for international transfers.</p>
           <h3>6.2 Stripe, Inc. (Payment Processing)</h3>
           <p>Stripe processes subscription payments. We share your email address, an internal user identifier, and your selected subscription plan with Stripe to initiate checkout. Stripe handles all payment card data directly; JobStacker never receives or stores your card details. Stripe operates under its own Data Processing Agreement, available at stripe.com/dpa.</p>
-          <h3>6.3 Groq, Inc. and/or OpenAI, L.L.C. (AI Features)</h3>
-          <p>When you use the AI quote generation feature, the natural language description of work you enter is transmitted to Groq or OpenAI to generate a quote suggestion. We transmit only the work description text &mdash; no customer names, contact details, addresses, or any other personal data are included in this transmission. Both providers have Data Processing Agreements covering this processing. If you do not wish to use AI features, you may use the Service on the Solo tier, which does not include AI functionality.</p>
-          <h3>6.4 Other Disclosures</h3>
+          <h3>6.3 Resend (Email Delivery)</h3>
+          <p>Resend delivers transactional and marketing emails on our behalf, including quote notifications sent to your customers and marketing campaigns initiated by you. When you send an email through the Service, your recipient&rsquo;s email address and the email content are processed by Resend. Resend operates under its own Data Processing Agreement and privacy policy, available at resend.com/legal.</p>
+          <h3>6.4 Vercel Inc. (Hosting)</h3>
+          <p>Vercel hosts the JobStacker web application and serves static assets. Vercel processes limited technical data (IP addresses, request metadata) for the purpose of hosting and content delivery. Vercel operates under its own Data Processing Agreement, available at vercel.com/legal.</p>
+          <h3>6.5 Zoho Corporation (Email Hosting)</h3>
+          <p>Zoho provides business email hosting for JobStacker&rsquo;s internal email addresses (including support, billing, and privacy mailboxes). Zoho processes email communications in accordance with its privacy policy and Data Processing Agreement, available at zoho.com/privacy.html.</p>
+          <h3>6.6 Google Analytics (Optional Analytics)</h3>
+          <p>Where enabled, Google Analytics 4 collects anonymised usage data about your interaction with the Service, including page views, session duration, and browser type. This data is processed in accordance with Google&rsquo;s privacy policy. This feature is optional and disabled by default; it is controlled by the Service operator via environment configuration. IP addresses are anonymised before being logged.</p>
+          <h3>6.7 Groq, Inc. and/or OpenAI, L.L.C. (AI Features)</h3>
+          <p>When you use the AI-assisted features of the Service, data described in clause 2.6 is transmitted to Groq or OpenAI to generate responses. We transmit only the work description text for quote generation and non-personal financial context for finance assistance. No customer names, contact details, addresses, or other personal data are included in these transmissions. Both providers have Data Processing Agreements covering this processing. If you do not wish to use AI features, you may use the Service on the Solo tier, which does not include AI functionality.</p>
+          <h3>6.8 Other Disclosures</h3>
           <p>We may disclose personal data: (a) to comply with a legal obligation or court order; (b) to protect the vital interests of any person; (c) in connection with a merger, acquisition, or sale of assets (where the acquirer will be bound by equivalent data protection obligations); or (d) to enforce our Terms or protect our legal rights.</p>
 
           <h2>7. International Data Transfers</h2>
-          <p>Our data processors &mdash; Supabase, Stripe, Groq, and OpenAI &mdash; are based in the United States. The United States does not currently benefit from a UK adequacy decision. Data transfers to these processors are carried out under the UK International Data Transfer Agreement (IDTA) or Standard Contractual Clauses (SCCs) adopted in accordance with UK GDPR Article 46. Copies of the relevant transfer mechanisms are available on request.</p>
+          <p>Our data processors &mdash; Supabase, Stripe, Resend, Vercel, Groq, OpenAI, Google, and Zoho &mdash; are based in the United States and other jurisdictions. The United States does not currently benefit from a UK adequacy decision. Data transfers to these processors are carried out under the UK International Data Transfer Agreement (IDTA) or Standard Contractual Clauses (SCCs) adopted in accordance with UK GDPR Article 46. Copies of the relevant transfer mechanisms are available on request from the respective providers.</p>
 
           <h2>8. Security</h2>
           <h3>8.1 Security Measures</h3>
-          <p>We implement technical and organisational measures designed to protect personal data against unauthorised access, disclosure, loss, or destruction. Our current measures include: encrypted transmission of all data over HTTPS/TLS; database encryption at rest (managed by Supabase); row-level security policies ensuring each user can access only their own data; bcrypt-hashed passwords (handled by Supabase Auth); input validation and sanitisation on all API endpoints; rate limiting on AI API endpoints to prevent abuse; CORS and origin validation controls; and JWT-based authentication verified on every API request.</p>
+          <p>We implement technical and organisational measures designed to protect personal data against unauthorised access, disclosure, loss, or destruction. Our current measures include: encrypted transmission of all data over HTTPS/TLS; database encryption at rest (managed by Supabase); row-level security policies ensuring each user can access only their own data; bcrypt-hashed passwords (handled by Supabase Auth); input validation and sanitisation on all API endpoints; rate limiting on AI API endpoints to prevent abuse; CORS and origin validation controls; JWT-based authentication verified on every API request; and the Electron desktop application loads Service content via HTTPS with no additional local data storage.</p>
           <h3>8.2 Security Disclaimer</h3>
           <p>Despite the measures described above, no system connected to the internet can be guaranteed to be completely secure. We cannot warrant that data transmissions over the internet are entirely secure or that unauthorised third parties will never succeed in defeating our security measures. You provide personal data to the Service at your own risk. We will promptly notify you and the Information Commissioner&rsquo;s Office (ICO) of any personal data breach to the extent required by UK GDPR Article 33 and 34.</p>
           <h3>8.3 Known Limitations</h3>

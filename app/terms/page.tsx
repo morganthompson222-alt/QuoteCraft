@@ -14,7 +14,7 @@ export default function TermsPage() {
         <p className="hero__eyebrow">Legal</p>
         <h1 style={{ fontSize: 34, margin: "0 0 8px" }}>Terms and Conditions</h1>
         <p style={{ color: "var(--text-muted)", fontSize: 14, marginBottom: 32 }}>
-          Effective date: 6 June 2026
+          Effective date: 28 June 2026
         </p>
 
         <div className="legal-content">
@@ -28,7 +28,7 @@ export default function TermsPage() {
           <h2>1. Interpretation</h2>
           <p>In these Terms, the following definitions apply:</p>
           <ul>
-            <li>&ldquo;JobStacker&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo; means the operator of the JobStacker platform.</li>
+            <li>&ldquo;JobStacker&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo; means the operator of the JobStacker platform (&ldquo;JobStacker&rdquo;).</li>
             <li>&ldquo;Service&rdquo; means the JobStacker web application, including all features, APIs, and associated documentation.</li>
             <li>&ldquo;User&rdquo;, &ldquo;you&rdquo;, &ldquo;your&rdquo; means any individual or business that registers for or uses the Service.</li>
             <li>&ldquo;Account&rdquo; means the registered account created by a User to access the Service.</li>
@@ -46,11 +46,13 @@ export default function TermsPage() {
 
           <h2>3. The Service</h2>
           <h3>3.1 Description</h3>
-          <p>JobStacker provides a cloud-based SaaS platform for tradespeople and small businesses to create, manage, and send trade quotes, generate PDF quote documents, manage customer records, schedule jobs, and manage subscriptions. The Service includes an optional AI-assisted quote generation feature available on paid plans.</p>
+          <p>JobStacker provides a cloud-based SaaS platform for tradespeople and service businesses to manage customers, create and send professional quotes, generate PDF quote documents, schedule jobs, track finances, and manage subscriptions. The Service includes optional AI-assisted features (quote generation and finance assistance) available on paid plans, a finance hub with revenue and expense tracking, recurring expense management, a service catalogue generator, and a downloadable desktop application for Mac and Windows.</p>
           <h3>3.2 Free and Paid Tiers</h3>
           <p>The Service is offered on multiple plan tiers (Solo, Solo Pro, Business, Growth, and Enterprise). Plan-specific feature limits (such as the maximum number of customers, active quotes, and access to AI features) are set out on our pricing page and may be updated from time to time with reasonable notice.</p>
           <h3>3.3 AI-Generated Content</h3>
-          <p>The AI quote generation feature uses third-party AI models (currently Groq and/or OpenAI) to produce suggested job descriptions, material lists, and pricing estimates. AI-generated content is provided as a starting-point only. You are solely responsible for reviewing, verifying, and amending any AI-generated quote before sending it to a customer. We do not warrant that AI-generated content is accurate, complete, or fit for any particular purpose. The disclaimer in clause 10 applies fully to AI-generated content.</p>
+          <p>The Service includes AI-assisted features that use third-party AI models (currently Groq and/or OpenAI) to generate content. The AI quote generation feature produces suggested job descriptions, material lists, and pricing estimates based on natural language descriptions you provide. The AI finance assistance feature answers questions about your financial data and provides insights based on your quotes, jobs, and expenses. AI-generated content is provided as a starting-point only. You are solely responsible for reviewing, verifying, and amending any AI-generated content before using it. We do not warrant that AI-generated content is accurate, complete, or fit for any particular purpose. The disclaimer in clause 10 applies fully to AI-generated content.</p>
+          <h3>3.5 Desktop Application</h3>
+          <p>The Service is available as a downloadable desktop application for macOS and Windows, built using Electron. The desktop application loads the cloud-based Service and does not store any local data outside of standard Electron browser storage. The same Terms apply to use of the Service through the desktop application.</p>
           <h3>3.4 Service Availability</h3>
           <p>We aim to maintain a high level of availability but do not guarantee that the Service will be uninterrupted, error-free, or available at any particular time. We may need to suspend or restrict the Service for scheduled maintenance, security patches, or emergency fixes. Where planned maintenance is scheduled, we will endeavour to give reasonable advance notice. Unplanned outages may occur without notice.</p>
 
@@ -116,7 +118,7 @@ export default function TermsPage() {
           <p>Each party agrees to keep confidential any non-public information disclosed by the other party in connection with these Terms that is identified as confidential or that a reasonable person would consider confidential in context. This obligation does not apply to information that is publicly available, already known to the receiving party, independently developed, or required to be disclosed by law.</p>
 
           <h2>10. Disclaimers and Warranties</h2>
-          <p>THE SERVICE IS PROVIDED &ldquo;AS IS&rdquo; AND &ldquo;AS AVAILABLE&rdquo;. TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, QUOTECRAFT MAKES NO WARRANTY, EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.</p>
+          <p>THE SERVICE IS PROVIDED &ldquo;AS IS&rdquo; AND &ldquo;AS AVAILABLE&rdquo;. TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, JOBSTACKER MAKES NO WARRANTY, EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.</p>
           <p>In particular, we do not warrant that: the Service will meet your specific requirements or expectations; the Service will be uninterrupted, timely, secure, or error-free at all times; AI-generated quotes or pricing suggestions will be accurate, suitable, or commercially appropriate for your circumstances; or any errors or defects in the Service will be corrected within any particular timeframe.</p>
           <p>Nothing in these Terms affects any statutory rights you may have as a consumer that cannot be excluded or limited by law.</p>
 
@@ -134,7 +136,7 @@ export default function TermsPage() {
           <p>You agree to indemnify, defend, and hold harmless JobStacker and its officers, employees, and agents from and against any claims, damages, losses, liabilities, costs, and expenses (including reasonable legal fees) arising out of or relating to: (a) your use of the Service in breach of these Terms; (b) your violation of any applicable law; or (c) any third-party claim arising from data you have entered into the Service, including claims by your customers.</p>
 
           <h2>13. Third-Party Services</h2>
-          <p>The Service integrates with third-party platforms including Supabase (database and authentication), Stripe (payment processing), and Groq/OpenAI (AI features). These third-party services are provided under their own terms and privacy policies. JobStacker is not responsible for the performance, availability, or practices of any third-party service provider. Links to third-party services within the Service do not constitute our endorsement of those services.</p>
+          <p>The Service integrates with third-party platforms including Supabase (database and authentication), Stripe (payment processing), Vercel (hosting), Groq/OpenAI (AI features), Resend (transactional email delivery), and Google Analytics (optional analytics). These third-party services are provided under their own terms and privacy policies. JobStacker is not responsible for the performance, availability, or practices of any third-party service provider. Links to third-party services within the Service do not constitute our endorsement of those services.</p>
 
           <h2>14. Suspension and Termination</h2>
           <h3>14.1 Termination by You</h3>
