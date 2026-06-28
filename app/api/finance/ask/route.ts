@@ -4,17 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { sanitizeString } from "@/lib/validation";
 import { ApiError, errorResponse } from "@/lib/api-error";
 import { PLANS, normalizeTier } from "@/lib/stripe";
-
-let _openai: any = null;
-async function getOpenAI() {
-  if (!_openai) {
-    const { default: OpenAI } = await import("openai");
-    const apiKey = process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY || "";
-    const baseURL = process.env.GROQ_API_KEY ? "https://api.groq.com/openai/v1" : undefined;
-    _openai = new OpenAI({ apiKey, baseURL });
-  }
-  return _openai;
-}
+import { getAiClient, getAiModel, checkDeepSeekConfigured } from "@/lib/ai-provider";
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,7 +12,6 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new ApiError(401, "Unauthorized");
 
-    // Plan-based rate limit: check profile tier
     const admin = createAdminClient();
     const { data: profile } = await admin
       .from("profiles")
@@ -34,7 +23,7 @@ export async function POST(request: NextRequest) {
     const plan = PLANS[tier];
     const costRates = (profile as { cost_rates?: string } | null)?.cost_rates ?? null;
 
-    // Count AI finance queries this month for rate limiting
+    // Count quotes this month for DeepSeek quota check
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
     const { count } = await supabase
@@ -73,9 +62,22 @@ RULES:
       ? `COST RATES FROM PROFILE:\n${costRates}\n\nFINANCIAL DATA:\n${contextStr}`
       : contextStr;
 
-    const openai = await getOpenAI();
-    const response = await openai.chat.completions.create({
-      model: process.env.AI_MODEL ?? (process.env.GROQ_API_KEY ? "llama-3.3-70b-versatile" : "gpt-4o-mini"),
+    // Determine which model tier to use
+    const deepSeekAvailable = await checkDeepSeekConfigured();
+    let aiTier: "premium" | "standard" = "standard";
+
+    if (deepSeekAvailable && plan.deepSeekFinanceQueries !== 0) {
+      const deepSeekQuota = plan.deepSeekFinanceQueries === -1 ? Infinity : plan.deepSeekFinanceQueries;
+      if (count != null && count < deepSeekQuota) {
+        aiTier = "premium";
+      }
+    }
+
+    const client = await getAiClient(aiTier);
+    const model = await getAiModel(aiTier);
+
+    const response = await client.chat.completions.create({
+      model,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: `Question: ${question}\n\n${fullContext}` },
@@ -86,7 +88,7 @@ RULES:
 
     const answer = response.choices[0]?.message?.content?.trim() ?? "Unable to generate an answer. Please try again.";
 
-    return NextResponse.json({ answer });
+    return NextResponse.json({ answer, modelTier: aiTier });
   } catch (error) {
     return errorResponse(error);
   }

@@ -6,19 +6,8 @@ import { ApiError, errorResponse } from "@/lib/api-error";
 import { enforcePlanLimit } from "@/lib/plan-enforcement";
 import { calculateFromCatalogue, parseJobIntoTasks, parseServicesFromProfile } from "@/lib/pricing-engine";
 import { REGIONS } from "@/lib/localization";
-
-let _openai: OpenAI | null = null;
-async function getOpenAI(): Promise<OpenAI> {
-  if (!_openai) {
-    const { default: OpenAI } = await import("openai");
-    const apiKey = process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY || "";
-    const baseURL = process.env.GROQ_API_KEY
-      ? "https://api.groq.com/openai/v1"
-      : undefined;
-    _openai = new OpenAI({ apiKey, baseURL });
-  }
-  return _openai;
-}
+import { getAiClient, getAiModel, checkDeepSeekConfigured } from "@/lib/ai-provider";
+import { PLANS, normalizeTier } from "@/lib/stripe";
 
 const rateLimitMap = new Map<string, { count: number; windowStart: number }>();
 const RATE_LIMIT = parseInt(process.env.AI_RATE_LIMIT ?? "10", 10);
@@ -38,18 +27,25 @@ function checkRateLimit(userId: string) {
   return { limit: RATE_LIMIT, remaining: RATE_LIMIT - entry.count, reset: entry.windowStart + RATE_WINDOW_MS };
 }
 
-async function estimateWithAI(input: string, regionLabel: string, currencyCode: string, costRates?: string): Promise<{
+async function estimateWithAI(
+  input: string,
+  regionLabel: string,
+  currencyCode: string,
+  costRates?: string,
+  tier: "premium" | "standard" = "standard",
+): Promise<{
   description: string; materials: Array<{ name: string; quantity: number; unitPrice: number }>;
   labourCost: number; total: number;
 }> {
-  const openai = await getOpenAI();
+  const client = await getAiClient(tier);
+  const model = await getAiModel(tier);
   let rateGuidance = "";
   if (costRates?.trim()) {
     rateGuidance = `\nUse these cost rates when available:\n${costRates}\n`;
   }
 
-  const response = await openai.chat.completions.create({
-    model: process.env.AI_MODEL ?? (process.env.GROQ_API_KEY ? "llama-3.3-70b-versatile" : "gpt-4o-mini"),
+  const response = await client.chat.completions.create({
+    model,
     messages: [{
       role: "user",
       content: `Generate a detailed quote for this job: "${input}"
@@ -114,15 +110,16 @@ export async function POST(request: NextRequest) {
     const input = sanitizeString(body.input);
     if (input.length < 3) throw new ApiError(400, "Input must be at least 3 characters");
 
-    // Fetch structured services, custom instructions, and region
+    // Fetch profile data
     let customInstructions = "";
     let regionCode = "UK";
     let currencyCode = "GBP";
     let costRates = "";
     let taxRate = 0;
+    let planTier = "solo";
     try {
       const { data: profile } = await supabase
-        .from("profiles").select("custom_ai_instructions, region_code, currency_code, cost_rates, default_tax_rate")
+        .from("profiles").select("custom_ai_instructions, region_code, currency_code, cost_rates, default_tax_rate, plan_tier")
         .eq("id", user.id).single();
       if (profile) {
         customInstructions = (profile as { custom_ai_instructions?: string }).custom_ai_instructions ?? "";
@@ -130,12 +127,15 @@ export async function POST(request: NextRequest) {
         currencyCode = (profile as { currency_code?: string }).currency_code ?? "GBP";
         costRates = (profile as { cost_rates?: string }).cost_rates ?? "";
         taxRate = Number((profile as { default_tax_rate?: number }).default_tax_rate ?? 0);
+        planTier = normalizeTier((profile as { plan_tier?: string }).plan_tier ?? "solo");
       }
     } catch { /* skip */ }
 
     const services = parseServicesFromProfile(costRates);
+    const plan = PLANS[planTier as keyof typeof PLANS] ?? PLANS.solo;
+    const regionName = REGIONS[regionCode]?.name ?? "United Kingdom";
 
-    // If structured services exist, use the catalogue engine
+    // If structured services exist, use the catalogue engine (no AI cost)
     if (services.length > 0) {
       const overheads = [
         { name: "Fuel", amount: 8, per: "job" as const },
@@ -162,6 +162,7 @@ export async function POST(request: NextRequest) {
           profit: result.totalProfit,
           costBreakdown: result.items,
           pricingSource: "structured_catalogue",
+          modelTier: "catalogue",
         }, {
           headers: {
             "X-RateLimit-Limit": String(rateLimit.limit),
@@ -174,16 +175,37 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ status: "missing", missingItem: result.missingItem, message: `No catalogue entry found for "${result.missingItem}"` }, { status: 400 });
     }
 
-    // No structured services — use AI estimation
+    // Determine which AI model tier to use
+    const deepSeekAvailable = await checkDeepSeekConfigured();
+    let aiTier: "premium" | "standard" = "standard";
+
+    if (deepSeekAvailable && plan.deepSeekGenerations !== 0) {
+      // Count quotes created this month for DeepSeek quota
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const { count } = await supabase
+        .from("quotes")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .gte("created_at", monthStart);
+
+      const deepSeekQuota = plan.deepSeekGenerations === -1 ? Infinity : plan.deepSeekGenerations;
+      if (count != null && count < deepSeekQuota) {
+        aiTier = "premium";
+      }
+    }
+
+    // AI estimation
     const rateLimit = checkRateLimit(user.id);
-    const regionName = REGIONS[regionCode]?.name ?? "United Kingdom";
-    const result = await estimateWithAI(input, regionName, currencyCode, costRates);
+    const result = await estimateWithAI(input, regionName, currencyCode, costRates, aiTier);
+
     return NextResponse.json({
       description: result.description,
       materials: result.materials.map(m => ({ name: m.name, quantity: m.quantity, unitPrice: Math.round(m.unitPrice * 100) / 100 })),
       labourCost: result.labourCost,
       total: result.total,
       pricingSource: "ai_estimate",
+      modelTier: aiTier,
     }, {
       headers: {
         "X-RateLimit-Limit": String(rateLimit.limit),
@@ -198,4 +220,3 @@ export async function POST(request: NextRequest) {
     return errorResponse(error);
   }
 }
-
