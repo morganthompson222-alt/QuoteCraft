@@ -92,11 +92,13 @@ function formatCurrencyShort(amount: number, fmt: (n: number) => string): string
 
 function BarChart({ data, maxVal }: { data: Array<{ month: string; revenue: number; expenses: number; profit: number }>; maxVal: number }) {
   const max = niceMax(maxVal);
+  const barMax = data.reduce((m, d) => Math.max(m, d.revenue, d.expenses), 0);
+  const scale = niceMax(barMax);
   return (
-    <div style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 180, padding: "16px 0 0" }}>
+    <div style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 180, padding: "16px 0 0", overflow: "hidden" }}>
       {data.map((d) => {
-        const rH = (d.revenue / max) * 180;
-        const eH = (d.expenses / max) * 180;
+        const rH = scale > 0 ? (d.revenue / scale) * 180 : 0;
+        const eH = scale > 0 ? (d.expenses / scale) * 180 : 0;
         return (
           <div key={d.month} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: 180 }}>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-end", gap: 3, width: "100%" }}>

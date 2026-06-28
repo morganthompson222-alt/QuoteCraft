@@ -11,16 +11,16 @@ type TourStep = {
 };
 
 const STEPS: TourStep[] = [
-  { path: "/dashboard", selector: ".stat-card:first-child", title: "Your Dashboard", text: "Overview of your customers, open quotes, and revenue. Upcoming jobs appear in the mini-calendar below." },
-  { path: "/dashboard", selector: ".dashboard__actions a.button--primary", title: "Create a Quote", text: "Click 'New quote' to create an estimate. Add line items, set tax, and use AI pricing." },
-  { path: "/customers", selector: ".workspace-page", title: "Your Customers", text: "Add customers with phone number, email, or both. Click any customer to see their full quote history." },
-  { path: "/quotes", selector: ".workspace-page", title: "Your Quotes", text: "Every quote in one place. Preview, change status (Draft → Sent → Accepted), download PDF, or share as a public link." },
-  { path: "/jobs", selector: ".workspace-page", title: "Your Jobs", text: "Accepted quotes become jobs here. Track progress, mark complete, and view all scheduled work — each linked back to its quote." },
-  { path: "/calendar", selector: ".workspace-page", title: "Your Schedule", text: "Calendar view shows all jobs by date. Switch between Grid and List view. Change job status inline. Export to Apple Calendar." },
-  { path: "/finance", selector: ".workspace-page", title: "Finance Overview", text: "Track earnings, estimated tax, and financial summaries. AI finance tool gives insights on your business performance." },
-  { path: "/revenue", selector: ".workspace-page", title: "Revenue Dashboard", text: "Visualise revenue trends with line/bar charts. Filter by 3, 6, or 12 months. Export CSV on paid plans." },
-  { path: "/settings", selector: "#profile-companyName", title: "Company Profile", text: "Set company name, phone, address, tax rate, and upload your logo. This info appears on every quote PDF you send." },
-  { path: "/settings", selector: "#profile-customAiInstructions", title: "AI Pricing Rules", text: "Tell the AI your rates: '£80/hr for tree cutting' or '£5 per m² for patio cleaning'. AI uses these when generating quotes." },
+  { path: "/dashboard", selector: ".stat-card:first-child", title: "Your Dashboard", text: "Your workspace overview. See 12 customers, 8 open quotes, and £8,450 in revenue. Upcoming jobs appear in the 3-day mini-calendar below." },
+  { path: "/dashboard", selector: ".dashboard__actions a.button--primary", title: "Create a Quote", text: "Click 'New quote' to create an estimate for a customer. AI auto-fills prices from your saved service rates." },
+  { path: "/customers", selector: ".workspace-page", title: "Your Customers", text: "10 customers with contact details and quote history. Add new ones with just a phone number, email, or both." },
+  { path: "/quotes", selector: ".workspace-page", title: "Your Quotes", text: "15 quotes across all statuses. Click any to preview, change status, download PDF, or share as a public link." },
+  { path: "/jobs", selector: ".workspace-page", title: "Your Jobs", text: "6 scheduled jobs. Accepted quotes appear here automatically. Track progress: Scheduled → In Progress → Completed." },
+  { path: "/calendar", selector: ".workspace-page", title: "Your Schedule", text: "6 jobs this month on the calendar. Switch between Grid and List view. Export to Apple Calendar via .ics file." },
+  { path: "/finance", selector: ".workspace-page", title: "Finance Overview", text: "£12,340 revenue, £6,200 profit, £3,100 expenses this period. Bar chart shows monthly trends. AI finance tool provides business insights." },
+  { path: "/revenue", selector: ".workspace-page", title: "Revenue Dashboard", text: "£8,450 this month. Toggle between line and bar charts. Filter by 3, 6, or 12 months. Export CSV on paid plans." },
+  { path: "/settings", selector: "#profile-companyName", title: "Company Profile", text: "Your business details: name, phone, address, tax rate (20%), quote prefix (Q-). Upload your logo for branded PDF quotes." },
+  { path: "/settings", selector: "#profile-customAiInstructions", title: "AI Pricing Rules", text: "5 saved pricing rules from your setup. Add more anytime. The AI uses these exact rates when generating customer quotes." },
 ];
 
 const TOUR_KEY = "jobstacker_tour_done";
@@ -153,10 +153,13 @@ export function GuidedTour({ onDone }: { onDone: () => void }) {
           <div style={{ position: "absolute", top: t.bottom, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)" }} />
         </>
       ) : (
-        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)" }}></div>
       )}
 
-      {/* Tooltip — only interactive area */}
+      {/* Transparent click-block layer — covers everything including the spotlight hole */}
+      <div style={{ position: "fixed", inset: 0, zIndex: 3001 }} />
+
+      {/* Tooltip — sits above the block layer, only interactive area */}
       {ready ? (
         <div
           style={{
@@ -168,7 +171,7 @@ export function GuidedTour({ onDone }: { onDone: () => void }) {
             borderRadius: 12,
             boxShadow: "0 16px 48px rgba(0,0,0,0.3)",
             padding: ww < 400 ? "16px" : "20px 24px",
-            zIndex: 3001,
+            zIndex: 3002,
           }}
         >
           <div style={{ fontSize: 12, fontWeight: 700, color: "#1F6B4F", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>
