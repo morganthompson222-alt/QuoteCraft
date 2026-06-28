@@ -194,21 +194,21 @@ async function handleRequest(request: NextRequest, isPost: boolean) {
       if(isTemplate("modern")||isTemplate("aifuture")){
         drawLine(ctx.page,{x1:ctx.m,y1:ctx.y-4,x2:ctx.m+60,y2:ctx.y-4,thickness:3,c:colourRGB});
         ctx.page.drawText(sec.heading,{x:ctx.m,y:ctx.y-14,size:16,font:bold,color:colourRGB});
-        ctx.y-=34;
+        ctx.y-=36;
       }else if(isTemplate("luxury")||isTemplate("magazine")){
         ctx.page.drawRectangle({x:0,y:ctx.y-30,width:ctx.w,height:30,color:rgb(0.04,0.04,0.04)});
         ctx.page.drawText(sec.heading,{x:ctx.m,y:ctx.y-12,size:14,font:bold,color:colourRGB});
-        ctx.y-=46;
+        ctx.y-=48;
       }else if(isTemplate("sales")||isTemplate("priceguide")){
         ctx.page.drawRectangle({x:ctx.m-8,y:ctx.y-30,width:ctx.w-ctx.m*2+16,height:30,color:colourRGB});
         ctx.page.drawText(sec.heading,{x:ctx.m,y:ctx.y-12,size:14,font:bold,color:rgb(1,1,1)});
-        ctx.y-=46;
+        ctx.y-=48;
       }else if(isTemplate("minimalist")){
         ctx.page.drawText(sec.heading.toUpperCase(),{x:ctx.m,y:ctx.y-8,size:10,font:bold,color:darkRGB});
-        ctx.y-=28;
+        ctx.y-=30;
       }else{
         ctx.page.drawText(sec.heading,{x:ctx.m,y:ctx.y-8,size:15,font:bold,color:colourRGB});
-        ctx.y-=28;
+        ctx.y-=30;
       }
 
       if(isTemplate("corporate")||template==="construction"){
@@ -230,23 +230,23 @@ async function handleRequest(request: NextRequest, isPost: boolean) {
       }
 
       for(const item of sec.items){
-        if(ctx.y < 60){ctx = newPage(pdfDoc,ctx,needsWatermark);}
+        if(ctx.y < 80){ctx = newPage(pdfDoc,ctx,needsWatermark);}
 
         if(isTemplate("modern")||isTemplate("luxury")||isTemplate("aifuture")||isTemplate("magazine")){
           drawLine(ctx.page,{x1:ctx.m,y1:ctx.y+2,x2:ctx.w-ctx.m,y2:ctx.y+2,thickness:0.3,c:rgb(0.92,0.92,0.92)});
-          ctx.page.drawText(item.service.substring(0,50),{x:ctx.m,y:ctx.y-8,size:10,font,color:rgb(0.2,0.2,0.2)});
+          ctx.page.drawText(item.service.substring(0, Math.min(item.service.length, 45)),{x:ctx.m,y:ctx.y-8,size:10,font,color:rgb(0.2,0.2,0.2)});
           ctx.page.drawText(item.price,{x:ctx.m+leftW,y:ctx.y-8,size:10,font:bold,color:rgb(0.3,0.3,0.3)});
-          ctx.y-=20;
-        }else if(isTemplate("sales")||isTemplate("priceguide")){
-          ctx.page.drawText(item.service.substring(0,50),{x:ctx.m,y:ctx.y-10,size:11,font:bold,color:rgb(0.15,0.15,0.15)});
-          ctx.page.drawText(item.price,{x:ctx.m+leftW,y:ctx.y-10,size:11,font:bold,color:colourRGB});
           ctx.y-=22;
+        }else if(isTemplate("sales")||isTemplate("priceguide")){
+          ctx.page.drawText(item.service.substring(0, Math.min(item.service.length, 45)),{x:ctx.m,y:ctx.y-10,size:11,font:bold,color:rgb(0.15,0.15,0.15)});
+          ctx.page.drawText(item.price,{x:ctx.m+leftW,y:ctx.y-10,size:11,font:bold,color:colourRGB});
+          ctx.y-=24;
         }else if(isTemplate("minimalist")){
-          ctx.page.drawText(item.service.substring(0,55),{x:ctx.m,y:ctx.y-6,size:9,font,color:rgb(0.3,0.3,0.3)});
+          ctx.page.drawText(item.service.substring(0, Math.min(item.service.length, 50)),{x:ctx.m,y:ctx.y-6,size:9,font,color:rgb(0.3,0.3,0.3)});
           ctx.page.drawText(item.price,{x:ctx.m+leftW,y:ctx.y-6,size:9,font,color:rgb(0.5,0.5,0.5)});
-          ctx.y-=16;
+          ctx.y-=18;
         }else{
-          ctx.page.drawText(item.service.substring(0,50),{x:ctx.m,y:ctx.y-8,size:10,font,color:rgb(0.2,0.2,0.2)});
+          ctx.page.drawText(item.service.substring(0, Math.min(item.service.length, 45)),{x:ctx.m,y:ctx.y-8,size:10,font,color:rgb(0.2,0.2,0.2)});
           ctx.page.drawText(item.price,{x:ctx.m+leftW,y:ctx.y-8,size:10,font:bold,color:rgb(0.3,0.3,0.3)});
           ctx.y-=18;
           if(template==="construction"||isTemplate("corporate"))

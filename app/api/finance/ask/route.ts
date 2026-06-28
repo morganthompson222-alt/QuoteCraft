@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       .eq("user_id", user.id)
       .gte("created_at", monthStart);
 
-    const monthlyLimit = plan.aiGenerationsPerMonth > 0 ? Math.ceil(plan.aiGenerationsPerMonth / 2) : -1;
+    const monthlyLimit = (plan as any).aiGenerationsPerMonth > 0 ? Math.ceil((plan as any).aiGenerationsPerMonth / 2) : -1;
     if (monthlyLimit > 0 && count != null && count >= monthlyLimit) {
       throw new ApiError(429, `Monthly AI query limit reached (${monthlyLimit}). Please wait until next month.`);
     }
@@ -66,8 +66,8 @@ RULES:
     const deepSeekAvailable = await checkDeepSeekConfigured();
     let aiTier: "premium" | "standard" = "standard";
 
-    if (deepSeekAvailable && plan.deepSeekFinanceQueries !== 0) {
-      const deepSeekQuota = plan.deepSeekFinanceQueries === -1 ? Infinity : plan.deepSeekFinanceQueries;
+    if (deepSeekAvailable && (plan as any).deepSeekFinanceQueries) {
+      const deepSeekQuota = (plan as any).deepSeekFinanceQueries === -1 ? Infinity : (plan as any).deepSeekFinanceQueries;
       if (count != null && count < deepSeekQuota) {
         aiTier = "premium";
       }

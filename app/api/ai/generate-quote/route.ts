@@ -179,7 +179,7 @@ export async function POST(request: NextRequest) {
     const deepSeekAvailable = await checkDeepSeekConfigured();
     let aiTier: "premium" | "standard" = "standard";
 
-    if (deepSeekAvailable && plan.deepSeekGenerations !== 0) {
+    if (deepSeekAvailable && (plan as any).deepSeekGenerations) {
       // Count quotes created this month for DeepSeek quota
       const now = new Date();
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
