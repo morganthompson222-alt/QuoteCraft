@@ -92,6 +92,19 @@ export function JobListPage({ view }: { view: "active" | "completed" }) {
     } catch { /* ok */ }
   }
 
+  async function handleJobStatus(jobId: string, newStatus: string) {
+    try {
+      const tk = localStorage.getItem("jobstacker_token");
+      const r = await fetch(`/api/jobs/${jobId}/update`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...(tk ? { Authorization: `Bearer ${tk}` } : {}) },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (!r.ok) return;
+      setRefreshKey((k) => k + 1);
+    } catch { /* ok */ }
+  }
+
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
       if (isCompleted) return b.job_date.localeCompare(a.job_date);
@@ -202,13 +215,21 @@ export function JobListPage({ view }: { view: "active" | "completed" }) {
                   {j.customer_name || "—"}
                 </span>
                 <span style={{ width: 110, textAlign: "center" }}>
-                  <span style={{
-                    fontSize: 11, fontWeight: 600, color: sc.fg, background: sc.bg,
-                    padding: "4px 10px", borderRadius: 10, textTransform: "capitalize", whiteSpace: "nowrap",
-                    display: "inline-block",
-                  }}>
-                    {sc.label}
-                  </span>
+                  <select
+                    value={j.status}
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => handleJobStatus(j.id, e.target.value)}
+                    style={{
+                      fontSize: 11, fontWeight: 600, color: sc.fg, background: sc.bg,
+                      padding: "4px 8px", borderRadius: 10, border: "none", cursor: "pointer",
+                      outline: "none", textTransform: "capitalize",
+                    }}
+                  >
+                    <option value="scheduled">Scheduled</option>
+                    <option value="in_progress">In progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
                 </span>
                 <span style={{ width: 60, textAlign: "center" }}>
                   {canArchive ? (

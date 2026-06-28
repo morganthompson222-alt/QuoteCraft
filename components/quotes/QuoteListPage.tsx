@@ -82,6 +82,7 @@ export function QuoteListPage() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [jobs, setJobs] = useState<JobInfo[]>([]);
   const [scheduleQuote, setScheduleQuote] = useState<{ id: string; customerName: string } | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const query = useMemo(() => {
@@ -225,7 +226,40 @@ export function QuoteListPage() {
 
       {state.status === "success" && quotes.length > 0 ? (
         <div className="table-card">
+          {selectedIds.size > 0 ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 16px", borderBottom: "1px solid var(--border)", background: "#f0fdf4" }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#065f46" }}>{selectedIds.size} selected</span>
+              <button className="button button--ghost" type="button" style={{ fontSize: 12, minHeight: 32, padding: "0 12px", color: "#64748b" }}
+                onClick={async () => {
+                  for (const id of selectedIds) {
+                    await fetch(`/api/quotes/${id}/status`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ archived: true }) });
+                  }
+                  toast(`${selectedIds.size} quotes archived.`, "success");
+                  setSelectedIds(new Set());
+                  setRefreshKey((k) => k + 1);
+                }}>Archive all</button>
+              <select style={{ fontSize: 12, padding: "4px 8px", borderRadius: 6, border: "1px solid var(--border)" }}
+                onChange={async (e) => {
+                  const s = e.target.value;
+                  if (!s) return;
+                  for (const id of selectedIds) {
+                    await fetch(`/api/quotes/${id}/status`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: s }) });
+                  }
+                  toast(`${selectedIds.size} quotes marked as ${s}.`, "success");
+                  setSelectedIds(new Set());
+                  setRefreshKey((k) => k + 1);
+                }}>
+                <option value="">Set status...</option>
+                <option value="sent">Sent</option>
+                <option value="accepted">Accepted</option>
+                <option value="rejected">Rejected</option>
+                <option value="expired">Expired</option>
+              </select>
+            </div>
+          ) : null}
           <div className="quote-table quote-table--head">
+            <span style={{ width: 30 }}><input type="checkbox" checked={quotes.length > 0 && selectedIds.size === quotes.length}
+              onChange={(e) => setSelectedIds(e.target.checked ? new Set(quotes.map((q) => q.id)) : new Set())} /></span>
             <span>Quote</span>
             <span>Customer</span>
             <span>Status</span>
@@ -242,6 +276,16 @@ export function QuoteListPage() {
 
             return (
               <Link className="quote-table quote-table--row" key={quote.id} href={`/quotes/${quote.id}`} style={{ color: "inherit", textDecoration: "none" }}>
+                <span style={{ width: 30 }}>
+                  <input type="checkbox" checked={selectedIds.has(quote.id)}
+                    onChange={(e) => {
+                      e.preventDefault();
+                      const next = new Set(selectedIds);
+                      if (next.has(quote.id)) next.delete(quote.id); else next.add(quote.id);
+                      setSelectedIds(next);
+                    }}
+                    onClick={(e) => e.stopPropagation()} />
+                </span>
                 <span className="quote-table__number">{quote.quoteNumber}</span>
                 <span>{quote.customerName}</span>
                 <span>
