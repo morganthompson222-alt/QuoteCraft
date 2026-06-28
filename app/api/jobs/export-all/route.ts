@@ -42,7 +42,9 @@ export async function GET(request: NextRequest) {
 
     const now = fmtICS(new Date());
 
-    const vevents = (jobs ?? []).map((job) => {
+    const vevents = (jobs ?? [])
+      .filter((job) => job.job_date)
+      .map((job) => {
       const dtStart = fmtICS(new Date(`${job.job_date}T${job.start_time || "09:00"}:00`));
       const endTime = job.end_time || job.start_time || "09:00";
       const dtEnd = fmtICS(new Date(`${job.job_date}T${endTime}:00`));

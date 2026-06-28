@@ -22,6 +22,7 @@ export async function GET(
       .single();
 
     if (error || !job) throw new ApiError(404, "Job not found");
+    if (!job.job_date) throw new ApiError(400, "Job has no date set");
 
     const { data: profile } = await supabase
       .from("profiles")

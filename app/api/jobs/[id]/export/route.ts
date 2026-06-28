@@ -44,6 +44,7 @@ export async function GET(
       .single();
 
     if (error) throw new ApiError(404, "Job not found");
+    if (!job.job_date) throw new ApiError(400, "Job has no date set");
 
     const dtStart = formatICSDate(job.job_date, job.start_time);
     const dtEnd = formatICSDate(job.job_date, job.end_time || job.start_time);
