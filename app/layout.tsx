@@ -89,10 +89,10 @@ export default function RootLayout({
   return (
     <html lang="en-GB">
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="alternate icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="mask-icon" href="/favicon.svg" color="#1F6B4F" />
-        <link rel="apple-touch-icon" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
+        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#1F6B4F" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
