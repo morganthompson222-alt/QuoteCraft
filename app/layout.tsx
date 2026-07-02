@@ -32,12 +32,14 @@ export const metadata: Metadata = {
     siteName: "JobStacker",
     type: "website",
     locale: "en_GB",
+    images: "/og-image.png",
   },
   twitter: {
     card: "summary_large_image",
     title: "JobStacker — Quote & Job Management for Tradespeople",
     description:
       "Create professional quotes, send branded PDFs, schedule jobs, and manage customers — all in one place.",
+    images: "/og-image.png",
   },
   other: {
     "og:image:width": "1200",
