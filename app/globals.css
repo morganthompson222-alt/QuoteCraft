@@ -2318,47 +2318,58 @@ button {
 /* ===== MOBILE-FIRST RESPONSIVE ===== */
 
 @media (max-width: 768px) {
+  *, *::before, *::after { box-sizing: border-box; }
   html { font-size: 15px; }
-  body { -webkit-text-size-adjust: 100%; }
+  body { overflow-x: hidden; -webkit-text-size-adjust: 100%; width: 100%; }
 
   /* -- App Shell -- */
   .app-shell__hamburger { display: inline-flex !important; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
   .app-shell__backdrop { display: block !important; }
   .app-shell__mobile-nav { display: block !important; }
   .app-shell__sidebar { display: none; }
-  .app-shell__main { padding: 16px 12px !important; }
+  .app-shell__main { padding: 16px 12px !important; max-width: 100vw !important; overflow-x: hidden; }
   .app-shell__body { flex-direction: column; }
   .app-shell__actions .button--ghost:not(.app-shell__hamburger) { display: none; }
   .app-shell__actions .button--primary { font-size: 12px; padding: 6px 12px; }
   .app-shell__brand span:last-child { font-size: 16px; }
   .app-shell { padding-top: 56px; }
 
+  /* -- Override inline maxWidth/margin containers -- */
+  section[style*="maxWidth"], div[style*="maxWidth: 900"] { max-width: 100% !important; padding: 16px 12px !important; }
+
   /* -- Workspace pages -- */
-  .workspace-page__header { flex-direction: column; align-items: flex-start !important; gap: 8px; }
+  .workspace-page__header { flex-direction: column; align-items: flex-start !important; gap: 12px; }
   .workspace-page__header h1 { font-size: 20px; }
-  .workspace-page__header .button { width: 100%; }
+  .workspace-page__header .button { width: 100%; justify-content: center; }
   .workspace-page__eyebrow { font-size: 11px; }
+  .workspace-page__header p { font-size: 13px; }
+
+  /* -- Toolbar / Filters -- */
+  .toolbar { flex-wrap: wrap; gap: 8px; }
+  .toolbar .filter-group { width: 100%; }
+  .toolbar .filter-group select { width: 100%; min-height: 44px; font-size: 15px; }
+  .toolbar .summary-chip { width: 100%; text-align: center; }
 
   /* -- Auth pages -- */
-  .auth-page { flex-direction: column; padding: 20px 16px !important; }
+  .auth-page { flex-direction: column; padding: 20px 16px !important; min-height: auto !important; }
   .auth-page__intro { display: none; }
-  .auth-card { width: 100% !important; max-width: 100% !important; padding: 20px 16px; }
+  .auth-card { width: 100% !important; max-width: 100% !important; padding: 20px 16px !important; margin: 0; }
   .auth-card__title { font-size: 20px; }
   .auth-form { width: 100%; }
   .auth-form input { min-height: 48px; font-size: 16px; }
   .auth-form__button { min-height: 48px; font-size: 16px; }
-  .field input, .field select { min-height: 48px; font-size: 16px; }
-  .field__checkbox input { width: 20px; height: 20px; }
-  .field__checkbox { font-size: 14px; align-items: flex-start; }
-  .field label { font-size: 14px; }
 
   /* -- Tables / Data grids -- */
-  .table-card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-card { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
   .table-skeleton { height: 30px !important; }
   .dash-table { font-size: 12px; }
+  .dash-table__head, .dash-table__body { min-width: 500px; }
   .dash-table__head span, .dash-table__row span { padding: 8px 6px; }
   .dash-table__head span:nth-child(4), .dash-table__head span:nth-child(5),
   .dash-table__row span:nth-child(4), .dash-table__row span:nth-child(5) { display: none; }
+
+  /* -- Quote table -- */
+  .quote-table { min-width: 500px; }
 
   .detail-list { grid-template-columns: 1fr; }
   .detail-list__row { flex-direction: column; gap: 2px; padding: 10px 0; }
@@ -2370,20 +2381,22 @@ button {
   .modal-dialog__content { padding: 20px 16px !important; }
   .modal-dialog__title { font-size: 18px; }
   .modal-dialog__fields { grid-template-columns: 1fr !important; }
-  .modal-dialog__form input { min-height: 48px; font-size: 16px; }
+  .modal-dialog__form input, .modal-dialog__form textarea { min-height: 48px; font-size: 16px; }
   .modal-dialog__actions { flex-direction: column; gap: 8px; }
   .modal-dialog__actions .button { width: 100%; min-height: 44px; }
 
-  /* -- Quotes -- */
-  .qp-actions { flex-wrap: wrap; gap: 6px; }
-  .qp-actions .button { min-height: 44px; font-size: 13px; }
+  /* -- Quotes pages -- */
+  .qp-actions { flex-wrap: wrap; gap: 8px; }
+  .qp-actions .button { min-height: 44px; font-size: 13px; flex: 1; min-width: 0; }
   .qp-preview { padding: 16px; }
   .qp-preview__header { flex-direction: column; gap: 8px; }
   .qp-preview__number { font-size: 20px; }
   .qp-preview__totals-row { font-size: 13px; }
   .qp-preview__customer-info { flex-direction: column; }
+  .qp-preview__items-table { font-size: 12px; }
+  .qp-preview__items-table th, .qp-preview__items-table td { padding: 6px 4px; }
 
-  .billing-plans { grid-template-columns: 1fr !important; }
+  .billing-plans { grid-template-columns: 1fr !important; gap: 16px; }
   .billing-plan { padding: 20px 16px; }
 
   .profile-edit-fields { grid-template-columns: 1fr !important; }
@@ -2407,34 +2420,34 @@ button {
   .status-filter { width: 100%; }
   .status-filter select { width: 100%; min-height: 44px; }
 
+  /* -- Finance -- */
+  .finance-stats { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+  .finance-page .period-selector { flex-wrap: wrap; gap: 4px; }
+  .finance-page .period-selector button { font-size: 11px; padding: 6px 10px; }
+
   /* -- Calendar -- */
   .cal-grid { font-size: 11px; }
-
-  /* Override the inline height: auto keeps grid visible */
-  div[style*="grid-template-columns: repeat(7, 1fr)"] {
-    height: auto !important;
-  }
+  .cal-grid__day { font-size: 9px; padding: 6px 2px; letter-spacing: 0.03em; }
   .cal-cell { min-height: 54px !important; padding: 3px !important; }
-  .cal-cell { min-height: 60px; padding: 4px; }
   .cal-cell__num { font-size: 11px; }
   .cal-cell--today .cal-cell__num { width: 20px; height: 20px; font-size: 11px; }
   .cal-job { font-size: 9px; padding: 1px 3px; }
-  .cal-grid__day { font-size: 9px; padding: 6px 4px; }
+
+  /* -- Calendar nav / view toggle -- */
+  .cal-nav { flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .cal-nav button { min-height: 36px; font-size: 13px; }
 
   /* -- Jobs page -- */
-  .jobs-list table, .jobs-list thead, .jobs-list tbody, .jobs-list th, .jobs-list td, .jobs-list tr { display: block; }
-  .jobs-list td { padding: 8px 0; border: none; }
-
-  /* -- Finance -- */
-  .finance-stats { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+  .jobs-page-header { flex-wrap: wrap; gap: 8px; }
+  .jobs-page-header h1 { font-size: 20px; }
 
   /* -- Hero / Landing -- */
   .hero { flex-direction: column; gap: 24px; text-align: center; }
   .hero h1 { font-size: 24px; line-height: 1.3; }
   .hero__copy { font-size: 14px; }
-  .hero__actions { justify-content: center; }
-  .hero__actions .button { min-height: 48px; font-size: 16px; }
-  .hero__metrics { justify-content: center; }
+  .hero__actions { justify-content: center; flex-wrap: wrap; }
+  .hero__actions .button { min-height: 48px; font-size: 16px; width: 100%; }
+  .hero__metrics { justify-content: center; flex-wrap: wrap; }
 
   .quote-preview-card { width: 100%; }
 
@@ -2448,23 +2461,40 @@ button {
   /* -- Spacing -- */
   .app-shell__main section { margin-bottom: 16px; }
 
-  /* -- Nav - Log out in mobile menu -- */
+  /* -- Mobile nav -- */
   .app-shell__mobile-nav a:last-child { border-bottom: none; }
+  .app-shell__mobile-nav a { font-size: 15px; padding: 14px 20px; }
 }
 
 @media (max-width: 430px) {
+  body { font-size: 14px; }
+  h1 { font-size: 22px !important; }
+  h2 { font-size: 18px !important; }
   .stat-cards { grid-template-columns: 1fr !important; }
   .finance-stats { grid-template-columns: 1fr !important; }
   .dash-table__head span:nth-child(3),
   .dash-table__row span:nth-child(3) { display: none; }
   .hero h1 { font-size: 20px; }
+  .hero__actions .button { font-size: 14px; }
+  .modal-dialog { width: 96% !important; }
+  .cal-cell { min-height: 46px !important; padding: 2px !important; }
+  .cal-cell__num { font-size: 10px; }
+  .cal-job { font-size: 8px; padding: 1px 2px; }
+  .table-card .quote-table { font-size: 11px; }
 }
 
 @media (max-width: 360px) {
   html { font-size: 14px; }
+  body { font-size: 13px; }
+  h1 { font-size: 20px !important; }
   .app-shell__main { padding: 12px 8px !important; }
-  .modal-dialog { width: 100% !important; border-radius: 0; }
-  .cal-cell { min-height: 50px; }
-  .cal-grid__day { font-size: 8px; padding: 4px 2px; }
+  .modal-dialog { width: 100% !important; border-radius: 0; margin: 0; }
+  .modal-dialog__content { padding: 16px 12px !important; }
+  .cal-cell { min-height: 40px !important; padding: 1px !important; }
+  .cal-cell__num { font-size: 9px; }
+  .cal-grid__day { font-size: 8px; padding: 4px 1px; letter-spacing: 0; }
   .billing-plan { padding: 16px 12px; }
+  .button { font-size: 13px; padding: 6px 12px; min-height: 40px; }
+  .field input, .field select, .field textarea { min-height: 40px; font-size: 15px; }
+  .auth-card { padding: 16px 12px !important; }
 }
