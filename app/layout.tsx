@@ -90,6 +90,9 @@ export default function RootLayout({
     <html lang="en-GB">
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="alternate icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="mask-icon" href="/favicon.svg" color="#1F6B4F" />
+        <link rel="apple-touch-icon" href="/favicon.svg" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#1F6B4F" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
