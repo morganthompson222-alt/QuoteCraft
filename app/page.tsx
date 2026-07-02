@@ -220,7 +220,7 @@ export default function LandingPage() {
       {/* ═══════════════════ CUSTOMERS ═══════════════════ */}
       <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 32px", background: "#f8fafc", borderTop: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: 1200, width: "100%", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
-          <div style={{ order: 2 }}>
+          <div>
             <SectionBadge text="Customers" />
             <SectionHeading>Know every customer and every quote.</SectionHeading>
             <SectionBody>
@@ -234,24 +234,7 @@ export default function LandingPage() {
             ]} />
             <div style={{ marginTop: 32 }}>{CTA}</div>
           </div>
-          <div style={{ order: 1 }}>
-            <SectionBadge text="Customers" />
-            <SectionHeading>Know every customer and every quote.</SectionHeading>
-            <SectionBody>
-              Store customer contact details, track their full quote history, and see which jobs are scheduled — all from one customer profile page.
-            </SectionBody>
-            <FeatureList items={[
-              "Full quote history per customer",
-              "Search by name, company, or email",
-              "Quick-create new customer in 2 clicks",
-              "Phone, email, address all in one place",
-            ]} />
-            <div style={{ marginTop: 32 }}>
-              {CTA}
-            </div>
-          </div>
-          <div style={{ direction: "ltr" }}>
-            <CardFrame title="Customer records — 47 total">
+          <CardFrame title="Customer records — 47 total">
               {mockCustomers.map((c, i) => (
                 <div key={c.name} style={{ padding: "16px 0", borderBottom: i < mockCustomers.length - 1 ? `1px solid ${BORDER}` : "none", display: "flex", alignItems: "center", gap: 16 }}>
                   <div style={{ width: 44, height: 44, borderRadius: 22, background: i === 0 ? "#dbeafe" : i === 1 ? GREEN_LIGHT : "#fef3c7", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 800, color: i === 0 ? "#1e40af" : i === 1 ? "#065f46" : "#92400e" }}>
@@ -267,7 +250,6 @@ export default function LandingPage() {
                 </div>
               ))}
             </CardFrame>
-          </div>
         </div>
       </section>
 
