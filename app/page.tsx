@@ -382,13 +382,39 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════ FOOTER ═══════════════════ */}
-      <footer style={{ padding: "40px 32px", textAlign: "center", background: DARK, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-        <Link href="/" style={{ fontSize: 20, fontWeight: 800, color: "#86efac", textDecoration: "none" }}>JobStacker</Link>
-        <div style={{ marginTop: 20, display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap" }}>
+      <footer style={{ padding: "48px 32px 32px", background: DARK, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 32, textAlign: "left", marginBottom: 32 }}>
+          <div>
+            <h4 style={{ color: "#fff", fontSize: 13, fontWeight: 700, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.04em" }}>By Trade</h4>
+            {["electricians", "plumbers", "builders", "contractors", "landscapers", "roofers"].map((t) => (
+              <Link key={t} href={`/crm-for-${t}`} style={{ display: "block", fontSize: 13, color: "#94a3b8", textDecoration: "none", marginBottom: 6 }}>{t.charAt(0).toUpperCase() + t.slice(1)}</Link>
+            ))}
+          </div>
+          <div>
+            <h4 style={{ color: "#fff", fontSize: 13, fontWeight: 700, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.04em" }}>By Trade</h4>
+            {["painters", "handymen", "carpenters", "cleaners", "hvac", "gardeners"].map((t) => (
+              <Link key={t} href={`/crm-for-${t}`} style={{ display: "block", fontSize: 13, color: "#94a3b8", textDecoration: "none", marginBottom: 6 }}>{t.charAt(0).toUpperCase() + t.slice(1)}</Link>
+            ))}
+          </div>
+          <div>
+            <h4 style={{ color: "#fff", fontSize: 13, fontWeight: 700, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.04em" }}>Features</h4>
+            {[{ href: "/quote-software", label: "Quote software" }, { href: "/invoice-software", label: "Invoice software" }, { href: "/job-management-software", label: "Job management" }, { href: "/scheduling-software", label: "Scheduling" }, { href: "/crm-software", label: "CRM software" }, { href: "/trade-crm", label: "Trade CRM" }].map((f) => (
+              <Link key={f.href} href={f.href} style={{ display: "block", fontSize: 13, color: "#94a3b8", textDecoration: "none", marginBottom: 6 }}>{f.label}</Link>
+            ))}
+          </div>
+          <div>
+            <h4 style={{ color: "#fff", fontSize: 13, fontWeight: 700, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.04em" }}>Compare</h4>
+            {[{ href: "/jobber-alternative", label: "vs Jobber" }, { href: "/tradify-alternative", label: "vs Tradify" }, { href: "/housecall-pro-alternative", label: "vs Housecall Pro" }, { href: "/servicem8-alternative", label: "vs ServiceM8" }, { href: "/bigchange-alternative", label: "vs BigChange" }, { href: "/free-crm-for-tradespeople", label: "Free CRM" }].map((f) => (
+              <Link key={f.href} href={f.href} style={{ display: "block", fontSize: 13, color: "#94a3b8", textDecoration: "none", marginBottom: 6 }}>{f.label}</Link>
+            ))}
+          </div>
+        </div>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 24, display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap" }}>
+          <Link href="/" style={{ fontSize: 14, color: "#86efac", textDecoration: "none", fontWeight: 700 }}>JobStacker</Link>
+          <Link href="/blog" style={{ fontSize: 14, color: "#94a3b8", textDecoration: "none" }}>Articles</Link>
+          <Link href="/install" style={{ fontSize: 14, color: "#94a3b8", textDecoration: "none" }}>Install App</Link>
           <Link href="/terms" style={{ fontSize: 14, color: "#94a3b8", textDecoration: "none" }}>Terms</Link>
           <Link href="/privacy" style={{ fontSize: 14, color: "#94a3b8", textDecoration: "none" }}>Privacy</Link>
-          <Link href="/install" style={{ fontSize: 14, color: "#94a3b8", textDecoration: "none" }}>Install App</Link>
-          <Link href="/blog" style={{ fontSize: 14, color: "#94a3b8", textDecoration: "none" }}>Articles</Link>
           <Link href="/login" style={{ fontSize: 14, color: "#94a3b8", textDecoration: "none" }}>Log in</Link>
         </div>
       </footer>
