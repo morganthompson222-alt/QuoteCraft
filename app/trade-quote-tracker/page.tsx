@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <section style={{ maxWidth: 800, margin: "0 auto", padding: "40px 20px" }}>
-      <Breadcrumbs items={{{ label: "Home", href: "/" }, {{ label: "Trade Quote Tracker" }}}} />
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Trade Quote Tracker" }]} />
       <h1 style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 12 }}>Trade Quote Tracker</h1>
       <p style={{ fontSize: 18, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 32 }}>Know exactly which quotes are outstanding, which are accepted, and which need following up. Never let a quote slip through the cracks.</p>
       <div style={{ fontSize: 16, color: "var(--text)", lineHeight: 1.8 }}>

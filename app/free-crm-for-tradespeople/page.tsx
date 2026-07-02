@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <section style={{ maxWidth: 800, margin: "0 auto", padding: "40px 20px" }}>
-      <Breadcrumbs items={{{ label: "Home", href: "/" }, {{ label: "Free CRM for Tradespeople" }}}} />
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Free CRM for Tradespeople" }]} />
       <h1 style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 12 }}>Free CRM for Tradespeople</h1>
       <p style={{ fontSize: 18, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 32 }}>Tired of free trials that aren't actually free? JobStacker's free tier has no time limit, no credit card required, and includes the core features you need to run your trade business.</p>
       <div style={{ fontSize: 16, color: "var(--text)", lineHeight: 1.8 }}>

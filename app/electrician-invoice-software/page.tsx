@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <section style={{ maxWidth: 800, margin: "0 auto", padding: "40px 20px" }}>
-      <Breadcrumbs items={{{ label: "Home", href: "/" }, {{ label: "Electrician Invoice Software" }}}} />
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Electrician Invoice Software" }]} />
       <h1 style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 12 }}>Electrician Invoice Software</h1>
       <p style={{ fontSize: 18, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 32 }}>Turn completed jobs into professional invoices in one click. Track payments, generate receipts, and know who still owes.</p>
       <div style={{ fontSize: 16, color: "var(--text)", lineHeight: 1.8 }}>

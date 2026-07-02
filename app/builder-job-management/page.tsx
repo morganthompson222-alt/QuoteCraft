@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <section style={{ maxWidth: 800, margin: "0 auto", padding: "40px 20px" }}>
-      <Breadcrumbs items={{{ label: "Home", href: "/" }, {{ label: "Builder Job Management" }}}} />
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Builder Job Management" }]} />
       <h1 style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 12 }}>Builder Job Management</h1>
       <p style={{ fontSize: 18, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 32 }}>Track construction projects from initial estimate to final completion. Multi-day scheduling, subcontractor management, and project financials.</p>
       <div style={{ fontSize: 16, color: "var(--text)", lineHeight: 1.8 }}>

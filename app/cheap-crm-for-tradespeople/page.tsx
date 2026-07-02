@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <section style={{ maxWidth: 800, margin: "0 auto", padding: "40px 20px" }}>
-      <Breadcrumbs items={{{ label: "Home", href: "/" }, {{ label: "Cheap CRM for Tradespeople" }}}} />
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Cheap CRM for Tradespeople" }]} />
       <h1 style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 12 }}>Cheap CRM for Tradespeople</h1>
       <p style={{ fontSize: 18, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 32 }}>CRM software doesn't have to cost hundreds per month. JobStacker offers genuinely affordable pricing for tradespeople - including a free tier with no catch.</p>
       <div style={{ fontSize: 16, color: "var(--text)", lineHeight: 1.8 }}>

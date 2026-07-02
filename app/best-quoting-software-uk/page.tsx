@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <section style={{ maxWidth: 800, margin: "0 auto", padding: "40px 20px" }}>
-      <Breadcrumbs items={{{ label: "Home", href: "/" }, {{ label: "Best Quoting Software UK" }}}} />
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Best Quoting Software UK" }]} />
       <h1 style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 12 }}>Best Quoting Software UK</h1>
       <p style={{ fontSize: 18, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 32 }}>Comparing the best quoting software for UK tradespeople in 2026. Features, pricing, and which app helps you win more work.</p>
       <div style={{ fontSize: 16, color: "var(--text)", lineHeight: 1.8 }}>

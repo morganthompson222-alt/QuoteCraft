@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <section style={{ maxWidth: 800, margin: "0 auto", padding: "40px 20px" }}>
-      <Breadcrumbs items={{{ label: "Home", href: "/" }, {{ label: "UK Trade CRM" }}}} />
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "UK Trade CRM" }]} />
       <h1 style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 12 }}>UK Trade CRM</h1>
       <p style={{ fontSize: 18, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 32 }}>A CRM built in the UK for UK tradespeople — GBP, VAT, DD/MM/YYYY dates, and proper UK trade terminology out of the box.</p>
       <div style={{ fontSize: 16, color: "var(--text)", lineHeight: 1.8 }}>

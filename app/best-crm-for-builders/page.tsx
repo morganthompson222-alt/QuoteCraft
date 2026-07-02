@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <section style={{ maxWidth: 800, margin: "0 auto", padding: "40px 20px" }}>
-      <Breadcrumbs items={{{ label: "Home", href: "/" }, {{ label: "Best CRM for Builders" }}}} />
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Best CRM for Builders" }]} />
       <h1 style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 12 }}>Best CRM for Builders</h1>
       <p style={{ fontSize: 18, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 32 }}>Building projects need CRM software that handles complex quotes, multi-day scheduling, material estimates, and subcontractor coordination.</p>
       <div style={{ fontSize: 16, color: "var(--text)", lineHeight: 1.8 }}>

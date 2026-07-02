@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <section style={{ maxWidth: 800, margin: "0 auto", padding: "40px 20px" }}>
-      <Breadcrumbs items={{{ label: "Home", href: "/" }, {{ label: "Free Quote Software" }}}} />
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Free Quote Software" }]} />
       <h1 style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.15, marginBottom: 12 }}>Free Quote Software</h1>
       <p style={{ fontSize: 18, color: "var(--text-muted)", lineHeight: 1.7, marginBottom: 32 }}>Create professional, itemised quotes in minutes with free quoting software built for tradespeople. No trial, no credit card - just quotes that win work.</p>
       <div style={{ fontSize: 16, color: "var(--text)", lineHeight: 1.8 }}>
