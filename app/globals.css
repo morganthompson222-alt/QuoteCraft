@@ -2452,18 +2452,17 @@ button {
   .quote-preview-card { width: 100%; }
 
   /* -- Landing page inline grids: force single column on mobile -- */
-  div[style*="grid-template-columns: 1fr 1fr"][style*="1200"] {
+  div[style*="grid-template-columns:1fr 1fr"] {
     grid-template-columns: 1fr !important;
     gap: 32px !important;
   }
-  div[style*="min-height: 100vh"][style*="padding: 80px 32px"] {
+  div[style*="min-height:100vh"][style*="padding:80px 32px"] {
     padding: 40px 16px !important;
     min-height: auto !important;
   }
-  div[style*="direction: rtl"] { direction: ltr !important; }
+  div[style*="direction:rtl"] { direction: ltr !important; }
   /* Ensure cards stack below text on mobile (bypass inline order) */
-  div[style*="order: 1"], div[style*="order: 2"] { order: unset !important; }
-  div[style*="marginBottom: 32"] { margin-top: 32px !important; }
+  div[style*="order:"] { order: unset !important; }
 
   /* -- Forms -- */
   .field input, .field select, .field textarea { font-size: 16px; min-height: 44px; }
