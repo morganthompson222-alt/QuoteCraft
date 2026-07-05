@@ -11,4 +11,5 @@ electron/node_modules/
 public/JobStacker-mac.dmg
 electron/
 .vercel
-public/downloads/
+public/downloads/*.exe
+public/downloads/*.dmg

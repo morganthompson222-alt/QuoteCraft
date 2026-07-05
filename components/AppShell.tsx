@@ -63,6 +63,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [showTour, setShowTour] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifs, setShowNotifs] = useState(false);
+  const [showDownloads, setShowDownloads] = useState(false);
   const [showDownload, setShowDownload] = useState(false);
   const [showMobileNav, setShowMobileNav] = useState(false);
 
@@ -224,6 +225,28 @@ export function AppShell({ children }: { children: ReactNode }) {
 
           {loggedIn ? (
             <>
+              <div style={{ position: "relative" }}>
+                <button className="button button--ghost" onClick={() => setShowDownloads(v => !v)} style={{ fontSize: 18, minWidth: 36 }} title="Downloads">
+                  ⬇️
+                </button>
+                {showDownloads ? (
+                  <>
+                    <div style={{ position: "fixed", inset: 0, zIndex: 10 }} onClick={() => setShowDownloads(false)} />
+                    <div style={{ position: "absolute", top: 44, right: 0, width: 240, background: "#fff", borderRadius: 10, boxShadow: "0 10px 40px rgba(0,0,0,0.12)", zIndex: 100, overflow: "hidden", fontSize: 13 }}>
+                      <div style={{ padding: "12px 16px", borderBottom: "1px solid #e5e7eb", fontWeight: 700, fontSize: 14 }}>Downloads</div>
+                      <a href="/install" onClick={() => setShowDownloads(false)} style={{ display: "block", padding: "10px 16px", borderBottom: "1px solid #e5e7eb", textDecoration: "none", color: "#334155", fontSize: 13, fontWeight: 600 }}>
+                        📖 Download Guide
+                      </a>
+                      <a href="/downloads/JobStacker-mac.dmg" download onClick={() => setShowDownloads(false)} style={{ display: "block", padding: "10px 16px", borderBottom: "1px solid #e5e7eb", textDecoration: "none", color: "#334155", fontSize: 13 }}>
+                        🍎 Mac (DMG)
+                      </a>
+                      <a href="/downloads/JobStacker-win-setup.exe" download onClick={() => setShowDownloads(false)} style={{ display: "block", padding: "10px 16px", textDecoration: "none", color: "#334155", fontSize: 13 }}>
+                        🪟 Windows (EXE)
+                      </a>
+                    </div>
+                  </>
+                ) : null}
+              </div>
               <div style={{ position: "relative" }}>
                 <button
                   className="button button--ghost"
