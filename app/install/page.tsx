@@ -18,14 +18,29 @@ export default function InstallPage() {
         </h1>
         <p style={{ fontSize: 16, color: "#64748b", lineHeight: 1.7, marginBottom: 40 }}>
           JobStacker works everywhere — in your browser, on your desktop, and on your phone.
-          No downloads, no updates. Install once and access it like any other app.
+          Download the desktop app or install from your browser.
         </p>
+
+        {/* Desktop App */}
+        <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", padding: "28px 32px", marginBottom: 20 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: "0 0 16px" }}>Desktop App</h2>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <a href="/downloads/JobStacker-mac.dmg" download
+              style={{ flex: 1, minWidth: 200, padding: "14px 24px", borderRadius: 8, fontSize: 14, fontWeight: 700, textDecoration: "none", textAlign: "center", background: "#1F6B4F", color: "#fff" }}>
+              ↓ Download for Mac (DMG)
+            </a>
+            <a href="/downloads/JobStacker-win-setup.exe" download
+              style={{ flex: 1, minWidth: 200, padding: "14px 24px", borderRadius: 8, fontSize: 14, fontWeight: 700, textDecoration: "none", textAlign: "center", border: "1px solid #1F6B4F", color: "#1F6B4F", background: "#fff" }}>
+              ↓ Download for Windows (EXE)
+            </a>
+          </div>
+        </div>
 
         {/* Chrome / Edge */}
         <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", padding: "28px 32px", marginBottom: 20 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-            <div style={{ width: 40, height: 40, borderRadius: 10, background: "#eefaf4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 700, color: "#1F6B4F" }}>1</div>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }} id="mac">Mac — Add to Dock</h2>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: "#eefaf4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 700, color: "#1F6B4F" }}>2</div>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }} id="mac">Mac — PWA (Browser)</h2>
           </div>
           <ol style={{ paddingLeft: 20, color: "#334155", fontSize: 15, lineHeight: 2 }}>
             <li>Open <strong style={{ color: "#1F6B4F" }}>JobStacker</strong> in Safari on your Mac</li>
@@ -37,8 +52,8 @@ export default function InstallPage() {
         {/* Safari / Mac */}
         <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", padding: "28px 32px", marginBottom: 20 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-            <div style={{ width: 40, height: 40, borderRadius: 10, background: "#eefaf4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 700, color: "#1F6B4F" }}>2</div>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }} id="windows">Windows — Install from Browser</h2>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: "#eefaf4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 700, color: "#1F6B4F" }}>3</div>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }} id="windows">Windows — PWA (Browser)</h2>
           </div>
           <ol style={{ paddingLeft: 20, color: "#334155", fontSize: 15, lineHeight: 2 }}>
             <li>Open <strong style={{ color: "#1F6B4F" }}>JobStacker</strong> in Chrome or Edge on Windows</li>
@@ -50,8 +65,8 @@ export default function InstallPage() {
         {/* iPhone / iPad */}
         <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", padding: "28px 32px", marginBottom: 20 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-            <div style={{ width: 40, height: 40, borderRadius: 10, background: "#eefaf4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 700, color: "#1F6B4F" }}>3</div>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>iPhone & iPad</h2>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: "#eefaf4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 700, color: "#1F6B4F" }}>4</div>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>iPhone & iPad — PWA</h2>
           </div>
           <ol style={{ paddingLeft: 20, color: "#334155", fontSize: 15, lineHeight: 2 }}>
             <li>Open <strong style={{ color: "#1F6B4F" }}>JobStacker</strong> in Safari on your iPhone or iPad</li>
@@ -64,8 +79,8 @@ export default function InstallPage() {
         {/* Android */}
         <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", padding: "28px 32px", marginBottom: 40 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-            <div style={{ width: 40, height: 40, borderRadius: 10, background: "#eefaf4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 700, color: "#1F6B4F" }}>4</div>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Android (Chrome)</h2>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: "#eefaf4", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 700, color: "#1F6B4F" }}>5</div>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>Android (Chrome) — PWA</h2>
           </div>
           <ol style={{ paddingLeft: 20, color: "#334155", fontSize: 15, lineHeight: 2 }}>
             <li>Open <strong style={{ color: "#1F6B4F" }}>JobStacker</strong> in Chrome on your Android device</li>
