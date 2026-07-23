@@ -249,7 +249,7 @@ export function QuoteBuilderPage() {
 
   function validate(): boolean {
     const nextErrors: FormErrors = {};
-    if (!customerId) nextErrors.customerId = "Select a customer.";
+    if (!customerId) nextErrors.customerId = "Select a customer before creating a quote.";
     const hasItem = items.some((item) => item.description.trim().length > 0);
     if (!hasItem) nextErrors.items = "Add at least one line item with a description.";
     for (const item of items) {
@@ -259,7 +259,12 @@ export function QuoteBuilderPage() {
       }
     }
     setErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
+    if (Object.keys(nextErrors).length > 0) {
+      setApiError("Please fix the errors above before creating the quote.");
+      setTimeout(() => setApiError(""), 5000);
+      return false;
+    }
+    return true;
   }
 
   async function handleImage(f: File) {
@@ -812,7 +817,7 @@ export function QuoteBuilderPage() {
                 <select
                   id="quote-customer"
                   className="filter-select"
-                  style={{ width: "100%", maxWidth: 400 }}
+                  style={{ width: "100%", maxWidth: 400, borderColor: errors.customerId ? "var(--danger)" : undefined }}
                   value={customerId}
                   onChange={(e) => { setCustomerId(e.target.value); if (errors.customerId) { const next = { ...errors }; delete next.customerId; setErrors(next); } }}
                   aria-invalid={Boolean(errors.customerId)}
