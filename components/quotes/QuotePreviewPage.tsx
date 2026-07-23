@@ -333,7 +333,8 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
     setShowSendMenu(false);
     await downloadPdf();
     if (state.status === "success" && state.data.status === "draft") {
-      setShowMarkSentAfterPdf(true);
+      await updateStatus("sent");
+      setRefreshKey((k) => k + 1);
     }
   }
 
