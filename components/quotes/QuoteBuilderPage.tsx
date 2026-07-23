@@ -375,6 +375,16 @@ export function QuoteBuilderPage() {
     }
   }
 
+  async function handleSendPdfFromMenu() {
+    setShowSendMenu(false);
+    await downloadPdf();
+    if (!createdQuoteId) {
+      setStatusError("Cannot send — no quote found. Try refreshing the page.");
+      return;
+    }
+    await updateStatus("sent");
+  }
+
   async function updateStatus(newStatus?: string, newPaid?: boolean) {
     if (!createdQuoteId) return;
     setStatusError("");
@@ -501,7 +511,7 @@ export function QuoteBuilderPage() {
                             Share link
                             <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "#64748b", marginTop: 1 }}>Link copied & quote sent</span>
                           </button>
-                          <button type="button" onClick={async () => { setShowSendMenu(false); await downloadPdf(); await updateStatus("sent"); }} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "var(--text)" }}>
+                          <button type="button" onClick={handleSendPdfFromMenu} style={{ display: "block", width: "100%", padding: "12px 16px", textAlign: "left", border: "none", background: "none", cursor: "pointer", fontSize: 14, fontWeight: 600, color: "var(--text)" }}>
                             Download PDF
                             <span style={{ display: "block", fontSize: 12, fontWeight: 400, color: "var(--text-muted)", marginTop: 1 }}>Send via email or print</span>
                           </button>
