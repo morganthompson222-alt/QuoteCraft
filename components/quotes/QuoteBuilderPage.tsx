@@ -144,6 +144,7 @@ export function QuoteBuilderPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [customersLoading, setCustomersLoading] = useState(true);
   const [customerId, setCustomerId] = useState("");
+  const [title, setTitle] = useState("");
   const [items, setItems] = useState<LineItem[]>([
     { id: generateId(), description: "", quantity: 1, unitPrice: 0 },
   ]);
@@ -292,6 +293,7 @@ export function QuoteBuilderPage() {
       const token = window.localStorage.getItem("jobstacker_token");
       const body = {
         customerId,
+        title: title.trim() || undefined,
         items: items.filter((item) => item.description.trim()).map((item) => ({
           description: item.description.trim(),
           quantity: item.quantity,
@@ -819,6 +821,21 @@ export function QuoteBuilderPage() {
         <div className="table-card">
           <h2 className="bp-section__title">Customer</h2>
           <div className="bp-section__body">
+            <div className="field">
+              <label htmlFor="quote-title">Job / item name</label>
+              <input
+                id="quote-title"
+                type="text"
+                className="filter-select"
+                style={{ width: "100%", maxWidth: 400, padding: "8px 12px", border: "1px solid var(--border)", borderRadius: 6, fontSize: 14 }}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Fence installation, Patio laying"
+              />
+              <p style={{ color: "var(--text-muted)", fontSize: 12, marginTop: 4 }}>
+                This name appears in your calendar so you can identify the job at a glance.
+              </p>
+            </div>
             <div className="field">
               <label htmlFor="quote-customer">Customer *</label>
               {customersLoading ? (

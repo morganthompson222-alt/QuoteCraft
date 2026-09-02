@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
       city: sanitizeOptionalString(body.city),
       state: sanitizeOptionalString(body.state),
       zip: sanitizeOptionalString(body.zip),
+      notes: sanitizeOptionalString(body.notes),
     };
 
     const { data, error } = await supabase

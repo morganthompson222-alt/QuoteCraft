@@ -64,7 +64,7 @@ export function JobModal({
     (async () => {
       try {
         const tk = localStorage.getItem("jobstacker_token");
-        const r = await fetch("/api/quotes/list?status=accepted&limit=50&sortOrder=desc", {
+        const r = await fetch("/api/quotes/list?status=sent,accepted&limit=50&sortOrder=desc", {
           headers: tk ? { Authorization: `Bearer ${tk}` } : {},
         });
         if (r.ok) {

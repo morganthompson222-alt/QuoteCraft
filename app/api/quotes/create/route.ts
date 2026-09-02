@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
     const notes = sanitizeOptionalString(body.notes);
     const imageUrl = sanitizeOptionalString(body.imageUrl);
     const taxRateParam = sanitizeOptionalString(body.taxRate);
+    const title = sanitizeOptionalString(body.title);
 
     const items: Array<{
       description: string;
@@ -77,6 +78,7 @@ export async function POST(request: NextRequest) {
         user_id: user.id,
         customer_id: customerId,
         quote_number: quoteNumber,
+        title: title || undefined,
         tax_rate: taxRate,
         notes,
         image_url: imageUrl,
@@ -119,6 +121,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       id: updatedQuote!.id,
       quoteNumber: updatedQuote!.quote_number,
+      title: updatedQuote!.title ?? null,
       customerId: updatedQuote!.customer_id,
       status: updatedQuote!.status,
       subtotal: Number(updatedQuote!.subtotal),

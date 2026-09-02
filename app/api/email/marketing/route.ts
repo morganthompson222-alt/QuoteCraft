@@ -13,6 +13,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const subject = sanitizeString(body.subject);
     const message = sanitizeString(body.message);
+    const recipientEmails = Array.isArray(body.recipientEmails)
+      ? body.recipientEmails.filter((e: unknown) => typeof e === "string")
+      : undefined;
 
     if (!subject || !message) {
       throw new ApiError(400, "Subject and message are required");
@@ -26,15 +29,21 @@ export async function POST(request: NextRequest) {
 
     const companyName = profile?.company_name ?? "Your tradesperson";
 
-    const { data: customers } = await supabase
+    let customersQuery = supabase
       .from("customers")
       .select("email, name")
       .eq("user_id", user.id)
       .not("email", "is", null)
       .not("email", "eq", "");
 
+    if (recipientEmails && recipientEmails.length > 0) {
+      customersQuery = customersQuery.in("email", recipientEmails);
+    }
+
+    const { data: customers } = await customersQuery;
+
     if (!customers || customers.length === 0) {
-      throw new ApiError(400, "No customers with email addresses");
+      throw new ApiError(400, "No customers with email addresses selected");
     }
 
     const apiKey = process.env.RESEND_API_KEY;

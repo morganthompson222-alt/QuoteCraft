@@ -37,7 +37,7 @@ export async function PATCH(
 
       const { data: quote, error: fetchError } = await supabase
         .from("quotes")
-        .select("status, customer_id, quote_number")
+        .select("status, customer_id, quote_number, title")
         .eq("id", id)
         .eq("user_id", user.id)
         .single();
@@ -81,7 +81,7 @@ export async function PATCH(
             quote_id: id,
             customer_id: quote.customer_id,
             customer_name: customer?.name ?? "",
-            job_title: `Quote #${quote.quote_number}`,
+            job_title: quote.title || `Quote #${quote.quote_number}`,
             job_date: jobDate,
             start_time: startTime,
             end_time: endTime,

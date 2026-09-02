@@ -46,6 +46,9 @@ export async function GET(request: NextRequest) {
     if (status) {
       if (status === "archived") {
         query = query.eq("archived", true);
+      } else if (status.includes(",")) {
+        const statuses = status.split(",").map((s) => s.trim()).filter(Boolean);
+        query = query.in("status", statuses);
       } else {
         query = query.eq("status", status);
       }

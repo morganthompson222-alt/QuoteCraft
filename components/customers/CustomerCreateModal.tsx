@@ -19,6 +19,7 @@ type FormData = {
   city: string;
   state: string;
   zip: string;
+  notes: string;
 };
 
 type FormErrors = Partial<Record<keyof FormData, string>>;
@@ -32,6 +33,7 @@ const initialForm: FormData = {
   city: "",
   state: "",
   zip: "",
+  notes: "",
 };
 
 function validate(data: FormData): FormErrors {
@@ -151,6 +153,8 @@ export function CustomerCreateModal({
     { key: "zip", label: "ZIP code", type: "text", autoComplete: "postal-code" },
   ];
 
+  const notesField = { key: "notes" as const, label: "Notes", type: "text" };
+
   return (
     <Modal open={open} onClose={handleClose} title="New customer">
       <form className="modal-dialog__form" onSubmit={handleSubmit} noValidate>
@@ -184,6 +188,19 @@ export function CustomerCreateModal({
               ) : null}
             </div>
           ))}
+        </div>
+
+        <div className={`field field--large`}>
+          <label htmlFor="create-notes">Notes (optional)</label>
+          <textarea
+            id="create-notes"
+            name={notesField.key}
+            value={form[notesField.key]}
+            onChange={(e) => handleChange(notesField.key, e.target.value)}
+            rows={3}
+            placeholder="Access instructions, preferences, or anything to remember about this customer"
+            style={{ width: "100%", padding: "8px 12px", border: "1px solid var(--border)", borderRadius: 6, fontSize: 14, resize: "vertical", boxSizing: "border-box" }}
+          />
         </div>
 
         {apiError ? (

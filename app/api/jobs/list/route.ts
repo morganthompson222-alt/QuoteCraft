@@ -21,7 +21,6 @@ export async function GET(request: NextRequest) {
       .order("job_date", { ascending: true })
       .order("start_time", { ascending: true });
 
-    if (!includeArchived) query = query.neq("archived", true);
     if (fromDate) query = query.gte("job_date", fromDate);
     if (toDate) query = query.lte("job_date", toDate);
     if (statusFilter) query = query.eq("status", statusFilter);

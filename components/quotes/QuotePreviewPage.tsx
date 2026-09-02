@@ -122,6 +122,14 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
   const [schedDate, setSchedDate] = useState("");
   const [schedStart, setSchedStart] = useState("09:00");
   const [schedEnd, setSchedEnd] = useState("");
+  const scheduleEdited = useRef(false);
+
+  // Mark schedule as edited so polling doesn't overwrite user input
+  const markScheduleEdited = () => { scheduleEdited.current = true; };
+  const openAcceptModal = () => {
+    scheduleEdited.current = false;
+    setShowAcceptModal(true);
+  };
 
   useEffect(() => {
     let isCurrent = true;
@@ -142,7 +150,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
         const data = (await response.json()) as QuoteDetail;
         if (isCurrent) {
           setState({ status: "success", data });
-          if (data.jobDate) {
+          if (!scheduleEdited.current && data.jobDate) {
             setSchedDate(data.jobDate);
             if (data.startTime) setSchedStart(data.startTime);
             if (data.endTime) setSchedEnd(data.endTime);
@@ -461,7 +469,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
               ) : null}
 
               {validTransitions.includes("accepted") ? (
-                <button className="button button--primary" type="button" onClick={() => setShowAcceptModal(true)}>Mark accepted</button>
+                <button className="button button--primary" type="button" onClick={openAcceptModal}>Mark accepted</button>
               ) : null}
 
               {/* Divider */}
@@ -699,7 +707,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
                       type="date"
                       style={{ width: "100%", padding: "8px 12px", border: "1px solid #e5e7eb", borderRadius: 6, fontSize: 14, outline: "none", boxSizing: "border-box" }}
                       value={schedDate}
-                      onChange={(e) => setSchedDate(e.target.value)}
+                      onChange={(e) => { setSchedDate(e.target.value); markScheduleEdited(); }}
                     />
                   </div>
 
@@ -710,7 +718,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
                         type="time"
                         style={{ width: "100%", padding: "8px 12px", border: "1px solid #e5e7eb", borderRadius: 6, fontSize: 14, outline: "none", boxSizing: "border-box" }}
                         value={schedStart}
-                        onChange={(e) => setSchedStart(e.target.value)}
+                        onChange={(e) => { setSchedStart(e.target.value); markScheduleEdited(); }}
                       />
                     </div>
                     <div>
@@ -719,7 +727,7 @@ export function QuotePreviewPage({ quoteId }: QuotePreviewPageProps) {
                         type="time"
                         style={{ width: "100%", padding: "8px 12px", border: "1px solid #e5e7eb", borderRadius: 6, fontSize: 14, outline: "none", boxSizing: "border-box" }}
                         value={schedEnd}
-                        onChange={(e) => setSchedEnd(e.target.value)}
+                        onChange={(e) => { setSchedEnd(e.target.value); markScheduleEdited(); }}
                       />
                     </div>
                   </div>
