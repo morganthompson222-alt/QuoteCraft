@@ -14,7 +14,6 @@ const navItems = [
   { href: "/calendar", label: "Schedule" },
   { href: "/finance", label: "Finance" },
   { href: "/revenue", label: "Revenue" },
-  { href: "/marketing", label: "Marketing" },
   { href: "/settings", label: "Settings" },
 ];
 
