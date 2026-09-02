@@ -254,9 +254,9 @@ export function QuoteBuilderPage() {
     const hasItem = items.some((item) => item.description.trim().length > 0);
     if (!hasItem) nextErrors.items = "Add at least one line item with a description.";
     for (const item of items) {
-      if (item.description.trim() && (item.quantity <= 0 || item.unitPrice <= 0)) {
+      if (item.description.trim() && (item.quantity <= 0 || item.unitPrice < 0)) {
         if (item.quantity <= 0) (nextErrors as Record<string, string>)[`item_${item.id}_quantity`] = "Must be > 0";
-        if (item.unitPrice <= 0) (nextErrors as Record<string, string>)[`item_${item.id}_unitPrice`] = "Must be > 0";
+        if (item.unitPrice < 0) (nextErrors as Record<string, string>)[`item_${item.id}_unitPrice`] = "Must be 0 or more";
       }
     }
     setErrors(nextErrors);
@@ -750,7 +750,7 @@ export function QuoteBuilderPage() {
       <div className="table-card">
         <h2 className="bp-section__title">
           Generate with AI
-          <span style={{ color: "var(--text-muted)", fontSize: 13, fontWeight: 650 }}>Powered by GPT-4o</span>
+          <span style={{ color: "var(--text-muted)", fontSize: 13, fontWeight: 650 }}>AI-powered quote generator</span>
         </h2>
         <div className="bp-section__body">
           <div className="field">
