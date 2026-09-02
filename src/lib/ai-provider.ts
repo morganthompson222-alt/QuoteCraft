@@ -1,4 +1,4 @@
-const DEEPSEEK_BASE_URL = "https://api.deepseek.com/v1";
+const DEEPSEEK_BASE_URL = "https://api.deepseek.com";
 
 export type AiModelTier = "premium" | "standard";
 
